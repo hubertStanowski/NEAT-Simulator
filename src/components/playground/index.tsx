@@ -18,12 +18,12 @@ const Playground = () => {
 
   return (
     <section
-      className="relative flex h-full w-full items-center justify-center"
+      className="relative flex h-auto w-full items-center justify-center"
       id="home"
     >
-      <div className="grid h-full grid-cols-12 flex-col gap-5 gap-x-10">
-        <div className="col-span-2 flex h-full">
-          <div className="grid-container h-full">
+      <div className="mx-10 grid w-full grid-cols-12 gap-x-5">
+        <div className="col-span-3 flex">
+          <div className="grid-container">
             <Parameters
               humanPlaying={humanPlaying}
               setHumanPlaying={setHumanPlaying}
@@ -36,15 +36,15 @@ const Playground = () => {
             />
           </div>
         </div>
-        <div className="col-span-7 h-full w-full">
+        <div className="col-span-6">
           <div className="grid-container flex items-center justify-center">
-            <div className="relative my-5 h-full w-full">
+            <div className="relative my-5 w-full">
               <Canvas />
             </div>
           </div>
         </div>
-        <div className="col-span-3 h-full">
-          <div className="grid-container h-full"></div>
+        <div className="col-span-3">
+          <div className="grid-container"></div>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import Playground from "./components/playground";
 
 const App = () => {
   return (
-    <main className="flex h-auto w-auto flex-col">
+    <main className="flex h-screen flex-col">
       <div className="flex-none">
         <Navbar />
       </div>
