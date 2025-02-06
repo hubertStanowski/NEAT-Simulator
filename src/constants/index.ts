@@ -10,4 +10,5 @@ export enum GameStatus {
   Running = "running",
   Paused = "paused",
   Done = "done",
+  Reset = "reset",
 }

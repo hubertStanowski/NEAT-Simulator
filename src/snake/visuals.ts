@@ -53,3 +53,70 @@ export const updateColor = (
 
   return [Math.floor(r), Math.floor(g), Math.floor(b)];
 };
+
+export const styleEyes = (direction: string) => {
+  const eyeOffset = 25;
+  const eyeStyle = {
+    width: "20%",
+    height: "20%",
+    backgroundColor: "black",
+    position: "absolute",
+    borderRadius: "50%",
+  };
+
+  let eye1Style = {};
+  let eye2Style = {};
+
+  switch (direction) {
+    case "UP":
+      eye1Style = {
+        ...eyeStyle,
+        top: `${eyeOffset}%`,
+        left: `${eyeOffset}%`,
+      };
+      eye2Style = {
+        ...eyeStyle,
+        top: `${eyeOffset}%`,
+        right: `${eyeOffset}%`,
+      };
+      break;
+    case "DOWN":
+      eye1Style = {
+        ...eyeStyle,
+        bottom: `${eyeOffset}%`,
+        left: `${eyeOffset}%`,
+      };
+      eye2Style = {
+        ...eyeStyle,
+        bottom: `${eyeOffset}%`,
+        right: `${eyeOffset}%`,
+      };
+      break;
+    case "LEFT":
+      eye1Style = {
+        ...eyeStyle,
+        top: `${eyeOffset}%`,
+        left: `${eyeOffset}%`,
+      };
+      eye2Style = {
+        ...eyeStyle,
+        bottom: `${eyeOffset}%`,
+        left: `${eyeOffset}%`,
+      };
+      break;
+    case "RIGHT":
+      eye1Style = {
+        ...eyeStyle,
+        top: `${eyeOffset}%`,
+        right: `${eyeOffset}%`,
+      };
+      eye2Style = {
+        ...eyeStyle,
+        bottom: `${eyeOffset}%`,
+        right: `${eyeOffset}%`,
+      };
+      break;
+  }
+
+  return { eye1Style, eye2Style };
+};

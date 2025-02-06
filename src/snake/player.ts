@@ -1,4 +1,4 @@
-import { createGrid } from "./graph";
+import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
 import { gridSize } from "../constants";
 
@@ -11,12 +11,16 @@ class Player {
   isAlive: boolean;
 
   constructor() {
-    this.snake = [{ row: 12, col: 12 }];
+    this.snake = [
+      { row: 12, col: 12 },
+      { row: 12, col: 11 },
+    ];
     this.grid = createGrid(gridSize, gridSize);
     this.food = { row: 5, col: 5 };
     this.step = 0;
     this.direction = "RIGHT";
     this.isAlive = true;
+    this.updateGrid();
   }
 
   moveSnake() {
@@ -41,24 +45,9 @@ class Player {
         break;
     }
 
-    // Check if the new head position is out of bounds
-    if (
-      newHead.row < 0 ||
-      newHead.row >= gridSize ||
-      newHead.col < 0 ||
-      newHead.col >= gridSize
-    ) {
-      this.isAlive = false;
-      return;
-    }
+    this.checkCollisions(newHead, newSnake);
 
-    // Check if the new head position collides with the snake's body
-    for (const segment of newSnake) {
-      if (segment.row === newHead.row && segment.col === newHead.col) {
-        this.isAlive = false;
-        return;
-      }
-    }
+    if (!this.isAlive) return;
 
     newSnake.unshift(newHead);
     if (newHead.row === this.food.row && newHead.col === this.food.col) {
@@ -72,6 +61,30 @@ class Player {
 
     this.snake = newSnake;
     this.step += 1;
+  }
+
+  checkCollisions(
+    newHead: { row: number; col: number },
+    newSnake: { row: number; col: number }[],
+  ) {
+    // Border collisions
+    if (
+      newHead.row < 0 ||
+      newHead.row >= gridSize ||
+      newHead.col < 0 ||
+      newHead.col >= gridSize
+    ) {
+      this.isAlive = false;
+      return;
+    }
+
+    // Body collisions
+    for (const segment of newSnake) {
+      if (segment.row === newHead.row && segment.col === newHead.col) {
+        this.isAlive = false;
+        return;
+      }
+    }
   }
 
   updateGrid() {

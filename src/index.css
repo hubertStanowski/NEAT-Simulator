@@ -14,6 +14,25 @@ body {
 }
 
 @layer utilities {
+  .parameter-button {
+    @apply highlight rounded-full px-8 py-3 text-2xl text-[#010103];
+  }
+
+  .highlighted-parameter-button {
+    @apply relative;
+  }
+
+  .highlighted-parameter-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+  }
   .python {
     @apply text-green-600;
   }
@@ -224,3 +243,28 @@ body {
     transform: rotate(0deg);
   }
 }
+
+/* .highlighted-parameter-button::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: inherit;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  animation: halo-animation 1s infinite;
+}
+
+@keyframes halo-animation {
+  0% {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+  }
+} */

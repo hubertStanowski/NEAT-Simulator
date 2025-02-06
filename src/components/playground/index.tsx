@@ -6,7 +6,7 @@ import { GameStatus } from "../../constants";
 
 const Playground = () => {
   const [humanPlaying, setHumanPlaying] = useState(true);
-  const [populationSize, setPopulationSize] = useState(50);
+  const [populationSize, setPopulationSize] = useState(200);
   const [speed, setSpeed] = useState(100);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Done);

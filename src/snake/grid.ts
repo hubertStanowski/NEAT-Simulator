@@ -4,7 +4,7 @@ export const createGrid = (
 ): [number, number, number][][] => {
   return Array.from({ length: rows }, () => Array(cols).fill([0, 0, 0]));
 };
-
+// change test
 export const updateGridCell = (
   grid: [number, number, number][][],
   rowIndex: number,
