@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import Parameters from "./Parameters";
 import Canvas from "./Canvas";
 import Network from "./Network";
+import { GameStatus } from "../../constants";
 
 const Playground = () => {
   const [humanPlaying, setHumanPlaying] = useState(true);
   const [populationSize, setPopulationSize] = useState(50);
-  const [FPS, setFPS] = useState(60);
-  const [gameStatus, setGameStatus] = useState<"running" | "paused" | "done">(
-    "done",
-  );
+  const [speed, setSpeed] = useState(100);
+
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Done);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -30,8 +30,8 @@ const Playground = () => {
               setHumanPlaying={setHumanPlaying}
               populationSize={populationSize}
               setPopulationSize={setPopulationSize}
-              FPS={FPS}
-              setFPS={setFPS}
+              speed={speed}
+              setSpeed={setSpeed}
               gameStatus={gameStatus}
               setGameStatus={setGameStatus}
             />
@@ -40,7 +40,13 @@ const Playground = () => {
         <div className="col-span-6">
           <div className="grid-container flex items-center justify-center">
             <div className="relative my-5 w-full">
-              <Canvas />
+              <Canvas
+                humanPlaying={humanPlaying}
+                populationSize={populationSize}
+                speed={speed}
+                gameStatus={gameStatus}
+                setGameStatus={setGameStatus}
+              />
             </div>
           </div>
         </div>
