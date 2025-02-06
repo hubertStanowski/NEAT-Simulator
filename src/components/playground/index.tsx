@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Parameters from "./Parameters";
 import Canvas from "./Canvas";
+import Network from "./Network";
 
 const Playground = () => {
   const [humanPlaying, setHumanPlaying] = useState(true);
@@ -44,7 +45,9 @@ const Playground = () => {
           </div>
         </div>
         <div className="col-span-3">
-          <div className="grid-container"></div>
+          <div className="grid-container flex items-center justify-center">
+            <Network />
+          </div>
         </div>
       </div>
     </section>
