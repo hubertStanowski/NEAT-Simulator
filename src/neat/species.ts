@@ -1,4 +1,3 @@
-import { random } from "node_modules/mathjs/types";
 import Player from "../snake/player";
 import { Genome } from "./genome";
 import { InnovationHistory } from "./innovationHistory";
@@ -28,7 +27,7 @@ export class Species {
     }
 
     let child: Player;
-    if (random() < config.getNoCrossoverProbability()) {
+    if (Math.random() < config.getNoCrossoverProbability()) {
       child = this.selectPlayer().clone();
     } else {
       if (this.players.length < 2) {
@@ -147,7 +146,7 @@ export class Species {
       (sum, player) => sum + player.fitness,
       0,
     );
-    const randomThreshold = random() * fitnessSum;
+    const randomThreshold = Math.random() * fitnessSum;
 
     let runningSum = 0;
     for (const player of this.players) {

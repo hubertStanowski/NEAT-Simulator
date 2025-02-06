@@ -21,8 +21,14 @@ const Parameters = (props: Props) => {
             : "bg-purple-700 hover:bg-purple-800"
         } `}
         onClick={(e) => {
-          props.setHumanPlaying(!props.humanPlaying);
           e.currentTarget.blur();
+          if (props.humanPlaying) {
+            props.setGameStatus(GameStatus.Training);
+          } else {
+            props.setGameStatus(GameStatus.Done);
+          }
+          props.setHumanPlaying(!props.humanPlaying);
+          console.log(props.humanPlaying);
         }}
       >
         {props.humanPlaying ? "Human Playing" : "AI Playing"}

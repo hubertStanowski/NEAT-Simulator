@@ -1,18 +1,18 @@
 import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
 import { gridSize } from "../constants";
-import { Genome } from "src/neat/genome";
-import { NeatConfig } from "src/neat/neatConfig";
+import { Genome } from "../neat/genome";
+import { NeatConfig } from "../neat/neatConfig";
+import { stepLimit } from "../constants";
 
 class Player {
   snake: { row: number; col: number }[];
   grid: [number, number, number][][];
   food: { row: number; col: number };
-  step: number;
+  lifespan: number;
   direction: "UP" | "DOWN" | "LEFT" | "RIGHT";
   isAlive: boolean;
   fitness: number;
-  lifespan: number;
   genome_inputs: number;
   genome_outputs: number;
   genome: Genome;
@@ -28,11 +28,10 @@ class Player {
     ];
     this.grid = createGrid(gridSize, gridSize);
     this.food = { row: 5, col: 5 };
-    this.step = 0;
+    this.lifespan = 0;
     this.direction = "RIGHT";
     this.isAlive = true;
     this.fitness = 0;
-    this.lifespan = 0;
     this.genome_inputs = 12;
     this.genome_outputs = 3;
     this.genome = new Genome(this.genome_inputs, this.genome_outputs);
@@ -45,6 +44,11 @@ class Player {
 
   moveSnake() {
     if (!this.isAlive) return;
+
+    if (this.steps >= stepLimit) {
+      this.isAlive = false;
+      return;
+    }
 
     const newSnake = [...this.snake];
     const head = newSnake[0];
@@ -75,12 +79,14 @@ class Player {
         row: Math.floor(Math.random() * gridSize),
         col: Math.floor(Math.random() * gridSize),
       };
+      this.steps = 0;
     } else {
       newSnake.pop();
     }
 
     this.snake = newSnake;
-    this.step += 1;
+    this.lifespan += 1;
+    this.steps += 1;
   }
 
   checkCollisions(
@@ -113,7 +119,7 @@ class Player {
       newGrid[segment.row][segment.col] = updateColor(
         index,
         this.snake.length,
-        this.step,
+        this.lifespan,
       );
     });
     newGrid[this.food.row][this.food.col] = [255, 0, 0];
@@ -157,19 +163,59 @@ class Player {
 
   // NEAT
 
+  // # Direction change for AI (for human they are relative to the user view not head)
+  //   def turn_left(self) -> None:
+  //       if self.row_vel != 0:
+  //           self.col_vel = self.row_vel
+  //           self.row_vel = 0
+  //       else:
+  //           self.row_vel = -self.col_vel
+  //           self.col_vel = 0
+
+  //   def turn_right(self) -> None:
+  //       if self.row_vel != 0:
+  //           self.col_vel = -self.row_vel
+  //           self.row_vel = 0
+  //       else:
+  //           self.row_vel = self.col_vel
+  //           self.col_vel = 0
+
+  // switch (this.direction) {
+  //   case "UP":
+  //     newHead = { row: head.row - 1, col: head.col };
+  //     break;
+  //   case "DOWN":
+  //     newHead = { row: head.row + 1, col: head.col };
+  //     break;
+  //   case "LEFT":
+  //     newHead = { row: head.row, col: head.col - 1 };
+  //     break;
+  //   case "RIGHT":
+  //     newHead = { row: head.row, col: head.col + 1 };
+  //     break;
+  // }
+
   turnLeft() {
-    if (this.direction === "UP" || this.direction === "DOWN") {
-      this.direction = this.direction === "UP" ? "LEFT" : "RIGHT";
-    } else {
-      this.direction = this.direction === "LEFT" ? "DOWN" : "UP";
+    if (this.direction === "UP") {
+      this.direction = "LEFT";
+    } else if (this.direction === "DOWN") {
+      this.direction = "RIGHT";
+    } else if (this.direction === "LEFT") {
+      this.direction = "DOWN";
+    } else if (this.direction === "RIGHT") {
+      this.direction = "UP";
     }
   }
 
   turnRight() {
-    if (this.direction === "UP" || this.direction === "DOWN") {
-      this.direction = this.direction === "UP" ? "RIGHT" : "LEFT";
-    } else {
-      this.direction = this.direction === "LEFT" ? "UP" : "DOWN";
+    if (this.direction === "UP") {
+      this.direction = "RIGHT";
+    } else if (this.direction === "DOWN") {
+      this.direction = "LEFT";
+    } else if (this.direction === "LEFT") {
+      this.direction = "UP";
+    } else if (this.direction === "RIGHT") {
+      this.direction = "DOWN";
     }
   }
 
@@ -277,10 +323,12 @@ class Player {
         bottomFood,
         leftFood,
         rightFood,
+
         topBody,
         bottomBody,
         leftBody,
         rightBody,
+
         topWall,
         bottomWall,
         leftWall,
@@ -292,10 +340,12 @@ class Player {
         topFood,
         rightFood,
         leftFood,
+
         bottomBody,
         topBody,
         rightBody,
         leftBody,
+
         bottomWall,
         topWall,
         rightWall,
@@ -307,10 +357,12 @@ class Player {
         rightFood,
         bottomFood,
         topFood,
+
         leftBody,
         rightBody,
         bottomBody,
         topBody,
+
         leftWall,
         rightWall,
         bottomWall,
@@ -322,16 +374,20 @@ class Player {
         leftFood,
         topFood,
         bottomFood,
+
         rightBody,
         leftBody,
         topBody,
         bottomBody,
+
         rightWall,
         leftWall,
         topWall,
         bottomWall,
       );
     }
+
+    // console.log(this.vision);
   }
 
   decide(show = false) {
@@ -345,8 +401,10 @@ class Player {
 
     if (outputs[0] === decision) {
       this.turnLeft();
+      // console.log("LEFT");
     } else if (outputs[1] === decision) {
       this.turnRight();
+      // console.log("RIGHT");
     }
   }
 }

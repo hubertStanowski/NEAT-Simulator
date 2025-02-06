@@ -1,5 +1,3 @@
-import * as math from "mathjs";
-
 export class NodeGene {
   id: number;
   layer: number;
@@ -35,7 +33,7 @@ export class NodeGene {
 
   sigmoid(x: number): number {
     // Modified formula from creators of NEAT
-    return 1.0 / (1.0 + math.exp(-4.9 * x));
+    return 1.0 / (1.0 + Math.exp(-4.9 * x));
   }
 
   engage(): void {
@@ -45,7 +43,7 @@ export class NodeGene {
 
     for (let current_connection of this.outputConnections) {
       if (current_connection.enabled) {
-        current_connection.output.input_sum +=
+        current_connection.output.inputSum +=
           current_connection.weight * this.outputValue;
       }
     }

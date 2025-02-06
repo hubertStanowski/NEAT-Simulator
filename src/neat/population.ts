@@ -47,7 +47,9 @@ export class Population {
         if (player.isAlive) {
           player.look();
           player.decide();
-          player.update();
+          player.moveSnake();
+          player.updateGrid();
+          // console.log(player.snake[0]);
         }
 
         if (player.getScore() > (this.currBestPlayer?.getScore() || 0)) {
@@ -93,7 +95,10 @@ export class Population {
       );
 
       for (let i = 0; i < childrenCount; i++) {
-        this.players.push(s.reproduce(this.config, this.innovationHistory));
+        const child = s.reproduce(this.config, this.innovationHistory);
+        if (child) {
+          this.players.push(child);
+        }
       }
     }
 
@@ -103,7 +108,8 @@ export class Population {
 
     while (this.players.length < this.size) {
       this.players.push(
-        this.species[0].reproduce(this.config, this.innovationHistory),
+        this.species[0].reproduce(this.config, this.innovationHistory) ||
+          new Player(),
       );
     }
 
