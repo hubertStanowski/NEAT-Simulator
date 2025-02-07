@@ -20,7 +20,7 @@ const Canvas: React.FC<CanvasProps> = ({
   gameStatus,
   setGameStatus,
 }) => {
-  const [player, setPlayer] = useState(new Player());
+  const [player, setPlayer] = useState(new Player(2));
   const [grid, setGrid] = useState<[number, number, number][][]>(
     player.getGrid(),
   );
@@ -36,11 +36,13 @@ const Canvas: React.FC<CanvasProps> = ({
         if (population.generation - 1 >= target_generation || show_previous) {
           if (show_previous) {
             if (population.prevBestPlayer) {
-              setPlayer(population.prevBestPlayer.clone());
+              setPlayer(population.prevBestPlayer.clone(2));
             }
             show_previous = false;
           } else {
-            setPlayer(population.genBestPlayers[target_generation - 1].clone());
+            setPlayer(
+              population.genBestPlayers[target_generation - 1].clone(2),
+            );
           }
           setGameStatus(GameStatus.Simulating);
         } else {
@@ -55,12 +57,12 @@ const Canvas: React.FC<CanvasProps> = ({
             console.log(
               `Gen: ${population.generation}, Score: ${population.currBestPlayer ? population.currBestPlayer.getScore() : "N/A"} / ${population.bestEverPlayer ? population.bestEverPlayer.getScore() : "N/A"}`,
             );
-            const averageScore =
-              population.players.reduce(
-                (sum, player) => sum + player.getScore(),
-                0,
-              ) / population.players.length;
-            console.log(`Average Score: ${averageScore}`);
+            // const averageScore =
+            //   population.players.reduce(
+            //     (sum, player) => sum + player.getScore(),
+            //     0,
+            //   ) / population.players.length;
+            // console.log(`Average Score: ${averageScore}`);
             population.naturalSelection();
           }
         }
@@ -134,7 +136,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     if (gameStatus === "reset") {
-      const newPlayer = new Player();
+      const newPlayer = new Player(2);
       setPlayer(newPlayer);
       setGrid(newPlayer.getGrid());
       setGameStatus(GameStatus.Paused);

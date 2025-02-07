@@ -15,4 +15,4 @@ export enum GameStatus {
   Simulating = "simulating",
 }
 
-export const stepLimit = 500;
+export const stepLimit = 150;

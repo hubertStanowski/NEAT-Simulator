@@ -21,13 +21,14 @@ class Player {
   steps: number;
   generation: number;
 
-  constructor() {
-    this.snake = [
-      { row: 12, col: 12 },
-      { row: 12, col: 11 },
-    ];
+  constructor(startingSize: number = 10) {
+    this.snake = Array.from({ length: startingSize }, (_, i) => ({
+      row: 12,
+      col: 12 - i,
+    }));
     this.grid = createGrid(gridSize, gridSize);
     this.food = { row: 5, col: 5 };
+    this.generateFood();
     this.lifespan = 0;
     this.direction = "RIGHT";
     this.isAlive = true;
@@ -75,10 +76,7 @@ class Player {
 
     newSnake.unshift(newHead);
     if (newHead.row === this.food.row && newHead.col === this.food.col) {
-      this.food = {
-        row: Math.floor(Math.random() * gridSize),
-        col: Math.floor(Math.random() * gridSize),
-      };
+      this.generateFood();
       this.steps = 0;
     } else {
       newSnake.pop();
@@ -87,6 +85,20 @@ class Player {
     this.snake = newSnake;
     this.lifespan += 1;
     this.steps += 1;
+  }
+
+  generateFood() {
+    do {
+      this.food = {
+        row: Math.floor(Math.random() * gridSize),
+        col: Math.floor(Math.random() * gridSize),
+      };
+    } while (
+      this.snake.some(
+        (segment) =>
+          segment.row === this.food.row && segment.col === this.food.col,
+      )
+    );
   }
 
   checkCollisions(
@@ -219,8 +231,8 @@ class Player {
     }
   }
 
-  clone(): Player {
-    const clone = new Player();
+  clone(startingSize: number = 10): Player {
+    const clone = new Player(startingSize);
     clone.genome = this.genome.clone();
     clone.fitness = this.fitness;
     clone.generation = this.generation;
