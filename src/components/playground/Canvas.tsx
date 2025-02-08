@@ -5,14 +5,18 @@ import { styleEyes } from "../../snake/visuals";
 import { NeatConfig } from "../../neat/neatConfig";
 import { Population } from "../../neat/population";
 
-interface CanvasProps {
+type CanvasProps = {
   humanPlaying: boolean;
   populationSize: number;
   speed: number;
   gameStatus: GameStatus;
   setGameStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
   targetGeneration: number;
-}
+  setCurrentGeneration: React.Dispatch<React.SetStateAction<number>>;
+  setAliveCount: React.Dispatch<React.SetStateAction<number>>;
+  setNetworkPlayer: React.Dispatch<React.SetStateAction<Player>>;
+  setScore: React.Dispatch<React.SetStateAction<number>>;
+};
 const Canvas: React.FC<CanvasProps> = ({
   humanPlaying,
   populationSize,
@@ -20,6 +24,10 @@ const Canvas: React.FC<CanvasProps> = ({
   gameStatus,
   setGameStatus,
   targetGeneration,
+  setCurrentGeneration,
+  setAliveCount,
+  setNetworkPlayer,
+  setScore,
 }) => {
   const [humanPlayer, setHumanPlayer] = useState(
     new Player(startingPlayerSize, false),
@@ -48,18 +56,11 @@ const Canvas: React.FC<CanvasProps> = ({
     if (gameStatus === "training") {
       const interval = setInterval(() => {
         if (population.generation - 1 >= targetGeneration || show_previous) {
-          if (show_previous) {
-            if (population.prevBestPlayer) {
-              setAiPlayer(population.prevBestPlayer.clone(startingPlayerSize));
-            }
-            show_previous = false;
-          } else {
-            setAiPlayer(
-              population.genBestPlayers[targetGeneration - 1].clone(
-                startingPlayerSize,
-              ),
-            );
-          }
+          setAiPlayer(
+            population.genBestPlayers[targetGeneration - 1].clone(
+              startingPlayerSize,
+            ),
+          );
           setGameStatus(GameStatus.Running);
         } else {
           if (!population.finished()) {
@@ -75,6 +76,14 @@ const Canvas: React.FC<CanvasProps> = ({
             );
             population.naturalSelection();
           }
+          setNetworkPlayer(population.currBestPlayer || aiPlayer);
+          setCurrentGeneration(population.generation);
+          setAliveCount(population.getAliveCount());
+          setScore(
+            population.currBestPlayer
+              ? population.currBestPlayer.getScore()
+              : 0,
+          );
         }
       }, 0);
 
@@ -119,6 +128,7 @@ const Canvas: React.FC<CanvasProps> = ({
         if (humanPlayer.isAlive) {
           humanPlayer.updateGrid();
           setGrid(humanPlayer.getGrid());
+          setScore(humanPlayer.getScore());
         } else {
           setGameStatus(GameStatus.Idle);
           clearInterval(interval);
@@ -134,6 +144,7 @@ const Canvas: React.FC<CanvasProps> = ({
           aiPlayer.decide();
           aiPlayer.updateGrid();
           setGrid(aiPlayer.getGrid());
+          setScore(aiPlayer.getScore());
         } else {
           setGameStatus(GameStatus.Idle);
           clearInterval(interval);
@@ -150,6 +161,7 @@ const Canvas: React.FC<CanvasProps> = ({
         const newPlayer = new Player(startingPlayerSize, false);
         setHumanPlayer(newPlayer);
         setGrid(newPlayer.getGrid());
+        setNetworkPlayer(newPlayer);
         setGameStatus(GameStatus.Idle);
       } else {
         setGameStatus(GameStatus.Training);

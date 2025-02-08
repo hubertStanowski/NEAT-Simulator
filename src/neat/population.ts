@@ -40,6 +40,10 @@ export class Population {
     this.prevBestPlayer = this.currBestPlayer;
   }
 
+  getAliveCount(): number {
+    return this.players.filter((player) => player.isAlive).length;
+  }
+
   updateSurvivors(): void {
     for (const player of this.players) {
       if (player) {

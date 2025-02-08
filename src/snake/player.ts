@@ -1,6 +1,6 @@
 import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
-import { gridSize, trainingPlayerSize } from "../constants";
+import { gridSize, startingPlayerSize, trainingPlayerSize } from "../constants";
 import { Genome } from "../neat/genome";
 import { NeatConfig } from "../neat/neatConfig";
 import { stepLimit } from "../constants";
@@ -157,7 +157,7 @@ class Player {
   }
 
   getScore(): number {
-    return this.snake.length - 2;
+    return this.snake.length - startingPlayerSize;
   }
 
   isFood(row: number, col: number): boolean {
@@ -176,38 +176,6 @@ class Player {
   }
 
   // NEAT
-
-  // # Direction change for AI (for human they are relative to the user view not head)
-  //   def turn_left(self) -> None:
-  //       if self.row_vel != 0:
-  //           self.col_vel = self.row_vel
-  //           self.row_vel = 0
-  //       else:
-  //           self.row_vel = -self.col_vel
-  //           self.col_vel = 0
-
-  //   def turn_right(self) -> None:
-  //       if self.row_vel != 0:
-  //           self.col_vel = -self.row_vel
-  //           self.row_vel = 0
-  //       else:
-  //           self.row_vel = self.col_vel
-  //           self.col_vel = 0
-
-  // switch (this.direction) {
-  //   case "UP":
-  //     newHead = { row: head.row - 1, col: head.col };
-  //     break;
-  //   case "DOWN":
-  //     newHead = { row: head.row + 1, col: head.col };
-  //     break;
-  //   case "LEFT":
-  //     newHead = { row: head.row, col: head.col - 1 };
-  //     break;
-  //   case "RIGHT":
-  //     newHead = { row: head.row, col: head.col + 1 };
-  //     break;
-  // }
 
   turnLeft() {
     if (this.direction === "UP") {
@@ -250,7 +218,6 @@ class Player {
   }
 
   updateFitness() {
-    // const survivalBonus = 0; // this.lifespan / 100
     const survivalBonus = this.lifespan / 50;
     const foodBonus = Math.pow(this.getScore(), 5);
     const collisionPenalty = this.isAlive ? 1 : 0.8;
@@ -401,8 +368,6 @@ class Player {
         bottomWall,
       );
     }
-
-    // console.log(this.vision);
   }
 
   decide(show = false) {
@@ -416,10 +381,8 @@ class Player {
 
     if (outputs[0] === decision) {
       this.turnLeft();
-      // console.log("LEFT");
     } else if (outputs[1] === decision) {
       this.turnRight();
-      // console.log("RIGHT");
     }
   }
 }

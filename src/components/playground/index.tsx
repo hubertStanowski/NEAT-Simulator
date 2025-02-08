@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import Parameters from "./Parameters";
 import Canvas from "./Canvas";
-import Network from "./Network";
+import Status from "./Status";
 import { GameStatus } from "../../constants";
+import Player from "../../snake/player";
 
 const Playground = () => {
   const [humanPlaying, setHumanPlaying] = useState(true);
@@ -11,6 +12,12 @@ const Playground = () => {
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Idle);
   const [targetGeneration, setTargetGeneration] = useState(20);
+  const [currentGeneration, setCurrentGeneration] = useState(0);
+  const [aliveCount, setAliveCount] = useState(0);
+  const [score, setScore] = useState(0);
+  const [networkPlayer, setNetworkPlayer] = useState<Player>(
+    new Player(2, true),
+  );
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -48,15 +55,25 @@ const Playground = () => {
                 populationSize={populationSize}
                 speed={speed}
                 gameStatus={gameStatus}
-                setGameStatus={setGameStatus}
                 targetGeneration={targetGeneration}
+                setGameStatus={setGameStatus}
+                setCurrentGeneration={setCurrentGeneration}
+                setAliveCount={setAliveCount}
+                setNetworkPlayer={setNetworkPlayer}
+                setScore={setScore}
               />
             </div>
           </div>
         </div>
         <div className="col-span-3">
           <div className="grid-container flex items-center justify-center">
-            <Network />
+            <Status
+              currentGeneration={currentGeneration}
+              aliveCount={aliveCount}
+              networkPlayer={networkPlayer}
+              populationSize={populationSize}
+              score={score}
+            />
           </div>
         </div>
       </div>
