@@ -47,7 +47,6 @@ const Canvas: React.FC<CanvasProps> = ({
   useEffect(() => {
     if (gameStatus === "training") {
       const interval = setInterval(() => {
-        console.log(targetGeneration);
         if (population.generation - 1 >= targetGeneration || show_previous) {
           if (show_previous) {
             if (population.prevBestPlayer) {

@@ -298,7 +298,7 @@ class Player {
     let topBody = gridSize - 1;
     for (let i = this.snake[0].row - 1; i >= 0; i--) {
       if (this.isSnake(i, this.snake[0].col)) {
-        topBody = i;
+        topBody = Math.abs(this.snake[0].row - i);
         break;
       }
     }
@@ -306,7 +306,7 @@ class Player {
     let bottomBody = gridSize - 1;
     for (let i = this.snake[0].row + 1; i < gridSize; i++) {
       if (this.isSnake(i, this.snake[0].col)) {
-        bottomBody = i;
+        bottomBody = Math.abs(this.snake[0].row - i);
         break;
       }
     }
@@ -314,7 +314,7 @@ class Player {
     let leftBody = gridSize - 1;
     for (let j = this.snake[0].col - 1; j >= 0; j--) {
       if (this.isSnake(this.snake[0].row, j)) {
-        leftBody = j;
+        leftBody = Math.abs(this.snake[0].col - j);
         break;
       }
     }
@@ -322,7 +322,7 @@ class Player {
     let rightBody = gridSize - 1;
     for (let j = this.snake[0].col + 1; j < gridSize; j++) {
       if (this.isSnake(this.snake[0].row, j)) {
-        rightBody = j;
+        rightBody = Math.abs(this.snake[0].col - j);
         break;
       }
     }
