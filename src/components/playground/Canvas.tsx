@@ -21,9 +21,14 @@ const Canvas: React.FC<CanvasProps> = ({
   setGameStatus,
   targetGeneration,
 }) => {
-  const [player, setPlayer] = useState(new Player(startingPlayerSize, false));
+  const [humanPlayer, setHumanPlayer] = useState(
+    new Player(startingPlayerSize, false),
+  );
+  const [aiPlayer, setAiPlayer] = useState(
+    new Player(startingPlayerSize, true),
+  );
   const [grid, setGrid] = useState<[number, number, number][][]>(
-    player.getGrid(),
+    humanPlayer.getGrid(),
   );
 
   const config = new NeatConfig();
@@ -33,6 +38,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     setPopulation(new Population(config, populationSize));
+    setGameStatus(GameStatus.Training);
     console.log("NEW POPULATION");
   }, [populationSize]);
 
@@ -45,11 +51,11 @@ const Canvas: React.FC<CanvasProps> = ({
         if (population.generation - 1 >= targetGeneration || show_previous) {
           if (show_previous) {
             if (population.prevBestPlayer) {
-              setPlayer(population.prevBestPlayer.clone(startingPlayerSize));
+              setAiPlayer(population.prevBestPlayer.clone(startingPlayerSize));
             }
             show_previous = false;
           } else {
-            setPlayer(
+            setAiPlayer(
               population.genBestPlayers[targetGeneration - 1].clone(
                 startingPlayerSize,
               ),
@@ -60,8 +66,13 @@ const Canvas: React.FC<CanvasProps> = ({
           if (!population.finished()) {
             population.updateSurvivors();
           } else {
+            const averageScore =
+              population.players.reduce(
+                (acc, player) => acc + player.getScore(),
+                0,
+              ) / population.players.length;
             console.log(
-              `Gen: ${population.generation}, Score: ${population.currBestPlayer ? population.currBestPlayer.getScore() : "N/A"} / ${population.bestEverPlayer ? population.bestEverPlayer.getScore() : "N/A"}`,
+              `Gen: ${population.generation}, Score: ${population.currBestPlayer ? population.currBestPlayer.getScore() : "N/A"} / ${population.bestEverPlayer ? population.bestEverPlayer.getScore() : "N/A"}, Avg Score: ${averageScore}`,
             );
             population.naturalSelection();
           }
@@ -77,16 +88,20 @@ const Canvas: React.FC<CanvasProps> = ({
       const handleKeyDown = (e: KeyboardEvent) => {
         switch (e.key) {
           case "ArrowUp":
-            if (player.direction !== "DOWN") player.setDirection("UP");
+            if (humanPlayer.direction !== "DOWN")
+              humanPlayer.setDirection("UP");
             break;
           case "ArrowDown":
-            if (player.direction !== "UP") player.setDirection("DOWN");
+            if (humanPlayer.direction !== "UP")
+              humanPlayer.setDirection("DOWN");
             break;
           case "ArrowLeft":
-            if (player.direction !== "RIGHT") player.setDirection("LEFT");
+            if (humanPlayer.direction !== "RIGHT")
+              humanPlayer.setDirection("LEFT");
             break;
           case "ArrowRight":
-            if (player.direction !== "LEFT") player.setDirection("RIGHT");
+            if (humanPlayer.direction !== "LEFT")
+              humanPlayer.setDirection("RIGHT");
             break;
         }
       };
@@ -96,15 +111,15 @@ const Canvas: React.FC<CanvasProps> = ({
         window.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [player, gameStatus, humanPlaying]);
+  }, [humanPlayer, gameStatus, humanPlaying]);
 
   useEffect(() => {
     if (gameStatus === "running" && humanPlaying) {
       const interval = setInterval(() => {
-        player.moveSnake();
-        if (player.isAlive) {
-          player.updateGrid();
-          setGrid(player.getGrid());
+        humanPlayer.moveSnake();
+        if (humanPlayer.isAlive) {
+          humanPlayer.updateGrid();
+          setGrid(humanPlayer.getGrid());
         } else {
           setGameStatus(GameStatus.Idle);
           clearInterval(interval);
@@ -114,12 +129,12 @@ const Canvas: React.FC<CanvasProps> = ({
       return () => clearInterval(interval);
     } else if (gameStatus === "running" && !humanPlaying) {
       const interval = setInterval(() => {
-        player.moveSnake();
-        if (player.isAlive) {
-          player.look();
-          player.decide();
-          player.updateGrid();
-          setGrid(player.getGrid());
+        aiPlayer.moveSnake();
+        if (aiPlayer.isAlive) {
+          aiPlayer.look();
+          aiPlayer.decide();
+          aiPlayer.updateGrid();
+          setGrid(aiPlayer.getGrid());
         } else {
           setGameStatus(GameStatus.Idle);
           clearInterval(interval);
@@ -128,22 +143,39 @@ const Canvas: React.FC<CanvasProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [player, speed, gameStatus]);
+  }, [aiPlayer, speed, gameStatus]);
 
   useEffect(() => {
     if (gameStatus === "reset") {
       if (humanPlaying) {
         const newPlayer = new Player(startingPlayerSize, false);
-        setPlayer(newPlayer);
+        setHumanPlayer(newPlayer);
         setGrid(newPlayer.getGrid());
+        setGameStatus(GameStatus.Idle);
+      } else {
+        setGameStatus(GameStatus.Training);
       }
-      setGameStatus(GameStatus.Idle);
     }
   }, [gameStatus]);
 
   useEffect(() => {
     setGameStatus(GameStatus.Reset);
   }, [humanPlaying]);
+
+  useEffect(() => {
+    if (!humanPlaying) {
+      if (population.generation <= targetGeneration) {
+        setGameStatus(GameStatus.Training);
+      } else {
+        setAiPlayer(
+          population.genBestPlayers[targetGeneration - 1].clone(
+            startingPlayerSize,
+          ),
+        );
+        setGameStatus(GameStatus.Running);
+      }
+    }
+  }, [targetGeneration]);
 
   return (
     <div
@@ -155,6 +187,7 @@ const Canvas: React.FC<CanvasProps> = ({
           className={`col-span-${gridSize} row-span-1 flex`}
         >
           {row.map((cell, cellIndex) => {
+            const player = humanPlaying ? humanPlayer : aiPlayer;
             const isHead =
               rowIndex === player.snake[0].row &&
               cellIndex === player.snake[0].col;

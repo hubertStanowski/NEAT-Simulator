@@ -250,8 +250,9 @@ class Player {
   }
 
   updateFitness() {
-    const survivalBonus = 0; // this.lifespan / 100
-    const foodBonus = Math.pow(this.getScore(), 3);
+    // const survivalBonus = 0; // this.lifespan / 100
+    const survivalBonus = this.lifespan / 50;
+    const foodBonus = Math.pow(this.getScore(), 5);
     const collisionPenalty = this.isAlive ? 1 : 0.8;
     this.fitness = (1 + foodBonus + survivalBonus) * collisionPenalty;
   }

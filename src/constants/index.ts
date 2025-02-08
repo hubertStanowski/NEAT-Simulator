@@ -14,6 +14,6 @@ export enum GameStatus {
   Training = "training",
 }
 
-export const stepLimit = 150;
+export const stepLimit = 200;
 export const startingPlayerSize = 3;
 export const trainingPlayerSize = 10;
