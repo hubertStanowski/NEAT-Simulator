@@ -56,12 +56,12 @@ const Canvas: React.FC<CanvasProps> = ({
     if (gameStatus === "training") {
       const interval = setInterval(() => {
         if (population.generation - 1 >= targetGeneration || show_previous) {
+          setGameStatus(GameStatus.Running);
           setAiPlayer(
             population.genBestPlayers[targetGeneration - 1].clone(
               startingPlayerSize,
             ),
           );
-          setGameStatus(GameStatus.Running);
         } else {
           if (!population.finished()) {
             population.updateSurvivors();
@@ -77,6 +77,13 @@ const Canvas: React.FC<CanvasProps> = ({
             population.naturalSelection();
           }
           setNetworkPlayer(population.currBestPlayer || aiPlayer);
+          if (population.genBestPlayers.length > 0) {
+            setAiPlayer(
+              population.genBestPlayers[
+                population.genBestPlayers.length - 1
+              ].clone(startingPlayerSize),
+            );
+          }
           setCurrentGeneration(population.generation);
           setAliveCount(population.getAliveCount());
           setScore(
@@ -146,8 +153,13 @@ const Canvas: React.FC<CanvasProps> = ({
           setGrid(aiPlayer.getGrid());
           setScore(aiPlayer.getScore());
         } else {
-          setGameStatus(GameStatus.Idle);
+          if (targetGeneration > population.generation) {
+            setGameStatus(GameStatus.Training);
+          } else {
+            setGameStatus(GameStatus.Idle);
+          }
           clearInterval(interval);
+          setAiPlayer(aiPlayer.clone(startingPlayerSize));
         }
       }, speed);
 

@@ -22,6 +22,10 @@ const Status: React.FC<StatusProps> = ({
       <div>
         Alive: {aliveCount} / {populationSize}
       </div>
+
+      <div style={{ display: "none" }}>
+        Network Player Score: {networkPlayer.getScore()}
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, FC } from "react";
+import { useState, useEffect } from "react";
 import Parameters from "./Parameters";
 import Canvas from "./Canvas";
 import Status from "./Status";
@@ -8,7 +8,7 @@ import Player from "../../snake/player";
 const Playground = () => {
   const [humanPlaying, setHumanPlaying] = useState(true);
   const [populationSize, setPopulationSize] = useState(300);
-  const [speed, setSpeed] = useState(100);
+  const [speed, setSpeed] = useState(50);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Idle);
   const [targetGeneration, setTargetGeneration] = useState(20);

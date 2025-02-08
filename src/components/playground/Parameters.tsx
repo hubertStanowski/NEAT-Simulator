@@ -30,7 +30,6 @@ const Parameters = (props: Props) => {
             props.setGameStatus(GameStatus.Idle);
           }
           props.setHumanPlaying(!props.humanPlaying);
-          console.log(props.humanPlaying);
         }}
       >
         {props.humanPlaying ? "Human Playing" : "AI Playing"}
@@ -55,7 +54,7 @@ const Parameters = (props: Props) => {
         <input
           type="range"
           min="10"
-          max="200"
+          max="100"
           step="5"
           value={props.speed}
           onChange={(e) => {
