@@ -9,7 +9,8 @@ const Playground = () => {
   const [populationSize, setPopulationSize] = useState(300);
   const [speed, setSpeed] = useState(100);
 
-  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Done);
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Idle);
+  const [targetGeneration, setTargetGeneration] = useState(20);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -34,6 +35,8 @@ const Playground = () => {
               setSpeed={setSpeed}
               gameStatus={gameStatus}
               setGameStatus={setGameStatus}
+              targetGeneration={targetGeneration}
+              setTargetGeneration={setTargetGeneration}
             />
           </div>
         </div>
@@ -46,6 +49,7 @@ const Playground = () => {
                 speed={speed}
                 gameStatus={gameStatus}
                 setGameStatus={setGameStatus}
+                targetGeneration={targetGeneration}
               />
             </div>
           </div>

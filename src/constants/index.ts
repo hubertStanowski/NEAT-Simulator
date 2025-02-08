@@ -9,10 +9,11 @@ export const gridSize = 25;
 export enum GameStatus {
   Running = "running",
   Paused = "paused",
-  Done = "done",
+  Idle = "idle",
   Reset = "reset",
   Training = "training",
-  Simulating = "simulating",
 }
 
 export const stepLimit = 150;
+export const startingPlayerSize = 3;
+export const trainingPlayerSize = 10;

@@ -1,6 +1,6 @@
 import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
-import { gridSize } from "../constants";
+import { gridSize, trainingPlayerSize } from "../constants";
 import { Genome } from "../neat/genome";
 import { NeatConfig } from "../neat/neatConfig";
 import { stepLimit } from "../constants";
@@ -20,8 +20,9 @@ class Player {
   sensor_view_data: number[];
   steps: number;
   generation: number;
+  ai: boolean;
 
-  constructor(startingSize: number = 10) {
+  constructor(startingSize: number = trainingPlayerSize, ai = true) {
     this.snake = Array.from({ length: startingSize }, (_, i) => ({
       row: 12,
       col: 12 - i,
@@ -40,13 +41,14 @@ class Player {
     this.sensor_view_data = [];
     this.steps = 0;
     this.generation = 1;
+    this.ai = ai;
     this.updateGrid();
   }
 
   moveSnake() {
     if (!this.isAlive) return;
 
-    if (this.steps >= stepLimit) {
+    if (this.ai && this.steps >= stepLimit) {
       this.isAlive = false;
       return;
     }
@@ -231,7 +233,7 @@ class Player {
     }
   }
 
-  clone(startingSize: number = 10): Player {
+  clone(startingSize: number = trainingPlayerSize): Player {
     const clone = new Player(startingSize);
     clone.genome = this.genome.clone();
     clone.fitness = this.fitness;

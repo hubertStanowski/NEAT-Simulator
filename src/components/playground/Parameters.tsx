@@ -9,6 +9,8 @@ type Props = {
   setSpeed: (value: number) => void;
   gameStatus: GameStatus;
   setGameStatus: (value: GameStatus) => void;
+  targetGeneration: number;
+  setTargetGeneration: (value: number) => void;
 };
 
 const Parameters = (props: Props) => {
@@ -25,7 +27,7 @@ const Parameters = (props: Props) => {
           if (props.humanPlaying) {
             props.setGameStatus(GameStatus.Training);
           } else {
-            props.setGameStatus(GameStatus.Done);
+            props.setGameStatus(GameStatus.Idle);
           }
           props.setHumanPlaying(!props.humanPlaying);
           console.log(props.humanPlaying);
@@ -58,6 +60,21 @@ const Parameters = (props: Props) => {
           value={props.speed}
           onChange={(e) => {
             props.setSpeed(Number(e.target.value));
+          }}
+          onClick={(e) => e.currentTarget.blur()}
+          className="mb-4 h-8 w-full accent-purple-700"
+        />
+      </div>
+      <div className="w-full items-center px-4">
+        <p className="mb-2">Generation: {props.targetGeneration}</p>
+        <input
+          type="range"
+          min="1"
+          max="40"
+          step="1"
+          value={props.targetGeneration}
+          onChange={(e) => {
+            props.setTargetGeneration(Number(e.target.value));
           }}
           onClick={(e) => e.currentTarget.blur()}
           className="mb-4 h-8 w-full accent-purple-700"

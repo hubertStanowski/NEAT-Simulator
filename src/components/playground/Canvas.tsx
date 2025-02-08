@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Player from "../../snake/player";
-import { GameStatus, gridSize } from "../../constants";
+import { GameStatus, gridSize, startingPlayerSize } from "../../constants";
 import { styleEyes } from "../../snake/visuals";
 import { NeatConfig } from "../../neat/neatConfig";
 import { Population } from "../../neat/population";
@@ -11,58 +11,58 @@ interface CanvasProps {
   speed: number;
   gameStatus: GameStatus;
   setGameStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
+  targetGeneration: number;
 }
-
 const Canvas: React.FC<CanvasProps> = ({
   humanPlaying,
   populationSize,
   speed,
   gameStatus,
   setGameStatus,
+  targetGeneration,
 }) => {
-  const [player, setPlayer] = useState(new Player(2));
+  const [player, setPlayer] = useState(new Player(startingPlayerSize, false));
   const [grid, setGrid] = useState<[number, number, number][][]>(
     player.getGrid(),
   );
 
   const config = new NeatConfig();
-  let population = new Population(config, populationSize);
-  const target_generation = 20;
+  const [population, setPopulation] = useState(
+    new Population(config, populationSize),
+  );
+
+  useEffect(() => {
+    setPopulation(new Population(config, populationSize));
+    console.log("NEW POPULATION");
+  }, [populationSize]);
+
   let show_previous = false;
 
   useEffect(() => {
     if (gameStatus === "training") {
       const interval = setInterval(() => {
-        if (population.generation - 1 >= target_generation || show_previous) {
+        console.log(targetGeneration);
+        if (population.generation - 1 >= targetGeneration || show_previous) {
           if (show_previous) {
             if (population.prevBestPlayer) {
-              setPlayer(population.prevBestPlayer.clone(2));
+              setPlayer(population.prevBestPlayer.clone(startingPlayerSize));
             }
             show_previous = false;
           } else {
             setPlayer(
-              population.genBestPlayers[target_generation - 1].clone(2),
+              population.genBestPlayers[targetGeneration - 1].clone(
+                startingPlayerSize,
+              ),
             );
           }
-          setGameStatus(GameStatus.Simulating);
+          setGameStatus(GameStatus.Running);
         } else {
-          // console.log(population.generation);
           if (!population.finished()) {
             population.updateSurvivors();
-            // const alivePlayersCount = population.players.filter(
-            //   (player) => player.isAlive,
-            // ).length;
-            // console.log(`Alive players: ${alivePlayersCount}`);
           } else {
             console.log(
               `Gen: ${population.generation}, Score: ${population.currBestPlayer ? population.currBestPlayer.getScore() : "N/A"} / ${population.bestEverPlayer ? population.bestEverPlayer.getScore() : "N/A"}`,
             );
-            // const averageScore =
-            //   population.players.reduce(
-            //     (sum, player) => sum + player.getScore(),
-            //     0,
-            //   ) / population.players.length;
-            // console.log(`Average Score: ${averageScore}`);
             population.naturalSelection();
           }
         }
@@ -70,7 +70,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [gameStatus, population, speed, target_generation, setGameStatus]);
+  }, [gameStatus, population, targetGeneration]);
 
   useEffect(() => {
     if (gameStatus === "running" && humanPlaying) {
@@ -99,34 +99,30 @@ const Canvas: React.FC<CanvasProps> = ({
   }, [player, gameStatus, humanPlaying]);
 
   useEffect(() => {
-    if (gameStatus === "simulating") {
+    if (gameStatus === "running" && humanPlaying) {
       const interval = setInterval(() => {
+        player.moveSnake();
         if (player.isAlive) {
-          player.look();
-          player.decide();
-          player.moveSnake();
           player.updateGrid();
           setGrid(player.getGrid());
         } else {
-          setGameStatus(GameStatus.Done);
+          setGameStatus(GameStatus.Idle);
           clearInterval(interval);
         }
       }, speed);
 
       return () => clearInterval(interval);
-    }
-  }, [player, speed, gameStatus, setGameStatus]);
-
-  useEffect(() => {
-    if (gameStatus === "running") {
+    } else if (gameStatus === "running" && !humanPlaying) {
       const interval = setInterval(() => {
         player.moveSnake();
-        if (!player.isAlive) {
-          setGameStatus(GameStatus.Done);
-          clearInterval(interval);
-        } else {
+        if (player.isAlive) {
+          player.look();
+          player.decide();
           player.updateGrid();
           setGrid(player.getGrid());
+        } else {
+          setGameStatus(GameStatus.Idle);
+          clearInterval(interval);
         }
       }, speed);
 
@@ -136,12 +132,18 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     if (gameStatus === "reset") {
-      const newPlayer = new Player(2);
-      setPlayer(newPlayer);
-      setGrid(newPlayer.getGrid());
-      setGameStatus(GameStatus.Paused);
+      if (humanPlaying) {
+        const newPlayer = new Player(startingPlayerSize, false);
+        setPlayer(newPlayer);
+        setGrid(newPlayer.getGrid());
+      }
+      setGameStatus(GameStatus.Idle);
     }
-  }, [gameStatus, setGameStatus]);
+  }, [gameStatus]);
+
+  useEffect(() => {
+    setGameStatus(GameStatus.Reset);
+  }, [humanPlaying]);
 
   return (
     <div
