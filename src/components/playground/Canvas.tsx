@@ -16,6 +16,7 @@ type CanvasProps = {
   setAliveCount: React.Dispatch<React.SetStateAction<number>>;
   setNetworkPlayer: React.Dispatch<React.SetStateAction<Player>>;
   setScore: React.Dispatch<React.SetStateAction<number>>;
+  setBestScore: React.Dispatch<React.SetStateAction<number>>;
 };
 const Canvas: React.FC<CanvasProps> = ({
   humanPlaying,
@@ -28,6 +29,7 @@ const Canvas: React.FC<CanvasProps> = ({
   setAliveCount,
   setNetworkPlayer,
   setScore,
+  setBestScore,
 }) => {
   const [humanPlayer, setHumanPlayer] = useState(
     new Player(startingPlayerSize, false),
@@ -89,6 +91,11 @@ const Canvas: React.FC<CanvasProps> = ({
           setScore(
             population.currBestPlayer
               ? population.currBestPlayer.getScore()
+              : 0,
+          );
+          setBestScore(
+            population.bestEverPlayer
+              ? population.bestEverPlayer.getScore()
               : 0,
           );
         }
@@ -175,6 +182,7 @@ const Canvas: React.FC<CanvasProps> = ({
         setGrid(newPlayer.getGrid());
         setNetworkPlayer(newPlayer);
         setGameStatus(GameStatus.Idle);
+        setScore(newPlayer.getScore());
       } else {
         setGameStatus(GameStatus.Training);
       }

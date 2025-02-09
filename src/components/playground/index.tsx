@@ -15,6 +15,7 @@ const Playground = () => {
   const [currentGeneration, setCurrentGeneration] = useState(0);
   const [aliveCount, setAliveCount] = useState(0);
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
   const [networkPlayer, setNetworkPlayer] = useState<Player>(
     new Player(2, true),
   );
@@ -61,6 +62,7 @@ const Playground = () => {
                 setAliveCount={setAliveCount}
                 setNetworkPlayer={setNetworkPlayer}
                 setScore={setScore}
+                setBestScore={setBestScore}
               />
             </div>
           </div>
@@ -73,6 +75,9 @@ const Playground = () => {
               networkPlayer={networkPlayer}
               populationSize={populationSize}
               score={score}
+              bestScore={bestScore}
+              gameStatus={gameStatus}
+              humanPlaying={humanPlaying}
             />
           </div>
         </div>
