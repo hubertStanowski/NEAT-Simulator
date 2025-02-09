@@ -61,7 +61,11 @@ const Parameters = (props: Props) => {
             props.setSpeed(Number(e.target.value));
           }}
           onClick={(e) => e.currentTarget.blur()}
-          className="mb-4 h-8 w-full accent-purple-700"
+          className={`mb-4 h-8 w-full ${
+            props.humanPlaying && props.speed >= 80
+              ? "accent-red-700"
+              : "accent-purple-700"
+          }`}
         />
       </div>
       <div className="w-full items-center px-4">
@@ -69,7 +73,7 @@ const Parameters = (props: Props) => {
         <input
           type="range"
           min="1"
-          max="40"
+          max="30"
           step="1"
           value={props.targetGeneration}
           onChange={(e) => {

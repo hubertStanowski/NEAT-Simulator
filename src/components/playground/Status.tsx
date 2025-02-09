@@ -141,9 +141,11 @@ const Status: React.FC<StatusProps> = ({
             )}
 
             <div>Generation: {currentGeneration}</div>
-            <div>
-              Alive: {aliveCount} / {populationSize}
-            </div>
+            {gameStatus === GameStatus.Training && (
+              <div>
+                Alive: {aliveCount} / {populationSize}
+              </div>
+            )}
           </div>
           <hr className="mb-3 w-4/5 border-t-2 border-white" />
           <div>Neural Network</div>

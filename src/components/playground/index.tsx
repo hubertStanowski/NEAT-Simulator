@@ -11,7 +11,7 @@ const Playground = () => {
   const [speed, setSpeed] = useState(50);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Idle);
-  const [targetGeneration, setTargetGeneration] = useState(20);
+  const [targetGeneration, setTargetGeneration] = useState(15);
   const [currentGeneration, setCurrentGeneration] = useState(0);
   const [aliveCount, setAliveCount] = useState(0);
   const [score, setScore] = useState(0);

@@ -210,6 +210,20 @@ class Player {
     return clone;
   }
 
+  transplant(otherPlayer: Player) {
+    this.genome = otherPlayer.genome.clone();
+    this.generation = otherPlayer.generation;
+    this.genome.generateNetwork();
+  }
+
+  toggleMode() {
+    this.ai = !this.ai;
+  }
+
+  raiseFromDead() {
+    this.isAlive = true;
+  }
+
   crossover(config: NeatConfig, otherParent: Player): Player {
     const child = new Player();
     child.genome = this.genome.crossover(config, otherParent.genome);
