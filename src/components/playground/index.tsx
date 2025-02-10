@@ -19,6 +19,7 @@ const Playground = () => {
   const [networkPlayer, setNetworkPlayer] = useState<Player>(
     new Player(2, true),
   );
+  const [showExtra, setShowExtra] = useState(false);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -63,6 +64,7 @@ const Playground = () => {
                 setNetworkPlayer={setNetworkPlayer}
                 setScore={setScore}
                 setBestScore={setBestScore}
+                setShowExtra={setShowExtra}
               />
             </div>
           </div>
@@ -78,6 +80,7 @@ const Playground = () => {
               bestScore={bestScore}
               gameStatus={gameStatus}
               humanPlaying={humanPlaying}
+              showExtra={showExtra}
             />
           </div>
         </div>

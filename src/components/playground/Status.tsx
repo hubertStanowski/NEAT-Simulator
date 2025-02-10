@@ -11,6 +11,7 @@ type StatusProps = {
   bestScore: number;
   gameStatus: GameStatus;
   humanPlaying: boolean;
+  showExtra: boolean;
 };
 
 const Status: React.FC<StatusProps> = ({
@@ -22,6 +23,7 @@ const Status: React.FC<StatusProps> = ({
   bestScore,
   gameStatus,
   humanPlaying,
+  showExtra,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -132,7 +134,7 @@ const Status: React.FC<StatusProps> = ({
       ) : (
         <>
           <div className="mb-5 space-y-2">
-            {gameStatus === GameStatus.Training ? (
+            {gameStatus === GameStatus.Training && showExtra ? (
               <div>
                 Score: {score} / {bestScore}
               </div>
@@ -141,7 +143,7 @@ const Status: React.FC<StatusProps> = ({
             )}
 
             <div>Generation: {currentGeneration}</div>
-            {gameStatus === GameStatus.Training && (
+            {gameStatus === GameStatus.Training && showExtra && (
               <div>
                 Alive: {aliveCount} / {populationSize}
               </div>

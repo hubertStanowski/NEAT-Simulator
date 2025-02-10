@@ -217,6 +217,7 @@ class Player {
   }
 
   toggleMode() {
+    this.steps = 0;
     this.ai = !this.ai;
   }
 

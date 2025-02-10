@@ -17,6 +17,7 @@ type CanvasProps = {
   setNetworkPlayer: React.Dispatch<React.SetStateAction<Player>>;
   setScore: React.Dispatch<React.SetStateAction<number>>;
   setBestScore: React.Dispatch<React.SetStateAction<number>>;
+  setShowExtra: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const Canvas: React.FC<CanvasProps> = ({
   humanPlaying,
@@ -30,6 +31,7 @@ const Canvas: React.FC<CanvasProps> = ({
   setNetworkPlayer,
   setScore,
   setBestScore,
+  setShowExtra,
 }) => {
   const [player, setPlayer] = useState(new Player(startingPlayerSize, false));
 
@@ -51,7 +53,6 @@ const Canvas: React.FC<CanvasProps> = ({
   useEffect(() => {
     if (gameStatus === "training") {
       const interval = setInterval(() => {
-        // TODO ADD training limbo state to check these and if not set to training that has else block
         if (population.generation - 1 >= targetGeneration) {
           if (player.isAlive) {
             const transformedPlayer = player;
@@ -69,6 +70,7 @@ const Canvas: React.FC<CanvasProps> = ({
           }
           setGameStatus(GameStatus.Running);
         } else {
+          setShowExtra(true);
           if (!population.finished()) {
             population.updateSurvivors();
           } else {
@@ -176,6 +178,7 @@ const Canvas: React.FC<CanvasProps> = ({
   }, [speed, gameStatus]);
 
   useEffect(() => {
+    console.log(gameStatus, humanPlaying);
     if (gameStatus === "reset") {
       if (humanPlaying) {
         const newPlayer = new Player(startingPlayerSize, false);
@@ -204,6 +207,9 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     if (!humanPlaying) {
+      if (population.generation - 1 >= targetGeneration) {
+        setShowExtra(false);
+      }
       setGameStatus(GameStatus.Training);
     }
   }, [targetGeneration]);
