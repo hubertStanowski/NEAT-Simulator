@@ -130,6 +130,10 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     if (gameStatus === "running" && humanPlaying) {
+      if (!player.isAlive) {
+        setPlayer(player.clone(startingPlayerSize));
+        player.toggleMode();
+      }
       const interval = setInterval(() => {
         player.moveSnake();
         if (player.isAlive) {
@@ -144,6 +148,9 @@ const Canvas: React.FC<CanvasProps> = ({
 
       return () => clearInterval(interval);
     } else if (gameStatus === "running" && !humanPlaying) {
+      if (!player.isAlive) {
+        setPlayer(player.clone(startingPlayerSize));
+      }
       const interval = setInterval(() => {
         player.moveSnake();
         if (player.isAlive) {
@@ -152,6 +159,7 @@ const Canvas: React.FC<CanvasProps> = ({
           player.updateGrid();
           setGrid(player.getGrid());
           setScore(player.getScore());
+          setNetworkPlayer(player);
           setCurrentGeneration(player.generation);
         } else {
           if (targetGeneration > population.generation) {
@@ -160,7 +168,6 @@ const Canvas: React.FC<CanvasProps> = ({
             setGameStatus(GameStatus.Idle);
           }
           clearInterval(interval);
-          setPlayer(player.clone(startingPlayerSize));
         }
       }, 110 - speed);
 
@@ -190,6 +197,7 @@ const Canvas: React.FC<CanvasProps> = ({
       setPlayer(transformedPlayer);
       setGameStatus(GameStatus.Paused);
     } else {
+      setNetworkPlayer(player);
       setGameStatus(GameStatus.Training);
     }
   }, [humanPlaying]);
