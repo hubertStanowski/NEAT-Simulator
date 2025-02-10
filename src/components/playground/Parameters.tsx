@@ -81,15 +81,22 @@ const Parameters = (props: Props) => {
       <div className="mt-10 flex flex-col gap-4 text-2xl">
         {!props.humanPlaying &&
           (props.gameStatus === GameStatus.Idle ||
-            props.gameStatus === GameStatus.Stopped) && (
+            props.gameStatus === GameStatus.Stopped ||
+            props.gameStatus === GameStatus.Reset) && (
             <button
-              className="parameter-button bg-blue-600 hover:bg-blue-700"
+              className={`parameter-button ${
+                props.currentGeneration === props.targetGeneration
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
               onClick={(e) => {
                 props.setGameStatus(GameStatus.Training);
                 e.currentTarget.blur();
               }}
             >
-              Start Training
+              {props.currentGeneration === props.targetGeneration
+                ? "Start Simulation"
+                : "Start Training"}
             </button>
           )}
 
@@ -135,7 +142,7 @@ const Parameters = (props: Props) => {
             e.currentTarget.blur();
           }}
         >
-          Reset
+          {props.humanPlaying ? "Reset" : "Population Reset"}
         </button>
       </div>
     </div>

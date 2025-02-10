@@ -20,9 +20,8 @@ class Player {
   sensor_view_data: number[];
   steps: number;
   generation: number;
-  ai: boolean;
 
-  constructor(startingSize: number = trainingPlayerSize, ai = true) {
+  constructor(startingSize: number = trainingPlayerSize) {
     this.snake = Array.from({ length: startingSize }, (_, i) => ({
       row: 12,
       col: 12 - i,
@@ -41,14 +40,13 @@ class Player {
     this.sensor_view_data = [];
     this.steps = 0;
     this.generation = 1;
-    this.ai = ai;
     this.updateGrid();
   }
 
-  moveSnake() {
+  moveSnake(ignoreSteps: boolean = false) {
     if (!this.isAlive) return;
 
-    if (this.ai && this.steps >= stepLimit) {
+    if (!ignoreSteps && this.steps >= stepLimit) {
       this.isAlive = false;
       return;
     }
@@ -218,7 +216,6 @@ class Player {
 
   toggleMode() {
     this.steps = 0;
-    this.ai = !this.ai;
   }
 
   raiseFromDead() {
