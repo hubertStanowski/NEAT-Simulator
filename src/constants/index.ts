@@ -12,6 +12,7 @@ export enum GameStatus {
   Idle = "idle",
   Reset = "reset",
   Training = "training",
+  Stopped = "stopped",
 }
 
 export const stepLimit = 200;

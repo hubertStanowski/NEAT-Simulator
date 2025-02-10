@@ -6,12 +6,12 @@ import { GameStatus } from "../../constants";
 import Player from "../../snake/player";
 
 const Playground = () => {
-  const [humanPlaying, setHumanPlaying] = useState(true);
+  const [humanPlaying, setHumanPlaying] = useState(false);
   const [populationSize, setPopulationSize] = useState(300);
   const [speed, setSpeed] = useState(50);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Idle);
-  const [targetGeneration, setTargetGeneration] = useState(15);
+  const [targetGeneration, setTargetGeneration] = useState(10);
   const [currentGeneration, setCurrentGeneration] = useState(0);
   const [aliveCount, setAliveCount] = useState(0);
   const [score, setScore] = useState(0);
@@ -25,6 +25,18 @@ const Playground = () => {
     if (window.innerWidth < 768) {
       alert("This project is not suitable for small screens");
     }
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        setHumanPlaying((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, []);
 
   return (
@@ -45,6 +57,7 @@ const Playground = () => {
               gameStatus={gameStatus}
               setGameStatus={setGameStatus}
               targetGeneration={targetGeneration}
+              currentGeneration={currentGeneration}
               setTargetGeneration={setTargetGeneration}
             />
           </div>

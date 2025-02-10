@@ -1,5 +1,4 @@
 import { GameStatus } from "../../constants";
-
 type Props = {
   humanPlaying: boolean;
   setHumanPlaying: (value: boolean) => void;
@@ -11,6 +10,7 @@ type Props = {
   setGameStatus: (value: GameStatus) => void;
   targetGeneration: number;
   setTargetGeneration: (value: number) => void;
+  currentGeneration: number;
 };
 
 const Parameters = (props: Props) => {
@@ -24,11 +24,6 @@ const Parameters = (props: Props) => {
         } `}
         onClick={(e) => {
           e.currentTarget.blur();
-          if (props.humanPlaying) {
-            props.setGameStatus(GameStatus.Training);
-          } else {
-            props.setGameStatus(GameStatus.Idle);
-          }
           props.setHumanPlaying(!props.humanPlaying);
         }}
       >
@@ -83,29 +78,56 @@ const Parameters = (props: Props) => {
           className="mb-4 h-8 w-full accent-purple-700"
         />
       </div>
-      <div className="mt-auto flex flex-col gap-4 align-bottom text-2xl">
-        <button
-          className="parameter-button bg-green-600 hover:bg-green-700"
-          onClick={(e) => {
-            props.setGameStatus(GameStatus.Running);
-            e.currentTarget.blur();
-          }}
-        >
-          Start
-        </button>
-        <button
-          className={`parameter-button bg-yellow-600 hover:bg-yellow-700 ${
-            props.gameStatus === GameStatus.Paused
-              ? "highlighted-parameter-button"
-              : ""
-          }`}
-          onClick={(e) => {
-            props.setGameStatus(GameStatus.Paused);
-            e.currentTarget.blur();
-          }}
-        >
-          Pause
-        </button>
+      <div className="mt-10 flex flex-col gap-4 text-2xl">
+        {!props.humanPlaying &&
+          (props.gameStatus === GameStatus.Idle ||
+            props.gameStatus === GameStatus.Stopped) && (
+            <button
+              className="parameter-button bg-blue-600 hover:bg-blue-700"
+              onClick={(e) => {
+                props.setGameStatus(GameStatus.Training);
+                e.currentTarget.blur();
+              }}
+            >
+              Start Training
+            </button>
+          )}
+
+        {!props.humanPlaying && props.gameStatus === GameStatus.Training && (
+          <button
+            className="parameter-button bg-yellow-600 hover:bg-yellow-700"
+            onClick={(e) => {
+              props.setGameStatus(GameStatus.Stopped);
+              e.currentTarget.blur();
+            }}
+          >
+            Stop Training
+          </button>
+        )}
+
+        {(props.gameStatus === GameStatus.Paused ||
+          (props.gameStatus === GameStatus.Idle && props.humanPlaying)) && (
+          <button
+            className="parameter-button bg-green-600 hover:bg-green-700"
+            onClick={(e) => {
+              props.setGameStatus(GameStatus.Running);
+              e.currentTarget.blur();
+            }}
+          >
+            Start
+          </button>
+        )}
+        {props.gameStatus === GameStatus.Running && (
+          <button
+            className="parameter-button bg-yellow-600 hover:bg-yellow-700"
+            onClick={(e) => {
+              props.setGameStatus(GameStatus.Paused);
+              e.currentTarget.blur();
+            }}
+          >
+            Pause
+          </button>
+        )}
         <button
           className="parameter-button bg-red-600 hover:bg-red-700"
           onClick={(e) => {
