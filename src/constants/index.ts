@@ -15,6 +15,6 @@ export enum GameStatus {
   Stopped = "stopped",
 }
 
-export const stepLimit = 8 * gridSize;
+export const stepLimit = 10 * gridSize;
 export const startingPlayerSize = 2;
 export const trainingPlayerSize = 10;

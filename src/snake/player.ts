@@ -22,9 +22,10 @@ class Player {
   generation: number;
 
   constructor(startingSize: number = trainingPlayerSize) {
+    const middle = Math.floor(gridSize / 2);
     this.snake = Array.from({ length: startingSize }, (_, i) => ({
-      row: 12,
-      col: 12 - i,
+      row: middle,
+      col: middle - i,
     }));
     this.grid = createGrid(gridSize, gridSize);
     this.food = { row: 5, col: 5 };

@@ -58,9 +58,9 @@ const Status: React.FC<StatusProps> = ({
 
     // 415 668
     const nodeRadius = (22 / 668) * canvas.height;
-    let xDiff = (150 / 415) * canvas.width;
-    if (layerCount === 2) {
-      xDiff *= 2;
+    let xDiff = (150 / 415) * canvas.width * 2;
+    if (layerCount > 2) {
+      xDiff /= layerCount - 1;
     }
     const yDiff = (50 / 668) * canvas.height;
     const xOffset = (50 / 415) * canvas.height;
