@@ -5,6 +5,8 @@ import { styleEyes } from "../../snake/visuals";
 import { NeatConfig } from "../../neat/neatConfig";
 import { Population } from "../../neat/population";
 
+// TODO global state trainedGenerations to have a count of all possible generations ready to be simulated and use that for AI buttons
+
 type CanvasProps = {
   humanPlaying: boolean;
   populationSize: number;
@@ -198,6 +200,7 @@ const Canvas: React.FC<CanvasProps> = ({
         transformedPlayer.toggleMode();
         setPlayer(transformedPlayer);
         setGameStatus(GameStatus.Paused);
+        setScore(transformedPlayer.getScore());
       } else {
         setNetworkPlayer(player.clone());
         setGameStatus(GameStatus.Training);

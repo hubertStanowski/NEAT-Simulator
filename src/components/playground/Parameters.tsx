@@ -17,7 +17,7 @@ const Parameters = (props: Props) => {
   return (
     <div className="flex h-full flex-col items-center gap-5 py-20 text-center text-white">
       <button
-        className={`parameter-button mb-4 ${
+        className={`parameter-button highlighted-parameter-button mb-4 ${
           props.humanPlaying
             ? "bg-green-600 hover:bg-green-700"
             : "bg-purple-700 hover:bg-purple-800"
