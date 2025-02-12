@@ -1,6 +1,6 @@
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
-import Playground from "./components/playground";
+import Playground from "./components/simulation";
 
 const App = () => {
   return (

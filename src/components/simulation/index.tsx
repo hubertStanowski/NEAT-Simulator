@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Parameters from "./Parameters";
-import Canvas from "./Canvas";
+import Canvas from "./Snake";
 import Status from "./Status";
 import { GameStatus } from "../../constants";
 import Player from "../../snake/player";
