@@ -17,6 +17,7 @@ const Playground = () => {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [networkPlayer, setNetworkPlayer] = useState<Player>(new Player(2));
+  const [trainedGenerations, setTrainedGenerations] = useState(0);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -56,6 +57,7 @@ const Playground = () => {
               targetGeneration={targetGeneration}
               currentGeneration={currentGeneration}
               setTargetGeneration={setTargetGeneration}
+              trainedGenerations={trainedGenerations}
             />
           </div>
         </div>
@@ -74,6 +76,7 @@ const Playground = () => {
                 setNetworkPlayer={setNetworkPlayer}
                 setScore={setScore}
                 setBestScore={setBestScore}
+                setTrainedGenerations={setTrainedGenerations}
               />
             </div>
           </div>
@@ -89,6 +92,8 @@ const Playground = () => {
               bestScore={bestScore}
               gameStatus={gameStatus}
               humanPlaying={humanPlaying}
+              targetGeneration={targetGeneration}
+              trainedGenerations={trainedGenerations}
             />
           </div>
         </div>

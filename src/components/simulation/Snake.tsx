@@ -5,8 +5,6 @@ import { styleEyes } from "../../snake/visuals";
 import { NeatConfig } from "../../neat/neatConfig";
 import { Population } from "../../neat/population";
 
-// TODO global state trainedGenerations to have a count of all possible generations ready to be simulated and use that for AI buttons
-
 type SnakeProps = {
   humanPlaying: boolean;
   populationSize: number;
@@ -19,6 +17,7 @@ type SnakeProps = {
   setNetworkPlayer: React.Dispatch<React.SetStateAction<Player>>;
   setScore: React.Dispatch<React.SetStateAction<number>>;
   setBestScore: React.Dispatch<React.SetStateAction<number>>;
+  setTrainedGenerations: React.Dispatch<React.SetStateAction<number>>;
 };
 const Snake: React.FC<SnakeProps> = ({
   humanPlaying,
@@ -32,6 +31,7 @@ const Snake: React.FC<SnakeProps> = ({
   setNetworkPlayer,
   setScore,
   setBestScore,
+  setTrainedGenerations,
 }) => {
   document
     .querySelector("link[rel='icon']")
@@ -102,6 +102,7 @@ const Snake: React.FC<SnakeProps> = ({
               ? population.bestEverPlayer.getScore()
               : 0,
           );
+          setTrainedGenerations(population.generation - 1);
         }
       }, 0);
 
@@ -168,7 +169,7 @@ const Snake: React.FC<SnakeProps> = ({
           setNetworkPlayer(player.clone());
           setCurrentGeneration(player.generation);
         } else {
-          if (targetGeneration > population.generation) {
+          if (targetGeneration >= population.generation) {
             setGameStatus(GameStatus.Training);
           } else {
             setGameStatus(GameStatus.Idle);
@@ -189,6 +190,7 @@ const Snake: React.FC<SnakeProps> = ({
         setPlayer(newPlayer);
         setGrid(newPlayer.getGrid());
         setScore(newPlayer.getScore());
+        setTrainedGenerations(0);
       } else {
         setPopulation(new Population(config, populationSize));
       }

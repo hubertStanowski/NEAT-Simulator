@@ -11,6 +11,8 @@ type StatusProps = {
   bestScore: number;
   gameStatus: GameStatus;
   humanPlaying: boolean;
+  trainedGenerations: number;
+  targetGeneration: number;
 };
 
 const Status: React.FC<StatusProps> = ({
@@ -22,6 +24,8 @@ const Status: React.FC<StatusProps> = ({
   bestScore,
   gameStatus,
   humanPlaying,
+  trainedGenerations,
+  targetGeneration,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -132,8 +136,9 @@ const Status: React.FC<StatusProps> = ({
       ) : (
         <>
           <div className="mb-5 space-y-2">
-            {gameStatus === GameStatus.Training ||
-            gameStatus === GameStatus.Stopped ? (
+            {(gameStatus === GameStatus.Training ||
+              gameStatus === GameStatus.Stopped) &&
+            trainedGenerations < targetGeneration ? (
               <div>
                 Score: {score} / {bestScore}
               </div>
@@ -143,11 +148,12 @@ const Status: React.FC<StatusProps> = ({
 
             <div>Generation: {currentGeneration}</div>
             {(gameStatus === GameStatus.Training ||
-              gameStatus === GameStatus.Stopped) && (
-              <div>
-                Alive: {aliveCount} / {populationSize}
-              </div>
-            )}
+              gameStatus === GameStatus.Stopped) &&
+              trainedGenerations < targetGeneration && (
+                <div>
+                  Alive: {aliveCount} / {populationSize}
+                </div>
+              )}
           </div>
           <hr className="mb-3 w-4/5 border-t-2 border-white" />
           <div>Neural Network</div>

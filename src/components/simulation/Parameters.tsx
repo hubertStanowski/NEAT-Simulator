@@ -11,6 +11,7 @@ type Props = {
   targetGeneration: number;
   setTargetGeneration: (value: number) => void;
   currentGeneration: number;
+  trainedGenerations: number;
 };
 
 const Parameters = (props: Props) => {
@@ -85,7 +86,7 @@ const Parameters = (props: Props) => {
             props.gameStatus === GameStatus.Reset) && (
             <button
               className={`parameter-button ${
-                props.currentGeneration === props.targetGeneration
+                props.targetGeneration <= props.trainedGenerations
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
@@ -94,7 +95,7 @@ const Parameters = (props: Props) => {
                 e.currentTarget.blur();
               }}
             >
-              {props.currentGeneration === props.targetGeneration
+              {props.targetGeneration <= props.trainedGenerations
                 ? "Start Simulation"
                 : "Start Training"}
             </button>
