@@ -258,21 +258,21 @@ class Player {
     const leftFood = foodCol < this.snake[0].col ? 1 : 0;
     const rightFood = foodCol > this.snake[0].col ? 1 : 0;
 
-    const topWall = remap(this.snake[0].row, 0, gridSize - 1, 0, 1);
+    const topWall = remap(this.snake[0].row, 0, gridSize - 1, 1, 0);
     const bottomWall = remap(
       gridSize - this.snake[0].row - 1,
       0,
       gridSize - 1,
-      0,
       1,
+      0,
     );
-    const leftWall = remap(this.snake[0].col, 0, gridSize - 1, 0, 1);
+    const leftWall = remap(this.snake[0].col, 0, gridSize - 1, 1, 0);
     const rightWall = remap(
       gridSize - this.snake[0].col - 1,
       0,
       gridSize - 1,
-      0,
       1,
+      0,
     );
 
     let topBody = gridSize - 1;
@@ -307,10 +307,16 @@ class Player {
       }
     }
 
-    topBody = remap(topBody, 0, gridSize - 1, 0, 1);
-    bottomBody = remap(bottomBody, 0, gridSize - 1, 0, 1);
-    leftBody = remap(leftBody, 0, gridSize - 1, 0, 1);
-    rightBody = remap(rightBody, 0, gridSize - 1, 0, 1);
+    topBody = remap(topBody, 0, gridSize - 1, 1, 0);
+    bottomBody = remap(bottomBody, 0, gridSize - 1, 1, 0);
+    leftBody = remap(leftBody, 0, gridSize - 1, 1, 0);
+    rightBody = remap(rightBody, 0, gridSize - 1, 1, 0);
+
+    // WHEN CHANGING TO THESE REMEMBER TO CHANGE GENOME INPUTS IN THE CONSTRUCTOR ABOVE
+    // const topObstacle = Math.min(topBody, topWall);
+    // const bottomObstacle = Math.min(bottomBody, bottomWall);
+    // const leftObstacle = Math.min(leftBody, leftWall);
+    // const rightObstacle = Math.min(rightBody, rightWall);
 
     if (this.direction === "UP") {
       this.vision.push(
@@ -318,6 +324,11 @@ class Player {
         bottomFood,
         leftFood,
         rightFood,
+
+        // topObstacle,
+        // bottomObstacle,
+        // leftObstacle,
+        // rightObstacle,
 
         topBody,
         bottomBody,
@@ -336,6 +347,11 @@ class Player {
         rightFood,
         leftFood,
 
+        // bottomObstacle,
+        // topObstacle,
+        // rightObstacle,
+        // leftObstacle,
+
         bottomBody,
         topBody,
         rightBody,
@@ -353,6 +369,11 @@ class Player {
         bottomFood,
         topFood,
 
+        // leftObstacle,
+        // rightObstacle,
+        // bottomObstacle,
+        // topObstacle,
+
         leftBody,
         rightBody,
         bottomBody,
@@ -369,6 +390,11 @@ class Player {
         leftFood,
         topFood,
         bottomFood,
+
+        // rightObstacle,
+        // leftObstacle,
+        // topObstacle,
+        // bottomObstacle,
 
         rightBody,
         leftBody,

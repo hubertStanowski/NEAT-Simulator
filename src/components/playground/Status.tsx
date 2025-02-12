@@ -30,7 +30,7 @@ const Status: React.FC<StatusProps> = ({
     if (canvas && networkPlayer.genome.network) {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
-      console.log(canvas.width, canvas.height);
+      // console.log(canvas.width, canvas.height);
       const ctx = canvas.getContext("2d");
       if (ctx) {
         drawNetwork(ctx, networkPlayer.genome, canvas);

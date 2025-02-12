@@ -16,7 +16,7 @@ export class NeatConfig {
     this.nextInnovationNumber = 1;
     this.weightMutationProbability = 0.8;
     this.addConnectionMutationProbability = 0.2;
-    this.addNodeMutationProbability = 0.1;
+    this.addNodeMutationProbability = 0.2;
     this.bigWeightMutationProbability = 0.1;
     this.crossoverConnectionDisableProbability = 0.75;
     this.noCrossoverProbability = 0.25;
