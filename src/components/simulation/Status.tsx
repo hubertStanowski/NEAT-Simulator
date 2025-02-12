@@ -124,7 +124,7 @@ const Status: React.FC<StatusProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col items-center text-center text-3xl text-white">
+    <div className="mt-10 flex h-full flex-col items-center text-center text-3xl text-white">
       {humanPlaying ? (
         <div className="mt-10 space-y-2">
           <div>Score: {score}</div>

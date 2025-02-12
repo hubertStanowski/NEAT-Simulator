@@ -7,7 +7,7 @@ import { Population } from "../../neat/population";
 
 // TODO global state trainedGenerations to have a count of all possible generations ready to be simulated and use that for AI buttons
 
-type CanvasProps = {
+type SnakeProps = {
   humanPlaying: boolean;
   populationSize: number;
   speed: number;
@@ -20,7 +20,7 @@ type CanvasProps = {
   setScore: React.Dispatch<React.SetStateAction<number>>;
   setBestScore: React.Dispatch<React.SetStateAction<number>>;
 };
-const Canvas: React.FC<CanvasProps> = ({
+const Snake: React.FC<SnakeProps> = ({
   humanPlaying,
   populationSize,
   speed,
@@ -33,6 +33,10 @@ const Canvas: React.FC<CanvasProps> = ({
   setScore,
   setBestScore,
 }) => {
+  document
+    .querySelector("link[rel='icon']")
+    ?.setAttribute("href", "assets/logo-snake.png");
+
   const [player, setPlayer] = useState(new Player(startingPlayerSize));
 
   const [grid, setGrid] = useState<[number, number, number][][]>(
@@ -233,6 +237,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
   return (
     <div
+      id="snake"
       className={`grid-cols-${gridSize} grid-rows-${gridSize} border-neutral-40 grid h-full w-full border-[0.01px]`}
     >
       {grid.map((row, rowIndex) => (
@@ -270,4 +275,4 @@ const Canvas: React.FC<CanvasProps> = ({
   );
 };
 
-export default Canvas;
+export default Snake;

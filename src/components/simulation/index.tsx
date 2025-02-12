@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Parameters from "./Parameters";
-import Canvas from "./Snake";
+import Snake from "./Snake";
 import Status from "./Status";
 import { GameStatus } from "../../constants";
 import Player from "../../snake/player";
@@ -62,7 +62,7 @@ const Playground = () => {
         <div className="col-span-6">
           <div className="grid-container flex items-center justify-center">
             <div className="relative my-5 w-full">
-              <Canvas
+              <Snake
                 humanPlaying={humanPlaying}
                 populationSize={populationSize}
                 speed={speed}

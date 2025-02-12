@@ -75,11 +75,11 @@ body {
   }
 
   .nav-ul {
-    @apply relative z-20 flex flex-col items-center gap-4 sm:flex-row md:gap-6;
+    @apply relative z-20 flex flex-row items-center gap-14;
   }
 
   .nav-li_a {
-    @apply highlight py-2 font-generalsans text-2xl text-neutral-400 max-sm:w-full max-sm:rounded-md max-sm:px-5 max-sm:hover:bg-black-500;
+    @apply highlight py-2 font-generalsans text-2xl text-neutral-400;
   }
 
   .nav-sidebar {
