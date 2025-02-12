@@ -232,7 +232,7 @@ class Player {
 
   updateFitness() {
     const survivalBonus = this.lifespan / 50;
-    const foodBonus = Math.pow(this.getScore(), 5);
+    const foodBonus = 2 * Math.pow(this.getScore(), 5);
     const collisionPenalty = this.isAlive ? 1 : 0.8;
     this.fitness = (1 + foodBonus + survivalBonus) * collisionPenalty;
   }
@@ -407,6 +407,8 @@ class Player {
         bottomWall,
       );
     }
+    // const remappedSize = remap(this.getScore(), 0, 3 * gridSize, 1, 0);
+    // this.vision.push(remappedSize);
   }
 
   decide(show = false) {

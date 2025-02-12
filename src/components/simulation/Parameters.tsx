@@ -69,7 +69,7 @@ const Parameters = (props: Props) => {
         <input
           type="range"
           min="1"
-          max="30"
+          max="50"
           step="1"
           value={props.targetGeneration}
           onChange={(e) => {
