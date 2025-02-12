@@ -79,7 +79,7 @@ body {
   }
 
   .nav-li_a {
-    @apply highlight py-2 font-generalsans text-2xl text-neutral-400;
+    @apply highlight py-2 font-generalsans text-2xl;
   }
 
   .nav-sidebar {
@@ -88,6 +88,10 @@ body {
 
   .text-gray_gradient {
     @apply bg-gradient-to-r from-[#BEC1CF] from-60% via-[#D5D8EA] via-60% to-[#D5D8EA] to-100% bg-clip-text text-transparent;
+  }
+
+  .text-purple_gradient {
+    @apply bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent transition-all duration-700 ease-in-out;
   }
 
   /* button component */

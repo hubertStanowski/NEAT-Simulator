@@ -1,20 +1,34 @@
+import { useState } from "react";
 import { portfolioURL } from "../../constants";
 import NavItems from "./NavItems";
 
 const Navbar = () => {
+  const [selectedSimulation, setSelectedSimulation] = useState("Snake");
   return (
     <header className="relative flex h-auto w-full items-center justify-center border-b border-black-300 bg-black/90">
       <div className="mx-10 grid w-full grid-cols-12 gap-x-5 py-2">
         <div className="col-span-3 flex items-center justify-center border-white">
           <a
             href="/"
-            className="highlight text-center text-4xl font-bold text-neutral-400"
+            className="highlight text-purple_gradient text-center text-4xl font-bold"
           >
             NEAT SIMULATOR
           </a>
+          <img
+            src={
+              selectedSimulation === "Snake"
+                ? "/public/assets/logo-snake.png"
+                : "/public/assets/logo-flappybird.png"
+            }
+            alt="Logo"
+            className="ml-10 h-10 w-10"
+          />
         </div>
         <div className="center col-span-6 flex items-center justify-center">
-          <NavItems />
+          <NavItems
+            selectedSimulation={selectedSimulation}
+            setSelectedSimulation={setSelectedSimulation}
+          />
         </div>
         <div className="col-span-3 mx-10 flex items-center justify-end">
           <a
