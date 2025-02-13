@@ -17,8 +17,8 @@ const Navbar = () => {
           <img
             src={
               selectedSimulation === "Snake"
-                ? "/public/assets/logo-snake.png"
-                : "/public/assets/logo-flappybird.png"
+                ? "/assets/logo-snake.png"
+                : "/assets/logo-flappybird.png"
             }
             alt="Logo"
             className="ml-10 h-10 w-10"
