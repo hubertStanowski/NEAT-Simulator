@@ -190,9 +190,9 @@ const Snake: React.FC<SnakeProps> = ({
         setPlayer(newPlayer);
         setGrid(newPlayer.getGrid());
         setScore(newPlayer.getScore());
-        setTrainedGenerations(0);
       } else {
         setPopulation(new Population(config, populationSize));
+        setTrainedGenerations(0);
       }
 
       setGameStatus(GameStatus.Idle);
