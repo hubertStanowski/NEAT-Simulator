@@ -39,7 +39,7 @@ const Playground = () => {
 
   return (
     <section
-      className="relative flex h-auto w-full items-center justify-center"
+      className="relative flex h-full w-full items-center justify-center"
       id="home"
     >
       <div className="mx-10 grid w-full grid-cols-12 gap-x-5">

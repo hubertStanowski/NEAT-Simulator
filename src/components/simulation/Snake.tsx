@@ -238,41 +238,43 @@ const Snake: React.FC<SnakeProps> = ({
   }, [targetGeneration]);
 
   return (
-    <div
-      id="snake"
-      className={`grid-cols-${gridSize} grid-rows-${gridSize} border-neutral-40 grid h-full w-full border-[0.01px]`}
-    >
-      {grid.map((row, rowIndex) => (
-        <div
-          key={`row-${rowIndex}`}
-          className={`col-span-${gridSize} row-span-1 flex`}
-        >
-          {row.map((cell, cellIndex) => {
-            const isHead =
-              rowIndex === player.snake[0].row &&
-              cellIndex === player.snake[0].col;
-            const { eye1Style, eye2Style } = styleEyes(player.direction);
+    <div className="flex h-full w-full items-center justify-center">
+      <div
+        id="snake"
+        className={`grid-cols-${gridSize} grid-rows-${gridSize} border-neutral-40 mx-auto my-auto grid h-full w-4/5 border-[0.01px]`}
+      >
+        {grid.map((row, rowIndex) => (
+          <div
+            key={`row-${rowIndex}`}
+            className={`col-span-${gridSize} row-span-1 flex`}
+          >
+            {row.map((cell, cellIndex) => {
+              const isHead =
+                rowIndex === player.snake[0].row &&
+                cellIndex === player.snake[0].col;
+              const { eye1Style, eye2Style } = styleEyes(player.direction);
 
-            return (
-              <div
-                key={`${rowIndex}-${cellIndex}`}
-                style={{
-                  backgroundColor: `rgb(${cell[0]}, ${cell[1]}, ${cell[2]})`,
-                  position: "relative",
-                }}
-                className="col-span-1 row-span-1 aspect-1 flex-1 border-[0.01px] border-neutral-400"
-              >
-                {isHead && (
-                  <>
-                    <div style={eye1Style}></div>
-                    <div style={eye2Style}></div>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+              return (
+                <div
+                  key={`${rowIndex}-${cellIndex}`}
+                  style={{
+                    backgroundColor: `rgb(${cell[0]}, ${cell[1]}, ${cell[2]})`,
+                    position: "relative",
+                  }}
+                  className="col-span-1 row-span-1 aspect-1 flex-1 border-[0.01px] border-neutral-400"
+                >
+                  {isHead && (
+                    <>
+                      <div style={eye1Style}></div>
+                      <div style={eye2Style}></div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
