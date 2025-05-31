@@ -1,32 +1,21 @@
-import Player from "src/snake/player";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { GameStatus } from "../../constants";
+import { useSimulation } from "../../contexts/SimulationContext";
 
-type StatusProps = {
-  currentGeneration: number;
-  aliveCount: number;
-  populationSize: number;
-  networkPlayer: Player;
-  score: number;
-  bestScore: number;
-  gameStatus: GameStatus;
-  humanPlaying: boolean;
-  trainedGenerations: number;
-  targetGeneration: number;
-};
+const Status = () => {
+  const {
+    humanPlaying,
+    score,
+    bestScore,
+    gameStatus,
+    trainedGenerations,
+    targetGeneration,
+    currentGeneration,
+    aliveCount,
+    populationSize,
+    networkPlayer,
+  } = useSimulation();
 
-const Status: React.FC<StatusProps> = ({
-  currentGeneration,
-  aliveCount,
-  populationSize,
-  networkPlayer,
-  score,
-  bestScore,
-  gameStatus,
-  humanPlaying,
-  trainedGenerations,
-  targetGeneration,
-}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -34,7 +23,6 @@ const Status: React.FC<StatusProps> = ({
     if (canvas && networkPlayer.genome.network) {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
-      // console.log(canvas.width, canvas.height);
       const ctx = canvas.getContext("2d");
       if (ctx) {
         drawNetwork(ctx, networkPlayer.genome, canvas);
@@ -48,37 +36,28 @@ const Status: React.FC<StatusProps> = ({
     canvas: HTMLCanvasElement,
   ) => {
     if (!genome.network) return;
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const layers: { [key: number]: any[] } = {};
+    // group nodes by layer
+    const layers: Record<number, any[]> = {};
     genome.network.forEach((node: any) => {
-      if (!layers[node.layer]) {
-        layers[node.layer] = [];
-      }
+      layers[node.layer] ||= [];
       layers[node.layer].push(node);
     });
 
     const layerCount = Object.keys(layers).length;
-
-    // 415 668
     const nodeRadius = (22 / 668) * canvas.height;
     let xDiff = (150 / 415) * canvas.width * 2;
-    if (layerCount > 2) {
-      xDiff /= layerCount - 1;
-    }
+    if (layerCount > 2) xDiff /= layerCount - 1;
     const yDiff = (50 / 668) * canvas.height;
     const xOffset = (50 / 415) * canvas.height;
     const yOffset = yDiff * 6.5;
 
-    // Object.keys(layers).forEach((layer: any) => {
-    //   console.log(`Layer ${layer}: ${layers[layer].length} nodes`);
-    // });
-
-    const nodePositions: Map<any, { x: number; y: number }> = new Map();
-    Object.keys(layers).forEach((layer: any) => {
-      const layerIndex = parseInt(layer, 10);
-      layers[layer].forEach((node: any, nodeIndex: number) => {
-        const y = nodeIndex % 2 === 0 ? nodeIndex / 2 : -(nodeIndex + 1) / 2;
+    const nodePositions = new Map<any, { x: number; y: number }>();
+    Object.entries(layers).forEach(([layer, nodes]) => {
+      const layerIndex = +layer;
+      nodes.forEach((node, i) => {
+        const y = i % 2 === 0 ? i / 2 : -(i + 1) / 2;
         nodePositions.set(node, {
           x: layerIndex * xDiff + xOffset,
           y: y * yDiff + yOffset,
@@ -86,40 +65,39 @@ const Status: React.FC<StatusProps> = ({
       });
     });
 
-    genome.connections.forEach((connection: any) => {
-      const inputPos = nodePositions.get(connection.input);
-      const outputPos = nodePositions.get(connection.output);
-
-      if (!inputPos || !outputPos) return;
+    // draw connections
+    genome.connections.forEach((c: any) => {
+      const inPos = nodePositions.get(c.input);
+      const outPos = nodePositions.get(c.output);
+      if (!inPos || !outPos) return;
       ctx.beginPath();
-      ctx.moveTo(inputPos.x, inputPos.y);
-      ctx.lineTo(outputPos.x, outputPos.y);
-      ctx.strokeStyle = `rgba(128, 0, 128, ${Math.abs(connection.weight)})`; // bg-purple-700 color
-      ctx.lineWidth = Math.max(5 * Math.abs(connection.weight), 1);
+      ctx.moveTo(inPos.x, inPos.y);
+      ctx.lineTo(outPos.x, outPos.y);
+      ctx.strokeStyle = `rgba(128,0,128,${Math.abs(c.weight)})`;
+      ctx.lineWidth = Math.max(5 * Math.abs(c.weight), 1);
       ctx.stroke();
     });
 
+    // draw nodes
     nodePositions.forEach((pos, node) => {
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, nodeRadius, 0, 2 * Math.PI, false);
+      ctx.arc(pos.x, pos.y, nodeRadius, 0, 2 * Math.PI);
       let label = "";
       if (node.id < genome.inputs) {
-        ctx.fillStyle = "green"; // Inputs
+        ctx.fillStyle = "green";
         label = "Input";
-      } else if (
-        node.id >= genome.inputs &&
-        node.id < genome.inputs + genome.outputs
-      ) {
-        ctx.fillStyle = "red"; // Outputs
+      } else if (node.id < genome.inputs + genome.outputs) {
+        ctx.fillStyle = "red";
         label = "Output";
       } else if (node.id === genome.inputs + genome.outputs) {
-        ctx.fillStyle = "gray"; // Bias
+        ctx.fillStyle = "gray";
         label = "Bias";
       } else {
-        ctx.fillStyle = "blue"; // Extra nodes
+        ctx.fillStyle = "blue";
       }
       ctx.fill();
-      ctx.fillStyle = "white"; // Label color
+
+      ctx.fillStyle = "white";
       ctx.font = "12px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";

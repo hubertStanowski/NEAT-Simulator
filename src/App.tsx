@@ -1,6 +1,7 @@
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
 import Playground from "./components/simulation";
+import { SimulationProvider } from "./contexts/SimulationContext";
 
 const App = () => {
   return (
@@ -9,7 +10,9 @@ const App = () => {
         <Navbar />
       </div>
       <div className="flex-grow">
-        <Playground />
+        <SimulationProvider>
+          <Playground />
+        </SimulationProvider>
       </div>
       <div className="flex-none">
         <Footer />
