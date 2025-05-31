@@ -1,5 +1,3 @@
-// src/components/simulation/Parameters.tsx
-import React from "react";
 import { GameStatus } from "../../constants";
 import { useSimulation } from "../../contexts/SimulationContext";
 

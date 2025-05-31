@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSimulation } from "../../contexts/SimulationContext";
 import Player from "../../snake/player";
 import { GameStatus, gridSize, startingPlayerSize } from "../../constants";
