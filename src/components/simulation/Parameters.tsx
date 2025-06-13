@@ -17,9 +17,9 @@ const Parameters = () => {
   } = useSimulation();
 
   return (
-    <div className="flex h-full flex-col items-center gap-5 py-20 text-center text-white">
+    <div className="flex h-full flex-col items-center gap-3 py-10 text-center text-white sm:gap-5 sm:py-20">
       <button
-        className={`parameter-button highlighted-parameter-button mb-4 ${
+        className={`parameter-button highlighted-parameter-button mb-2 text-xl sm:mb-4 sm:text-2xl ${
           humanPlaying
             ? "bg-green-600 hover:bg-green-700"
             : "bg-purple-700 hover:bg-purple-800"
@@ -32,8 +32,10 @@ const Parameters = () => {
         {humanPlaying ? "Human Playing" : "AI Playing"}
       </button>
 
-      <div className="w-full items-center px-4">
-        <p className="mb-2">Population Size: {populationSize}</p>
+      <div className="w-full items-center px-2 sm:px-4">
+        <p className="mb-1 text-lg sm:mb-2 sm:text-xl">
+          Population Size: {populationSize}
+        </p>
         <input
           type="range"
           min="10"
@@ -42,12 +44,12 @@ const Parameters = () => {
           value={populationSize}
           onChange={(e) => setPopulationSize(Number(e.target.value))}
           onClick={(e) => e.currentTarget.blur()}
-          className="mb-4 h-8 w-full accent-purple-700"
+          className="mb-2 h-6 w-full accent-purple-700 sm:mb-4 sm:h-8"
         />
       </div>
 
-      <div className="w-full items-center px-4">
-        <p className="mb-2">Speed: {speed}</p>
+      <div className="w-full items-center px-2 sm:px-4">
+        <p className="mb-1 text-lg sm:mb-2 sm:text-xl">Speed: {speed}</p>
         <input
           type="range"
           min="10"
@@ -56,14 +58,16 @@ const Parameters = () => {
           value={speed}
           onChange={(e) => setSpeed(Number(e.target.value))}
           onClick={(e) => e.currentTarget.blur()}
-          className={`mb-4 h-8 w-full ${
+          className={`mb-2 h-6 w-full sm:mb-4 sm:h-8 ${
             humanPlaying && speed >= 80 ? "accent-red-700" : "accent-purple-700"
           }`}
         />
       </div>
 
-      <div className="w-full items-center px-4">
-        <p className="mb-2">Generation: {targetGeneration}</p>
+      <div className="w-full items-center px-2 sm:px-4">
+        <p className="mb-1 text-lg sm:mb-2 sm:text-xl">
+          Generation: {targetGeneration}
+        </p>
         <input
           type="range"
           min="1"
@@ -72,11 +76,11 @@ const Parameters = () => {
           value={targetGeneration}
           onChange={(e) => setTargetGeneration(Number(e.target.value))}
           onClick={(e) => e.currentTarget.blur()}
-          className="mb-4 h-8 w-full accent-purple-700"
+          className="mb-2 h-6 w-full accent-purple-700 sm:mb-4 sm:h-8"
         />
       </div>
 
-      <div className="mt-10 flex flex-col gap-4 text-2xl">
+      <div className="mt-5 flex flex-col gap-2 text-xl sm:mt-10 sm:gap-4 sm:text-2xl">
         {!humanPlaying &&
           (gameStatus === GameStatus.Idle ||
             gameStatus === GameStatus.Stopped ||

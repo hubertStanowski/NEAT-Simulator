@@ -30,20 +30,20 @@ const Playground = () => {
       className="relative flex h-auto w-full items-center justify-center"
       id="home"
     >
-      <div className="mx-10 grid w-full grid-cols-12 gap-x-5">
-        <div className="col-span-3 flex">
+      <div className="mx-2 grid w-full grid-cols-1 gap-y-5 sm:mx-5 md:mx-10 md:grid-cols-12 md:gap-x-5">
+        <div className="flex md:col-span-3">
           <div className="grid-container">
             <Parameters />
           </div>
         </div>
-        <div className="col-span-6">
+        <div className="md:col-span-6">
           <div className="grid-container flex items-center justify-center">
-            <div className="relative my-5 w-full">
+            <div className="relative my-2 w-full sm:my-5">
               <Snake />
             </div>
           </div>
         </div>
-        <div className="col-span-3">
+        <div className="md:col-span-3">
           <div className="grid-container flex items-center justify-center">
             <Status />
           </div>

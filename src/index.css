@@ -65,6 +65,6 @@ body {
   /* about section */
   /* border border-black-300 bg-black-200 */
   .grid-container {
-    @apply flex h-full w-full flex-col gap-5 rounded-xl shadow-2xl shadow-black-200;
+    @apply flex h-full w-full flex-col gap-3 rounded-xl shadow-2xl shadow-black-200 sm:gap-5;
   }
 }

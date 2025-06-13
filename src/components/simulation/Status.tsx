@@ -106,14 +106,14 @@ const Status = () => {
   };
 
   return (
-    <div className="mt-10 flex h-full flex-col items-center text-center text-3xl text-white">
+    <div className="mt-5 flex h-full flex-col items-center text-center text-xl text-white sm:mt-10 sm:text-3xl">
       {humanPlaying ? (
-        <div className="mt-10 space-y-2">
+        <div className="mt-5 space-y-1 sm:mt-10 sm:space-y-2">
           <div>Score: {score}</div>
         </div>
       ) : (
         <>
-          <div className="mb-5 space-y-2">
+          <div className="mb-3 space-y-1 sm:mb-5 sm:space-y-2">
             {(gameStatus === GameStatus.Training ||
               gameStatus === GameStatus.Stopped) &&
             trainedGenerations < targetGeneration ? (
@@ -133,9 +133,9 @@ const Status = () => {
                 </div>
               )}
           </div>
-          <hr className="mb-3 w-4/5 border-t-2 border-white" />
+          <hr className="mb-2 w-4/5 border-t-2 border-white sm:mb-3" />
           <div>Neural Network</div>
-          <canvas ref={canvasRef} className="mt-3 h-3/4 w-full" />
+          <canvas ref={canvasRef} className="mt-2 h-3/4 w-full sm:mt-3" />
         </>
       )}
     </div>
