@@ -5,19 +5,21 @@ import { SimulationProvider } from "./contexts/SimulationContext";
 
 const App = () => {
   return (
-    <main className="flex h-screen flex-col">
-      <div className="flex-none">
-        <Navbar />
-      </div>
-      <div className="flex-grow">
-        <SimulationProvider>
-          <Playground />
-        </SimulationProvider>
-      </div>
-      <div className="flex-none">
-        <Footer />
-      </div>
-    </main>
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#010103]">
+      <main className="flex h-screen w-full max-w-[2000px] flex-col">
+        <div className="flex-none">
+          <Navbar />
+        </div>
+        <div className="flex-grow overflow-hidden">
+          <SimulationProvider>
+            <Playground />
+          </SimulationProvider>
+        </div>
+        <div className="flex-none">
+          <Footer />
+        </div>
+      </main>
+    </div>
   );
 };
 

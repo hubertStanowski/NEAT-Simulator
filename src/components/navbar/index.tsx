@@ -6,11 +6,11 @@ const Navbar = () => {
   const [selectedSimulation, setSelectedSimulation] = useState("Snake");
   return (
     <header className="relative flex h-auto w-full items-center justify-center border-b border-black-300 bg-black/90">
-      <div className="mx-2 grid w-full grid-cols-1 gap-y-4 py-2 sm:mx-5 sm:grid-cols-12 sm:gap-x-5 md:mx-10">
+      <div className="mx-2 grid w-full grid-cols-1 gap-y-[clamp(0.5rem,1vh,1rem)] py-[clamp(0.5rem,1vh,1rem)] sm:mx-3 sm:grid-cols-12 sm:gap-x-3 md:mx-4 md:gap-x-4 lg:mx-5 lg:gap-x-5">
         <div className="flex items-center justify-center border-white sm:col-span-3">
           <a
             href="/"
-            className="highlight text-purple_gradient text-center text-2xl font-bold md:text-4xl"
+            className="highlight text-purple_gradient text-center text-[clamp(1.25rem,3vh,2rem)] font-bold"
           >
             NEAT SIMULATOR
           </a>
@@ -21,7 +21,7 @@ const Navbar = () => {
                 : "/assets/logo-flappybird.png"
             }
             alt="Logo"
-            className="ml-4 h-8 w-8 sm:ml-10 sm:h-10 sm:w-10"
+            className="ml-2 h-[clamp(1.5rem,3vh,2.5rem)] w-[clamp(1.5rem,3vh,2.5rem)] sm:ml-4"
           />
         </div>
         <div className="flex items-center justify-center sm:col-span-6">
@@ -30,10 +30,10 @@ const Navbar = () => {
             setSelectedSimulation={setSelectedSimulation}
           />
         </div>
-        <div className="mx-2 flex items-center justify-center sm:col-span-3 sm:mx-10 sm:justify-end">
+        <div className="mx-2 flex items-center justify-center sm:col-span-3 sm:mx-4 sm:justify-end">
           <a
             href={portfolioURL}
-            className="highlight text-xl font-bold text-neutral-400 sm:text-2xl"
+            className="highlight text-[clamp(1rem,2.5vh,1.5rem)] font-bold text-neutral-400"
             target="_blank"
             rel="noopener noreferrer"
           >

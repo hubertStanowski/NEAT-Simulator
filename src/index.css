@@ -15,7 +15,7 @@ body {
 
 @layer utilities {
   .parameter-button {
-    @apply highlight rounded-full px-8 py-3 text-2xl text-[#010103];
+    @apply highlight rounded-full px-[clamp(1rem,3vw,2rem)] py-[clamp(0.5rem,1.5vh,1rem)] text-[clamp(1rem,2.5vh,1.5rem)] text-[#010103];
   }
 
   .highlighted-parameter-button {
@@ -43,15 +43,15 @@ body {
   }
 
   .c-space {
-    @apply px-5 sm:px-10;
+    @apply px-[clamp(1rem,2vw,2.5rem)];
   }
 
   .nav-ul {
-    @apply relative z-20 flex flex-row items-center gap-14;
+    @apply relative z-20 flex flex-row items-center;
   }
 
   .nav-li_a {
-    @apply highlight py-2 font-generalsans text-2xl;
+    @apply highlight py-[clamp(0.25rem,0.5vh,0.75rem)] font-generalsans;
   }
 
   .text-gray_gradient {
@@ -65,6 +65,6 @@ body {
   /* about section */
   /* border border-black-300 bg-black-200 */
   .grid-container {
-    @apply flex h-full w-full flex-col gap-3 rounded-xl shadow-2xl shadow-black-200 sm:gap-5;
+    @apply flex h-full w-full flex-col gap-[clamp(0.5rem,1.5vh,1.25rem)] rounded-xl shadow-2xl shadow-black-200;
   }
 }

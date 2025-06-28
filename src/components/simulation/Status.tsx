@@ -106,14 +106,14 @@ const Status = () => {
   };
 
   return (
-    <div className="mt-5 flex h-full flex-col items-center text-center text-xl text-white sm:mt-10 sm:text-3xl">
+    <div className="flex h-full flex-col items-center py-[clamp(1rem,2vh,1.5rem)] text-center text-[clamp(0.875rem,2vh,1.25rem)] text-white">
       {humanPlaying ? (
-        <div className="mt-5 space-y-1 sm:mt-10 sm:space-y-2">
+        <div className="space-y-[clamp(0.25rem,1vh,0.75rem)]">
           <div>Score: {score}</div>
         </div>
       ) : (
         <>
-          <div className="mb-3 space-y-1 sm:mb-5 sm:space-y-2">
+          <div className="mb-[clamp(0.75rem,2vh,1.5rem)] space-y-[clamp(0.25rem,1vh,0.75rem)]">
             {(gameStatus === GameStatus.Training ||
               gameStatus === GameStatus.Stopped) &&
             trainedGenerations < targetGeneration ? (
@@ -133,9 +133,12 @@ const Status = () => {
                 </div>
               )}
           </div>
-          <hr className="mb-2 w-4/5 border-t-2 border-white sm:mb-3" />
-          <div>Neural Network</div>
-          <canvas ref={canvasRef} className="mt-2 h-3/4 w-full sm:mt-3" />
+          <hr className="mb-[clamp(0.5rem,1.5vh,1rem)] w-4/5 border-t-2 border-white" />
+          <div className="mb-[clamp(0.5rem,1vh,0.75rem)]">Neural Network</div>
+          <canvas
+            ref={canvasRef}
+            className="h-[clamp(300px,60vh,600px)] w-full"
+          />
         </>
       )}
     </div>
