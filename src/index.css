@@ -38,10 +38,6 @@ body {
     @apply transition-colors duration-500 hover:text-white;
   }
 
-  .dark-shadow {
-    @apply rounded-xl shadow-2xl shadow-black-200;
-  }
-
   .c-space {
     @apply px-[clamp(1rem,2vw,2.5rem)];
   }

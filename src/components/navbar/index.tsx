@@ -33,7 +33,7 @@ const Navbar = () => {
         <div className="mx-2 flex items-center justify-center sm:col-span-3 sm:mx-4 sm:justify-end">
           <a
             href={portfolioURL}
-            className="highlight text-[clamp(1rem,2.5vh,1.5rem)] font-bold text-neutral-400"
+            className="highlight text-gray_gradient text-[clamp(1rem,2.5vh,1.5rem)] font-bold"
             target="_blank"
             rel="noopener noreferrer"
           >
