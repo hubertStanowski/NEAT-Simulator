@@ -1,16 +1,16 @@
 import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
 import { gridSize, startingPlayerSize, trainingPlayerSize } from "../constants";
-import { Genome } from "../neat/genome";
-import { NeatConfig } from "../neat/neatConfig";
+import { Genome, NeatConfig } from "@/neat";
 import { stepLimit } from "../constants";
+import { IPlayer, Direction } from "./types";
 
-class Player {
+export class Player implements IPlayer {
   snake: { row: number; col: number }[];
   grid: [number, number, number][][];
   food: { row: number; col: number };
   lifespan: number;
-  direction: "UP" | "DOWN" | "LEFT" | "RIGHT";
+  direction: Direction;
   isAlive: boolean;
   fitness: number;
   genome_inputs: number;
@@ -31,7 +31,7 @@ class Player {
     this.food = { row: 5, col: 5 };
     this.generateFood();
     this.lifespan = 0;
-    this.direction = "RIGHT";
+    this.direction = Direction.RIGHT;
     this.isAlive = true;
     this.fitness = 0;
     this.genome_inputs = 12;
@@ -57,17 +57,20 @@ class Player {
     let newHead;
 
     switch (this.direction) {
-      case "UP":
+      case Direction.UP:
         newHead = { row: head.row - 1, col: head.col };
         break;
-      case "DOWN":
+      case Direction.DOWN:
         newHead = { row: head.row + 1, col: head.col };
         break;
-      case "LEFT":
+      case Direction.LEFT:
         newHead = { row: head.row, col: head.col - 1 };
         break;
-      case "RIGHT":
+      case Direction.RIGHT:
         newHead = { row: head.row, col: head.col + 1 };
+        break;
+      default:
+        newHead = { row: head.row, col: head.col + 1 }; // Default to RIGHT
         break;
     }
 
@@ -139,7 +142,7 @@ class Player {
     this.grid = newGrid;
   }
 
-  setDirection(direction: "UP" | "DOWN" | "LEFT" | "RIGHT") {
+  setDirection(direction: Direction) {
     this.direction = direction;
   }
 
@@ -177,26 +180,26 @@ class Player {
   // NEAT
 
   turnLeft() {
-    if (this.direction === "UP") {
-      this.direction = "LEFT";
-    } else if (this.direction === "DOWN") {
-      this.direction = "RIGHT";
-    } else if (this.direction === "LEFT") {
-      this.direction = "DOWN";
-    } else if (this.direction === "RIGHT") {
-      this.direction = "UP";
+    if (this.direction === Direction.UP) {
+      this.direction = Direction.LEFT;
+    } else if (this.direction === Direction.DOWN) {
+      this.direction = Direction.RIGHT;
+    } else if (this.direction === Direction.LEFT) {
+      this.direction = Direction.DOWN;
+    } else if (this.direction === Direction.RIGHT) {
+      this.direction = Direction.UP;
     }
   }
 
   turnRight() {
-    if (this.direction === "UP") {
-      this.direction = "RIGHT";
-    } else if (this.direction === "DOWN") {
-      this.direction = "LEFT";
-    } else if (this.direction === "LEFT") {
-      this.direction = "UP";
-    } else if (this.direction === "RIGHT") {
-      this.direction = "DOWN";
+    if (this.direction === Direction.UP) {
+      this.direction = Direction.RIGHT;
+    } else if (this.direction === Direction.DOWN) {
+      this.direction = Direction.LEFT;
+    } else if (this.direction === Direction.LEFT) {
+      this.direction = Direction.UP;
+    } else if (this.direction === Direction.RIGHT) {
+      this.direction = Direction.DOWN;
     }
   }
 
@@ -407,6 +410,7 @@ class Player {
         bottomWall,
       );
     }
+    // WHEN ADDING SIZE AWARENESS REMEMBER TO CHANGE GENOME INPUTS IN THE CONSTRUCTOR ABOVE (didn't see much improvement)
     // const remappedSize = remap(this.getScore(), 0, 3 * gridSize, 1, 0);
     // this.vision.push(remappedSize);
   }
@@ -427,5 +431,3 @@ class Player {
     }
   }
 }
-
-export default Player;

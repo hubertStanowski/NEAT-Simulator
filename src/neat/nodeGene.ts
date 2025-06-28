@@ -1,4 +1,6 @@
-export class NodeGene {
+import { INodeGene } from "./types";
+
+export class NodeGene implements INodeGene {
   id: number;
   layer: number;
   outputConnections: any[];

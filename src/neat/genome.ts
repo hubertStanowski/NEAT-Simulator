@@ -2,8 +2,9 @@ import { NodeGene } from "./nodeGene";
 import { ConnectionGene } from "./connectionGene";
 import { InnovationHistory } from "./innovationHistory";
 import { NeatConfig } from "./neatConfig";
+import { IGenome } from "./types";
 
-class Genome {
+export class Genome implements IGenome {
   nodes: NodeGene[];
   connections: ConnectionGene[];
   inputs: number;
@@ -432,5 +433,3 @@ class Genome {
     return clone;
   }
 }
-
-export { Genome };

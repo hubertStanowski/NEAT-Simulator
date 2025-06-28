@@ -1,6 +1,7 @@
 import { NodeGene } from "./nodeGene";
+import { IInnovationHistory } from "./types";
 
-class InnovationHistory {
+export class InnovationHistory implements IInnovationHistory {
   input: number;
   output: number;
   innovationNumber: number;
@@ -39,5 +40,3 @@ class InnovationHistory {
     return true;
   }
 }
-
-export { InnovationHistory };

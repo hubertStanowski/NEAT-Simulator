@@ -1,7 +1,8 @@
 import { NodeGene } from "./nodeGene";
 import { NeatConfig } from "./neatConfig";
+import { IConnectionGene } from "./types";
 
-export class ConnectionGene {
+export class ConnectionGene implements IConnectionGene {
   input: NodeGene;
   output: NodeGene;
   weight: number;

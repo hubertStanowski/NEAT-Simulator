@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { GameStatus } from "../constants";
-import Player from "../snake/player";
+import { Player } from "@/snake";
 
 export type SimulationContextType = {
   humanPlaying: boolean;

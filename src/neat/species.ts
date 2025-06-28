@@ -1,9 +1,10 @@
-import Player from "../snake/player";
+import { Player } from "@/snake";
 import { Genome } from "./genome";
 import { InnovationHistory } from "./innovationHistory";
 import { NeatConfig } from "./neatConfig";
+import { ISpecies } from "./types";
 
-export class Species {
+export class Species implements ISpecies {
   players: Player[];
   representative: Player;
   bestFitness: number;

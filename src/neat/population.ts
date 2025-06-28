@@ -1,9 +1,10 @@
 import { NeatConfig } from "./neatConfig";
 import { InnovationHistory } from "./innovationHistory";
-import Player from "../snake/player";
+import { Player } from "@/snake";
 import { Species } from "./species";
+import { IPopulation } from "./types";
 
-export class Population {
+export class Population implements IPopulation {
   config: NeatConfig;
   size: number;
   innovationHistory: InnovationHistory[] = [];

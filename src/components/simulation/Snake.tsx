@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSimulation } from "../../contexts/SimulationContext";
-import Player from "../../snake/player";
+import { Player, styleEyes, Direction } from "@/snake";
 import { GameStatus, gridSize, startingPlayerSize } from "../../constants";
-import { styleEyes } from "../../snake/visuals";
-import { NeatConfig } from "../../neat/neatConfig";
-import { Population } from "../../neat/population";
+import { NeatConfig, Population } from "@/neat";
 
 const Snake = () => {
   const {
@@ -87,16 +85,20 @@ const Snake = () => {
     const onKey = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowUp":
-          if (player.direction !== "DOWN") player.setDirection("UP");
+          if (player.direction !== Direction.DOWN)
+            player.setDirection(Direction.UP);
           break;
         case "ArrowDown":
-          if (player.direction !== "UP") player.setDirection("DOWN");
+          if (player.direction !== Direction.UP)
+            player.setDirection(Direction.DOWN);
           break;
         case "ArrowLeft":
-          if (player.direction !== "RIGHT") player.setDirection("LEFT");
+          if (player.direction !== Direction.RIGHT)
+            player.setDirection(Direction.LEFT);
           break;
         case "ArrowRight":
-          if (player.direction !== "LEFT") player.setDirection("RIGHT");
+          if (player.direction !== Direction.LEFT)
+            player.setDirection(Direction.RIGHT);
           break;
       }
     };

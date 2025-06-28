@@ -1,4 +1,6 @@
-export class NeatConfig {
+import { INeatConfig } from "./types";
+
+export class NeatConfig implements INeatConfig {
   nextInnovationNumber: number;
   weightMutationProbability: number;
   addConnectionMutationProbability: number;
