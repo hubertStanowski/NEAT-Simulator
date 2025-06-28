@@ -27,10 +27,10 @@ const Playground = () => {
 
   return (
     <section
-      className="relative flex h-auto w-full items-center justify-center"
+      className="relative flex h-full w-full items-center justify-center"
       id="home"
     >
-      <div className="mx-2 grid w-full grid-cols-1 gap-y-5 sm:mx-5 md:mx-10 md:grid-cols-12 md:gap-x-5">
+      <div className="mx-2 grid h-full w-full grid-cols-1 gap-y-5 sm:mx-5 md:mx-10 md:grid-cols-12 md:gap-x-5">
         <div className="flex md:col-span-3">
           <div className="grid-container">
             <Parameters />
