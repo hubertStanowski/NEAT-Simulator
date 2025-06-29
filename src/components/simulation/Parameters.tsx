@@ -1,5 +1,5 @@
-import { GameStatus } from "../../constants";
-import { useSimulation } from "../../contexts/SimulationContext";
+import { GameStatus } from "@/constants";
+import { useSimulation } from "@/contexts/SimulationContext";
 
 const Parameters = () => {
   const {

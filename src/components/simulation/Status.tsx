@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { GameStatus } from "../../constants";
-import { useSimulation } from "../../contexts/SimulationContext";
+import { GameStatus } from "@/constants";
+import { useSimulation } from "@/contexts/SimulationContext";
 
 const Status = () => {
   const {

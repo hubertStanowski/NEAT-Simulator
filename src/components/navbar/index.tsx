@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { portfolioURL } from "../../constants";
+import { portfolioURL } from "@/constants";
 import NavItems from "./NavItems";
 
 const Navbar = () => {

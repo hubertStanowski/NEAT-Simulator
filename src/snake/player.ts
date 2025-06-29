@@ -5,7 +5,7 @@ import {
   simulationGridSize,
   startingPlayerSize,
   trainingPlayerSize,
-} from "../constants";
+} from "@/constants";
 import { Genome, NeatConfig } from "@/neat";
 import { IPlayer, Direction, Grid } from "./types";
 

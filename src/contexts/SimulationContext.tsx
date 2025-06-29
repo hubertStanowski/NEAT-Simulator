@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { GameStatus } from "../constants";
+import { GameStatus } from "@/constants";
 import { Player } from "@/snake";
 
 export type SimulationContextType = {

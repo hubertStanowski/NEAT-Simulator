@@ -25,7 +25,7 @@
     /* Base URL and Paths */
     "baseUrl": "./",
     "paths": {
-      "*": ["*", "./src/*"],
+      "@/*": ["./src/*"],
       "@/neat": ["./src/neat"],
       "@/snake": ["./src/snake"]
     }

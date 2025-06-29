@@ -16,6 +16,7 @@ export default defineConfig({
         path.dirname(fileURLToPath(import.meta.url)),
         "./src/snake",
       ),
+      "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./src"),
     },
   },
 });
