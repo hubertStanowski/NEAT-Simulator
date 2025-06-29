@@ -7,7 +7,6 @@ import {
   trainingPlayerSize,
 } from "../constants";
 import { Genome, NeatConfig } from "@/neat";
-import { stepLimit } from "../constants";
 import { IPlayer, Direction, Grid } from "./types";
 
 export class Player implements IPlayer {
@@ -27,10 +26,14 @@ export class Player implements IPlayer {
   generation: number;
   inTraining: boolean = true;
   gridSize: number;
+  stepLimit: number;
 
   constructor(inTraining: boolean = true) {
     this.inTraining = inTraining;
     this.gridSize = inTraining ? trainingGridSize : simulationGridSize;
+    this.stepLimit = inTraining
+      ? 10 * trainingGridSize
+      : 10 * simulationGridSize;
     const middle = Math.floor(this.gridSize / 2);
     this.snake = Array.from(
       { length: inTraining ? trainingPlayerSize : startingPlayerSize },
@@ -47,7 +50,7 @@ export class Player implements IPlayer {
     this.direction = Direction.RIGHT;
     this.isAlive = true;
     this.fitness = 0;
-    this.genome_inputs = 12;
+    this.genome_inputs = 14;
     this.genome_outputs = 3;
     this.genome = new Genome(this.genome_inputs, this.genome_outputs);
     this.vision = [];
@@ -60,7 +63,7 @@ export class Player implements IPlayer {
   moveSnake(ignoreSteps: boolean = false) {
     if (!this.isAlive) return;
 
-    if (!ignoreSteps && this.steps >= stepLimit) {
+    if (!ignoreSteps && this.steps >= this.stepLimit) {
       this.isAlive = false;
       return;
     }
@@ -247,10 +250,68 @@ export class Player implements IPlayer {
   }
 
   updateFitness() {
-    const survivalBonus = this.lifespan / 50;
-    const foodBonus = 2 * Math.pow(this.getScore(), 5);
-    const collisionPenalty = this.isAlive ? 1 : 0.8;
-    this.fitness = (1 + foodBonus + survivalBonus) * collisionPenalty;
+    // Base score from food eaten
+    const score = this.getScore();
+    const foodBonus = Math.pow(score, 2) * 10; // Reduced from power 5 to 2 for more balanced growth
+
+    // Survival bonus - encourage longer games
+    const survivalBonus = this.lifespan * 0.02;
+
+    // Efficiency bonus - reward quick food collection
+    const efficiency = score > 0 ? score / this.lifespan : 0;
+    const efficiencyBonus = efficiency * 50;
+
+    // Distance to food bonus - encourage moving towards food
+    const headRow = this.snake[0].row;
+    const headCol = this.snake[0].col;
+    const distanceToFood =
+      Math.abs(headRow - this.food.row) + Math.abs(headCol - this.food.col);
+    const maxDistance = this.gridSize * 2;
+    const distanceBonus = (1 - distanceToFood / maxDistance) * 2;
+
+    // Determine cause of death
+    const diedFromSteps = !this.isAlive && this.steps >= this.stepLimit;
+    const diedFromCollision = !this.isAlive && this.steps < this.stepLimit;
+
+    // Heavy step penalty for being overly cautious (90% of step limit)
+    const stepThreshold = this.stepLimit * 0.9;
+    const stepPenalty =
+      this.steps > stepThreshold
+        ? Math.pow(
+            (this.steps - stepThreshold) / (this.stepLimit - stepThreshold),
+            2,
+          ) * 50
+        : 0;
+
+    // Death penalties and bonuses
+    let deathModifier = 0;
+    if (diedFromSteps) {
+      // Heavy penalty for dying from steps (being too afraid)
+      deathModifier = -25;
+    } else if (diedFromCollision) {
+      // Reward for dying from collision (shows aggression, not fear)
+      deathModifier = 5;
+    }
+    // console.log("########################");
+    // console.log("Food Bonus:", foodBonus);
+    // console.log("Survival Bonus:", survivalBonus);
+    // console.log("Efficiency Bonus:", efficiencyBonus);
+    // console.log("Distance Bonus:", distanceBonus);
+    // console.log("Step Penalty:", stepPenalty);
+    // console.log("Death Modifier:", deathModifier);
+    // console.log("Final Fitness:", this.fitness);
+    // console.log("########################");
+    // Calculate final fitness
+    this.fitness = Math.max(
+      0,
+      1 +
+        foodBonus +
+        survivalBonus +
+        efficiencyBonus +
+        distanceBonus -
+        stepPenalty +
+        deathModifier,
+    );
   }
 
   look() {
@@ -266,59 +327,64 @@ export class Player implements IPlayer {
 
     this.vision = [];
 
+    const headRow = this.snake[0].row;
+    const headCol = this.snake[0].col;
     const foodRow = this.food.row;
     const foodCol = this.food.col;
 
-    const topFood = foodRow < this.snake[0].row ? 1 : 0;
-    const bottomFood = foodRow > this.snake[0].row ? 1 : 0;
-    const leftFood = foodCol < this.snake[0].col ? 1 : 0;
-    const rightFood = foodCol > this.snake[0].col ? 1 : 0;
+    // Food direction indicators
+    const topFood = foodRow < headRow ? 1 : 0;
+    const bottomFood = foodRow > headRow ? 1 : 0;
+    const leftFood = foodCol < headCol ? 1 : 0;
+    const rightFood = foodCol > headCol ? 1 : 0;
 
-    const topWall = remap(this.snake[0].row, 0, this.gridSize - 1, 1, 0);
+    // Wall distances
+    const topWall = remap(headRow, 0, this.gridSize - 1, 1, 0);
     const bottomWall = remap(
-      this.gridSize - this.snake[0].row - 1,
+      this.gridSize - headRow - 1,
       0,
       this.gridSize - 1,
       1,
       0,
     );
-    const leftWall = remap(this.snake[0].col, 0, this.gridSize - 1, 1, 0);
+    const leftWall = remap(headCol, 0, this.gridSize - 1, 1, 0);
     const rightWall = remap(
-      this.gridSize - this.snake[0].col - 1,
+      this.gridSize - headCol - 1,
       0,
       this.gridSize - 1,
       1,
       0,
     );
 
+    // Body distances (excluding backward check)
     let topBody = this.gridSize - 1;
-    for (let i = this.snake[0].row - 1; i >= 0; i--) {
-      if (this.isSnake(i, this.snake[0].col)) {
-        topBody = Math.abs(this.snake[0].row - i);
+    for (let i = headRow - 1; i >= 0; i--) {
+      if (this.isSnake(i, headCol)) {
+        topBody = Math.abs(headRow - i);
         break;
       }
     }
 
     let bottomBody = this.gridSize - 1;
-    for (let i = this.snake[0].row + 1; i < this.gridSize; i++) {
-      if (this.isSnake(i, this.snake[0].col)) {
-        bottomBody = Math.abs(this.snake[0].row - i);
+    for (let i = headRow + 1; i < this.gridSize; i++) {
+      if (this.isSnake(i, headCol)) {
+        bottomBody = Math.abs(headRow - i);
         break;
       }
     }
 
     let leftBody = this.gridSize - 1;
-    for (let j = this.snake[0].col - 1; j >= 0; j--) {
-      if (this.isSnake(this.snake[0].row, j)) {
-        leftBody = Math.abs(this.snake[0].col - j);
+    for (let j = headCol - 1; j >= 0; j--) {
+      if (this.isSnake(headRow, j)) {
+        leftBody = Math.abs(headCol - j);
         break;
       }
     }
 
     let rightBody = this.gridSize - 1;
-    for (let j = this.snake[0].col + 1; j < this.gridSize; j++) {
-      if (this.isSnake(this.snake[0].row, j)) {
-        rightBody = Math.abs(this.snake[0].col - j);
+    for (let j = headCol + 1; j < this.gridSize; j++) {
+      if (this.isSnake(headRow, j)) {
+        rightBody = Math.abs(headCol - j);
         break;
       }
     }
@@ -328,104 +394,122 @@ export class Player implements IPlayer {
     leftBody = remap(leftBody, 0, this.gridSize - 1, 1, 0);
     rightBody = remap(rightBody, 0, this.gridSize - 1, 1, 0);
 
-    // WHEN CHANGING TO THESE REMEMBER TO CHANGE GENOME INPUTS IN THE CONSTRUCTOR ABOVE
-    // const topObstacle = Math.min(topBody, topWall);
-    // const bottomObstacle = Math.min(bottomBody, bottomWall);
-    // const leftObstacle = Math.min(leftBody, leftWall);
-    // const rightObstacle = Math.min(rightBody, rightWall);
+    // New parameters
+    // 1. Distance to food (Manhattan distance, normalized)
+    const distanceToFood =
+      Math.abs(headRow - foodRow) + Math.abs(headCol - foodCol);
+    const normalizedDistance = remap(
+      distanceToFood,
+      0,
+      this.gridSize * 2,
+      1,
+      0,
+    );
 
+    // 2. Relative angle to food (simplified: diagonal indicator)
+    const foodDiagonal = foodRow !== headRow && foodCol !== headCol ? 1 : 0;
+
+    // 3. Hunger level (steps since last food, normalized)
+    const hungerLevel = remap(this.steps, 0, this.stepLimit, 0, 1);
+
+    // Build vision array based on direction (removing backward body check)
     if (this.direction === "UP") {
       this.vision.push(
+        // Food directions
         topFood,
         bottomFood,
         leftFood,
         rightFood,
 
-        // topObstacle,
-        // bottomObstacle,
-        // leftObstacle,
-        // rightObstacle,
-
+        // Body distances (no bottomBody as it's behind)
         topBody,
-        bottomBody,
         leftBody,
         rightBody,
 
+        // Wall distances
         topWall,
         bottomWall,
         leftWall,
         rightWall,
+
+        // New parameters
+        normalizedDistance,
+        foodDiagonal,
+        hungerLevel,
       );
     } else if (this.direction === "DOWN") {
       this.vision.push(
+        // Food directions
         bottomFood,
         topFood,
         rightFood,
         leftFood,
 
-        // bottomObstacle,
-        // topObstacle,
-        // rightObstacle,
-        // leftObstacle,
-
+        // Body distances (no topBody as it's behind)
         bottomBody,
-        topBody,
         rightBody,
         leftBody,
 
+        // Wall distances
         bottomWall,
         topWall,
         rightWall,
         leftWall,
+
+        // New parameters
+        normalizedDistance,
+        foodDiagonal,
+        hungerLevel,
       );
     } else if (this.direction === "LEFT") {
       this.vision.push(
+        // Food directions
         leftFood,
         rightFood,
         bottomFood,
         topFood,
 
-        // leftObstacle,
-        // rightObstacle,
-        // bottomObstacle,
-        // topObstacle,
-
+        // Body distances (no rightBody as it's behind)
         leftBody,
-        rightBody,
         bottomBody,
         topBody,
 
+        // Wall distances
         leftWall,
         rightWall,
         bottomWall,
         topWall,
+
+        // New parameters
+        normalizedDistance,
+        foodDiagonal,
+        hungerLevel,
       );
     } else if (this.direction === "RIGHT") {
       this.vision.push(
+        // Food directions
         rightFood,
         leftFood,
         topFood,
         bottomFood,
 
-        // rightObstacle,
-        // leftObstacle,
-        // topObstacle,
-        // bottomObstacle,
-
+        // Body distances (no leftBody as it's behind)
         rightBody,
-        leftBody,
         topBody,
         bottomBody,
 
+        // Wall distances
         rightWall,
         leftWall,
         topWall,
         bottomWall,
+
+        // New parameters
+        normalizedDistance,
+        foodDiagonal,
+        hungerLevel,
       );
     }
-    // WHEN ADDING SIZE AWARENESS REMEMBER TO CHANGE GENOME INPUTS IN THE CONSTRUCTOR ABOVE (didn't see much improvement)
-    // const remappedSize = remap(this.getScore(), 0, 3 * gridSize, 1, 0);
-    // this.vision.push(remappedSize);
   }
 
   decide(show = false) {
