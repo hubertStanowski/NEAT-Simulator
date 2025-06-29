@@ -6,7 +6,7 @@ import { SimulationProvider } from "./contexts/SimulationContext";
 const App = () => {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-[#010103]">
-      <main className="flex h-screen w-full max-w-[2000px] flex-col">
+      <main className="flex h-screen max-h-[1500px] w-full max-w-[2000px] flex-col">
         <div className="flex-none">
           <Navbar />
         </div>

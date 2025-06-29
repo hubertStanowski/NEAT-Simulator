@@ -46,12 +46,12 @@ const Status = () => {
     });
 
     const layerCount = Object.keys(layers).length;
-    const nodeRadius = (22 / 668) * canvas.height;
+    const nodeRadius = (22 / 800) * canvas.height;
     let xDiff = (150 / 415) * canvas.width * 2;
     if (layerCount > 2) xDiff /= layerCount - 1;
-    const yDiff = (50 / 668) * canvas.height;
+    const yDiff = (50 / 800) * canvas.height;
     const xOffset = (50 / 415) * canvas.height;
-    const yOffset = yDiff * 6.5;
+    const yOffset = yDiff * 8;
 
     const nodePositions = new Map<any, { x: number; y: number }>();
     Object.entries(layers).forEach(([layer, nodes]) => {
@@ -106,14 +106,26 @@ const Status = () => {
   };
 
   return (
-    <div className="flex h-full flex-col items-center py-[clamp(1rem,2vh,1.5rem)] text-center text-[clamp(0.875rem,2vh,1.25rem)] text-white">
+    <div
+      className={`flex h-full flex-col items-center text-center text-[clamp(0.875rem,2vh,1.25rem)] text-white ${
+        humanPlaying
+          ? "justify-start"
+          : "justify-center py-[clamp(1rem,2vh,1.5rem)]"
+      }`}
+    >
       {humanPlaying ? (
-        <div className="space-y-[clamp(0.25rem,1vh,0.75rem)]">
-          <div>Score: {score}</div>
-        </div>
+        <>
+          <div className="flex-[1]"></div>
+          <div className="flex flex-[2] flex-col justify-start space-y-[clamp(0.25rem,1vh,0.75rem)]">
+            <div className="text-3xl">Score: {score}</div>
+            <div className="text-3xl text-purple-700">
+              AI Generations: {currentGeneration}
+            </div>
+          </div>
+        </>
       ) : (
         <>
-          <div className="mb-[clamp(0.75rem,2vh,1.5rem)] space-y-[clamp(0.25rem,1vh,0.75rem)]">
+          <div className="mb-[clamp(0.75rem,2vh,1.5rem)] space-y-[clamp(0.25rem,1vh,0.75rem)] text-xl">
             {(gameStatus === GameStatus.Training ||
               gameStatus === GameStatus.Stopped) &&
             trainedGenerations < targetGeneration ? (
@@ -123,22 +135,34 @@ const Status = () => {
             ) : (
               <div>Score: {score}</div>
             )}
-
             <div>Generation: {currentGeneration}</div>
-            {(gameStatus === GameStatus.Training ||
-              gameStatus === GameStatus.Stopped) &&
-              trainedGenerations < targetGeneration && (
-                <div>
-                  Alive: {aliveCount} / {populationSize}
-                </div>
-              )}
+
+            {/* Always allocate space for alive count, but hide when not needed */}
+            <div
+              className={`${
+                !humanPlaying &&
+                (gameStatus === GameStatus.Training ||
+                  gameStatus === GameStatus.Stopped) &&
+                trainedGenerations < targetGeneration
+                  ? "visible"
+                  : "invisible"
+              }`}
+            >
+              Alive: {aliveCount} / {populationSize}
+            </div>
           </div>
-          <hr className="mb-[clamp(0.5rem,1.5vh,1rem)] w-4/5 border-t-2 border-white" />
-          <div className="mb-[clamp(0.5rem,1vh,0.75rem)]">Neural Network</div>
-          <canvas
-            ref={canvasRef}
-            className="h-[clamp(300px,60vh,600px)] w-full"
-          />
+
+          {/* Always render the HR and neural network section, but hide when humanPlaying */}
+          <div
+            className={`${!humanPlaying ? "visible" : "invisible"} flex w-full flex-col items-center`}
+          >
+            <hr className="mb-[clamp(0.5rem,1.5vh,1rem)] w-4/5 border-t-2 border-white" />
+            <div className="mb-[clamp(0.5rem,1vh,0.75rem)]">Neural Network</div>
+            <canvas
+              ref={canvasRef}
+              className="h-[clamp(350px,65vh,650px)] w-full"
+            />
+          </div>
         </>
       )}
     </div>
