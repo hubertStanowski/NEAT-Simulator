@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Parameters from "./Parameters";
 import Snake from "./Snake";
 import Status from "./Status";
-import { useSimulation } from "@/contexts/SimulationContext";
+import { useSimulation } from "@/contexts";
 
 const Playground = () => {
   const { humanPlaying, setHumanPlaying } = useSimulation();

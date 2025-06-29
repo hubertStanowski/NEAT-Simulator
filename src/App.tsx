@@ -1,7 +1,7 @@
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
 import Playground from "./components/simulation";
-import { SimulationProvider } from "./contexts/SimulationContext";
+import { SimulationProvider } from "./contexts";
 
 const App = () => {
   return (

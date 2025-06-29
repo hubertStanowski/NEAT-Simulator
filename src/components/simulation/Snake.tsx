@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useSimulation } from "@/contexts/SimulationContext";
+import { useSimulation } from "@/contexts";
 import { Player, styleEyes, Direction, getGridSize, Grid } from "@/snake";
-import { GameStatus } from "@/constants";
+import { GameStatus } from "@/types";
 import { NeatConfig, Population } from "@/neat";
 
 const Snake = () => {
