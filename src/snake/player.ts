@@ -1,6 +1,11 @@
 import { createGrid } from "./grid";
 import { updateColor } from "./visuals";
-import { gridSize, startingPlayerSize, trainingPlayerSize } from "../constants";
+import {
+  trainingGridSize,
+  simulationGridSize,
+  startingPlayerSize,
+  trainingPlayerSize,
+} from "../constants";
 import { Genome, NeatConfig } from "@/neat";
 import { stepLimit } from "../constants";
 import { IPlayer, Direction, Grid } from "./types";
@@ -21,10 +26,12 @@ export class Player implements IPlayer {
   steps: number;
   generation: number;
   inTraining: boolean = true;
+  gridSize: number;
 
   constructor(inTraining: boolean = true) {
     this.inTraining = inTraining;
-    const middle = Math.floor(gridSize / 2);
+    this.gridSize = inTraining ? trainingGridSize : simulationGridSize;
+    const middle = Math.floor(this.gridSize / 2);
     this.snake = Array.from(
       { length: inTraining ? trainingPlayerSize : startingPlayerSize },
       (_, i) => ({
@@ -32,7 +39,8 @@ export class Player implements IPlayer {
         col: middle - i,
       }),
     );
-    this.grid = createGrid(gridSize, gridSize);
+
+    this.grid = createGrid(this.gridSize, this.gridSize);
     this.food = { row: 5, col: 5 };
     this.generateFood();
     this.lifespan = 0;
@@ -99,8 +107,8 @@ export class Player implements IPlayer {
   generateFood() {
     do {
       this.food = {
-        row: Math.floor(Math.random() * gridSize),
-        col: Math.floor(Math.random() * gridSize),
+        row: Math.floor(Math.random() * this.gridSize),
+        col: Math.floor(Math.random() * this.gridSize),
       };
     } while (
       this.snake.some(
@@ -117,9 +125,9 @@ export class Player implements IPlayer {
     // Border collisions
     if (
       newHead.row < 0 ||
-      newHead.row >= gridSize ||
+      newHead.row >= this.gridSize ||
       newHead.col < 0 ||
-      newHead.col >= gridSize
+      newHead.col >= this.gridSize
     ) {
       this.isAlive = false;
       return;
@@ -135,7 +143,7 @@ export class Player implements IPlayer {
   }
 
   updateGrid() {
-    const newGrid = createGrid(gridSize, gridSize);
+    const newGrid = createGrid(this.gridSize, this.gridSize);
     this.snake.forEach((segment, index) => {
       newGrid[segment.row][segment.col] = updateColor(
         index,
@@ -266,24 +274,24 @@ export class Player implements IPlayer {
     const leftFood = foodCol < this.snake[0].col ? 1 : 0;
     const rightFood = foodCol > this.snake[0].col ? 1 : 0;
 
-    const topWall = remap(this.snake[0].row, 0, gridSize - 1, 1, 0);
+    const topWall = remap(this.snake[0].row, 0, this.gridSize - 1, 1, 0);
     const bottomWall = remap(
-      gridSize - this.snake[0].row - 1,
+      this.gridSize - this.snake[0].row - 1,
       0,
-      gridSize - 1,
+      this.gridSize - 1,
       1,
       0,
     );
-    const leftWall = remap(this.snake[0].col, 0, gridSize - 1, 1, 0);
+    const leftWall = remap(this.snake[0].col, 0, this.gridSize - 1, 1, 0);
     const rightWall = remap(
-      gridSize - this.snake[0].col - 1,
+      this.gridSize - this.snake[0].col - 1,
       0,
-      gridSize - 1,
+      this.gridSize - 1,
       1,
       0,
     );
 
-    let topBody = gridSize - 1;
+    let topBody = this.gridSize - 1;
     for (let i = this.snake[0].row - 1; i >= 0; i--) {
       if (this.isSnake(i, this.snake[0].col)) {
         topBody = Math.abs(this.snake[0].row - i);
@@ -291,15 +299,15 @@ export class Player implements IPlayer {
       }
     }
 
-    let bottomBody = gridSize - 1;
-    for (let i = this.snake[0].row + 1; i < gridSize; i++) {
+    let bottomBody = this.gridSize - 1;
+    for (let i = this.snake[0].row + 1; i < this.gridSize; i++) {
       if (this.isSnake(i, this.snake[0].col)) {
         bottomBody = Math.abs(this.snake[0].row - i);
         break;
       }
     }
 
-    let leftBody = gridSize - 1;
+    let leftBody = this.gridSize - 1;
     for (let j = this.snake[0].col - 1; j >= 0; j--) {
       if (this.isSnake(this.snake[0].row, j)) {
         leftBody = Math.abs(this.snake[0].col - j);
@@ -307,18 +315,18 @@ export class Player implements IPlayer {
       }
     }
 
-    let rightBody = gridSize - 1;
-    for (let j = this.snake[0].col + 1; j < gridSize; j++) {
+    let rightBody = this.gridSize - 1;
+    for (let j = this.snake[0].col + 1; j < this.gridSize; j++) {
       if (this.isSnake(this.snake[0].row, j)) {
         rightBody = Math.abs(this.snake[0].col - j);
         break;
       }
     }
 
-    topBody = remap(topBody, 0, gridSize - 1, 1, 0);
-    bottomBody = remap(bottomBody, 0, gridSize - 1, 1, 0);
-    leftBody = remap(leftBody, 0, gridSize - 1, 1, 0);
-    rightBody = remap(rightBody, 0, gridSize - 1, 1, 0);
+    topBody = remap(topBody, 0, this.gridSize - 1, 1, 0);
+    bottomBody = remap(bottomBody, 0, this.gridSize - 1, 1, 0);
+    leftBody = remap(leftBody, 0, this.gridSize - 1, 1, 0);
+    rightBody = remap(rightBody, 0, this.gridSize - 1, 1, 0);
 
     // WHEN CHANGING TO THESE REMEMBER TO CHANGE GENOME INPUTS IN THE CONSTRUCTOR ABOVE
     // const topObstacle = Math.min(topBody, topWall);
@@ -422,7 +430,6 @@ export class Player implements IPlayer {
 
   decide(show = false) {
     if (!this.vision.length) return;
-
     const outputs = this.genome.feedForward(this.vision);
     if (show) {
       console.log(outputs);
