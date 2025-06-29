@@ -23,7 +23,20 @@ export class Population implements IPopulation {
 
     for (let i = 0; i < size; i++) {
       const player = new Player();
-      player.genome.fullyConnect(config, this.innovationHistory);
+
+      // Start with partially connected networks instead of fully connected
+      // This gives evolution more room to explore different topologies
+      if (i < size * 0.15) {
+        // 15% start fully connected for diversity
+        player.genome.fullyConnect(config, this.innovationHistory);
+      } else {
+        // 85% start with just a few random connections
+        const numInitialConnections = Math.floor(Math.random() * 6) + 1; // 1-6 connections
+        for (let j = 0; j < numInitialConnections; j++) {
+          player.genome.addConnection(config, this.innovationHistory);
+        }
+      }
+
       player.genome.mutate(this.config, this.innovationHistory);
       player.genome.generateNetwork();
       this.players.push(player);
@@ -93,7 +106,19 @@ export class Population implements IPopulation {
 
     const averageFitnessSum = this.getAvgFitnessSum();
     this.players = [];
+
+    // Elitism: Always keep the best player from current generation
+    if (this.currBestPlayer) {
+      this.players.push(this.currBestPlayer.clone());
+    }
+
+    // Keep best player ever if different from current best
+    if (this.bestEverPlayer && this.bestEverPlayer !== this.currBestPlayer) {
+      this.players.push(this.bestEverPlayer.clone());
+    }
+
     for (const s of this.species) {
+      // Representative is already the best of the species
       this.players.push(s.representative.clone());
       const childrenCount = Math.floor(
         (s.averageFitness / averageFitnessSum) * this.size - 1,
@@ -107,15 +132,20 @@ export class Population implements IPopulation {
       }
     }
 
-    if (this.players.length < this.size && this.prevBestPlayer) {
-      this.players.push(this.prevBestPlayer.clone());
-    }
-
+    // Fill remaining slots
     while (this.players.length < this.size) {
-      this.players.push(
-        this.species[0].reproduce(this.config, this.innovationHistory) ||
-          new Player(),
-      );
+      if (this.species.length > 0) {
+        this.players.push(
+          this.species[0].reproduce(this.config, this.innovationHistory) ||
+            new Player(),
+        );
+      } else {
+        // If no species exist, create new random player
+        const newPlayer = new Player();
+        newPlayer.genome.fullyConnect(this.config, this.innovationHistory);
+        newPlayer.genome.mutate(this.config, this.innovationHistory);
+        this.players.push(newPlayer);
+      }
     }
 
     this.generation += 1;

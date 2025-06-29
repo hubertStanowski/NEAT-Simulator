@@ -17,4 +17,4 @@ export enum GameStatus {
 
 export const stepLimit = 10 * simulationGridSize;
 export const startingPlayerSize = 2;
-export const trainingPlayerSize = 2;
+export const trainingPlayerSize = 10;

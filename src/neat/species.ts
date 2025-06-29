@@ -98,7 +98,8 @@ export class Species implements ISpecies {
       return;
     }
 
-    this.players.splice(Math.floor(this.players.length / 2));
+    const keepCount = Math.max(2, Math.ceil(this.players.length * 0.6));
+    this.players.splice(keepCount);
   }
 
   getAverageWeightDifference(genome1: Genome, genome2: Genome): number {
@@ -170,8 +171,9 @@ export class Species implements ISpecies {
   }
 
   shareFitness(): void {
+    const adjustedSize = Math.sqrt(this.players.length);
     for (const player of this.players) {
-      player.fitness /= this.players.length;
+      player.fitness /= adjustedSize;
     }
   }
 

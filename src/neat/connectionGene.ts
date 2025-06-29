@@ -31,7 +31,9 @@ export class ConnectionGene implements IConnectionGene {
     if (Math.random() < config.getBigWeightMutationProbability()) {
       this.weight = Math.random() * 2 - 1;
     } else {
-      this.weight += this.randomGaussian() / 50;
+      // Adaptive mutation step size based on current weight magnitude
+      const mutationStrength = 0.1 + Math.abs(this.weight) * 0.1; // 10-20% of current weight
+      this.weight += this.randomGaussian() * mutationStrength;
 
       this.weight = Math.min(this.weight, 1);
       this.weight = Math.max(this.weight, -1);

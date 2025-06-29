@@ -16,16 +16,16 @@ export class NeatConfig implements INeatConfig {
 
   constructor() {
     this.nextInnovationNumber = 1;
-    this.weightMutationProbability = 0.8;
+    this.weightMutationProbability = 0.9;
     this.addConnectionMutationProbability = 0.3;
-    this.addNodeMutationProbability = 0.3;
-    this.bigWeightMutationProbability = 0.05;
+    this.addNodeMutationProbability = 0.07;
+    this.bigWeightMutationProbability = 0.1;
     this.crossoverConnectionDisableProbability = 0.75;
     this.noCrossoverProbability = 0.25;
-    this.speciesStalenessLimit = 5;
-    this.populationStalenessLimit = 10;
+    this.speciesStalenessLimit = 15;
+    this.populationStalenessLimit = 20;
     this.excessDisjointCoefficient = 1;
-    this.weightDifferenceCoefficient = 0.4;
+    this.weightDifferenceCoefficient = 0.5;
     this.compatibilityThreshold = 3;
   }
 

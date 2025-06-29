@@ -46,20 +46,36 @@ export class Genome implements IGenome {
   mutate(config: NeatConfig, innovationHistory: InnovationHistory[]): void {
     if (this.connections.length === 0) {
       this.addConnection(config, innovationHistory);
+      return;
     }
 
+    // Always try weight mutation for fine-tuning
     if (Math.random() < config.getWeightMutationProbability()) {
       for (const connection of this.connections) {
         connection.mutateWeight(config);
       }
     }
 
-    if (Math.random() < config.getAddConnectionMutationProbability()) {
-      this.addConnection(config, innovationHistory);
-    }
+    // Only add structural complexity occasionally
+    const structuralMutationChance = Math.random();
 
-    if (Math.random() < config.getAddNodeMutationProbability()) {
-      this.addNode(config, innovationHistory);
+    // Prefer adding connections over nodes (connections are less disruptive)
+    if (
+      structuralMutationChance < config.getAddConnectionMutationProbability()
+    ) {
+      this.addConnection(config, innovationHistory);
+    } else if (
+      structuralMutationChance <
+      config.getAddConnectionMutationProbability() +
+        config.getAddNodeMutationProbability()
+    ) {
+      // Only add nodes if we have enough connections
+      if (this.connections.length > 3) {
+        this.addNode(config, innovationHistory);
+      } else {
+        // If not enough connections, add a connection instead
+        this.addConnection(config, innovationHistory);
+      }
     }
   }
 
