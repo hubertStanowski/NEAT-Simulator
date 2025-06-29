@@ -70,7 +70,7 @@ const initialSimulationContext: SimulationContextType = {
   bestScore: 0,
   setBestScore: noop,
 
-  networkPlayer: new Player(2),
+  networkPlayer: new Player(false),
   setNetworkPlayer: noop,
 };
 
