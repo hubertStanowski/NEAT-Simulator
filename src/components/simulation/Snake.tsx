@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSimulation } from "../../contexts/SimulationContext";
-import { Player, styleEyes, Direction } from "@/snake";
-import { GameStatus, gridSize, startingPlayerSize } from "../../constants";
+import { Player, styleEyes, Direction, getGridSize, Grid } from "@/snake";
+import { GameStatus } from "../../constants";
 import { NeatConfig, Population } from "@/neat";
 
 const Snake = () => {
@@ -20,10 +20,8 @@ const Snake = () => {
     setNetworkPlayer,
   } = useSimulation();
 
-  const [player, setPlayer] = useState(new Player(startingPlayerSize));
-  const [grid, setGrid] = useState<[number, number, number][][]>(
-    player.getGrid(),
-  );
+  const [player, setPlayer] = useState(new Player(false));
+  const [grid, setGrid] = useState<Grid>(player.getGrid());
   const config = new NeatConfig();
   const [population, setPopulation] = useState(
     new Population(config, populationSize),
@@ -47,9 +45,7 @@ const Snake = () => {
           setPlayer(player);
         } else {
           setPlayer(
-            population.genBestPlayers[targetGeneration - 1].clone(
-              startingPlayerSize,
-            ),
+            population.genBestPlayers[targetGeneration - 1].clone(false),
           );
         }
         setGameStatus(GameStatus.Running);
@@ -129,7 +125,7 @@ const Snake = () => {
     }
 
     if (!player.isAlive) {
-      setPlayer(player.clone(startingPlayerSize));
+      setPlayer(player.clone(false));
     }
     const iv = setInterval(() => {
       player.moveSnake();
@@ -157,7 +153,7 @@ const Snake = () => {
     if (gameStatus !== GameStatus.Reset) return;
 
     if (humanPlaying) {
-      const fresh = new Player(startingPlayerSize);
+      const fresh = new Player(false);
       setPlayer(fresh);
       setGrid(fresh.getGrid());
       setScore(fresh.getScore());
@@ -189,11 +185,7 @@ const Snake = () => {
         player.transplant(population.genBestPlayers[targetGeneration - 1]);
         setPlayer(player);
       } else {
-        setPlayer(
-          population.genBestPlayers[targetGeneration - 1].clone(
-            startingPlayerSize,
-          ),
-        );
+        setPlayer(population.genBestPlayers[targetGeneration - 1].clone(false));
       }
     } else {
       setGameStatus(GameStatus.Training);
@@ -203,10 +195,13 @@ const Snake = () => {
   return (
     <div
       id="snake"
-      className={`grid-cols-${gridSize} grid-rows-${gridSize} border-neutral-40 grid h-full w-full border-[0.01px]`}
+      className={`grid-cols-${getGridSize(grid)} grid-rows-${getGridSize(grid)} border-neutral-40 grid h-full w-full border-[0.01px]`}
     >
       {grid.map((row, r) => (
-        <div key={r} className={`col-span-${gridSize} row-span-1 flex`}>
+        <div
+          key={r}
+          className={`col-span-${getGridSize(grid)} row-span-1 flex`}
+        >
           {row.map((cell, c) => {
             const isHead =
               r === player.snake[0].row && c === player.snake[0].col;

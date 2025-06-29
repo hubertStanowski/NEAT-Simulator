@@ -3,11 +3,11 @@ import { updateColor } from "./visuals";
 import { gridSize, startingPlayerSize, trainingPlayerSize } from "../constants";
 import { Genome, NeatConfig } from "@/neat";
 import { stepLimit } from "../constants";
-import { IPlayer, Direction } from "./types";
+import { IPlayer, Direction, Grid } from "./types";
 
 export class Player implements IPlayer {
   snake: { row: number; col: number }[];
-  grid: [number, number, number][][];
+  grid: Grid;
   food: { row: number; col: number };
   lifespan: number;
   direction: Direction;
@@ -20,13 +20,18 @@ export class Player implements IPlayer {
   sensor_view_data: number[];
   steps: number;
   generation: number;
+  inTraining: boolean = true;
 
-  constructor(startingSize: number = trainingPlayerSize) {
+  constructor(inTraining: boolean = true) {
+    this.inTraining = inTraining;
     const middle = Math.floor(gridSize / 2);
-    this.snake = Array.from({ length: startingSize }, (_, i) => ({
-      row: middle,
-      col: middle - i,
-    }));
+    this.snake = Array.from(
+      { length: inTraining ? trainingPlayerSize : startingPlayerSize },
+      (_, i) => ({
+        row: middle,
+        col: middle - i,
+      }),
+    );
     this.grid = createGrid(gridSize, gridSize);
     this.food = { row: 5, col: 5 };
     this.generateFood();
@@ -203,8 +208,8 @@ export class Player implements IPlayer {
     }
   }
 
-  clone(startingSize: number = trainingPlayerSize): Player {
-    const clone = new Player(startingSize);
+  clone(inTraining: boolean = true): Player {
+    const clone = new Player(inTraining);
     clone.genome = this.genome.clone();
     clone.fitness = this.fitness;
     clone.generation = this.generation;

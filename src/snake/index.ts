@@ -1,6 +1,6 @@
 export * from "./types";
 
-export { createGrid, updateGridCell } from "./grid";
+export { createGrid, updateGridCell, getGridSize } from "./grid";
 
 export { hsvToRgb, updateColor, styleEyes } from "./visuals";
 
