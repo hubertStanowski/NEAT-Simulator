@@ -252,14 +252,13 @@ export class Player implements IPlayer {
   updateFitness() {
     // Base score from food eaten
     const score = this.getScore();
-    const foodBonus = score * score * 100; // Quadratic growth is more reasonable than cubic/quintic
+    const foodBonus = score * score * 100;
 
     // Survival bonus - encourage longer games but not excessively
     const survivalBonus = Math.min(this.lifespan * 0.02, 100); // Cap survival bonus
-
     // Efficiency bonus - reward quick food collection
     const efficiency = score > 0 ? score / this.lifespan : 0;
-    const efficiencyBonus = efficiency * 200; // Increased to encourage faster eating
+    const efficiencyBonus = efficiency * 500; // Increased to encourage faster eating
 
     // Distance to food bonus - encourage moving towards food
     const headRow = this.snake[0].row;
