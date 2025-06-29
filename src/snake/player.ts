@@ -255,7 +255,7 @@ export class Player implements IPlayer {
     const foodBonus = score * score * 100; // Quadratic growth is more reasonable than cubic/quintic
 
     // Survival bonus - encourage longer games but not excessively
-    const survivalBonus = Math.min(this.lifespan * 0.1, 100); // Cap survival bonus
+    const survivalBonus = Math.min(this.lifespan * 0.02, 100); // Cap survival bonus
 
     // Efficiency bonus - reward quick food collection
     const efficiency = score > 0 ? score / this.lifespan : 0;

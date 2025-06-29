@@ -16,6 +16,19 @@ const Parameters = () => {
     trainedGenerations,
   } = useSimulation();
 
+  // Helper function to map slider values to valid generation values
+  const mapToValidGeneration = (value: number): number => {
+    if (value <= 1) return 1;
+    // For values > 1, round to nearest multiple of 5, minimum 5
+    return Math.max(5, Math.round(value / 5) * 5);
+  };
+
+  // Helper function to map generation value back to slider value for display
+  const mapToSliderValue = (generation: number): number => {
+    if (generation === 1) return 1;
+    return generation;
+  };
+
   return (
     <div className="flex h-full flex-col items-center justify-center gap-[clamp(0.5rem,2vh,1.5rem)] px-2 py-[clamp(1rem,3vh,2rem)] text-center text-white sm:px-3 md:px-4">
       <button
@@ -73,10 +86,13 @@ const Parameters = () => {
         <input
           type="range"
           min="1"
-          max="50"
+          max="200"
           step="1"
-          value={targetGeneration}
-          onChange={(e) => setTargetGeneration(Number(e.target.value))}
+          value={mapToSliderValue(targetGeneration)}
+          onChange={(e) => {
+            const mappedValue = mapToValidGeneration(Number(e.target.value));
+            setTargetGeneration(mappedValue);
+          }}
           onClick={(e) => e.currentTarget.blur()}
           className="mb-[clamp(0.5rem,1.5vh,1rem)] h-[clamp(1rem,2vh,1.5rem)] w-full accent-purple-700"
         />

@@ -4,7 +4,7 @@ export const linkedinURL = "https://www.linkedin.com/in/hubert-stanowski/";
 export const portfolioURL = "https://hubertstanowski.netlify.app/";
 
 export const trainingGridSize = 10;
-export const simulationGridSize = 30;
+export const simulationGridSize = 20;
 
 export enum GameStatus {
   Running = "running",
@@ -17,4 +17,4 @@ export enum GameStatus {
 
 export const stepLimit = 10 * simulationGridSize;
 export const startingPlayerSize = 2;
-export const trainingPlayerSize = 10;
+export const trainingPlayerSize = 12;

@@ -56,19 +56,13 @@ export class Genome implements IGenome {
       }
     }
 
-    // Only add structural complexity occasionally
-    const structuralMutationChance = Math.random();
-
-    // Prefer adding connections over nodes (connections are less disruptive)
-    if (
-      structuralMutationChance < config.getAddConnectionMutationProbability()
-    ) {
+    // Try to add connection
+    if (Math.random() < config.getAddConnectionMutationProbability()) {
       this.addConnection(config, innovationHistory);
-    } else if (
-      structuralMutationChance <
-      config.getAddConnectionMutationProbability() +
-        config.getAddNodeMutationProbability()
-    ) {
+    }
+
+    // Try to add node (independent of connection addition)
+    if (Math.random() < config.getAddNodeMutationProbability()) {
       // Only add nodes if we have enough connections
       if (this.connections.length > 3) {
         this.addNode(config, innovationHistory);
