@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { GameStatus, SimulationContextType } from "@/types";
+import { GameStatus, SimulationContextType, Simulations } from "@/types";
 import { Player } from "@/snake";
 
 const noop = () => {};
@@ -37,6 +37,9 @@ const initialSimulationContext: SimulationContextType = {
 
   networkPlayer: new Player(false),
   setNetworkPlayer: noop,
+
+  selectedSimulation: Simulations.Snake,
+  setSelectedSimulation: noop,
 };
 
 const SimulationContext = createContext<SimulationContextType>(
@@ -81,6 +84,9 @@ export const SimulationProvider = ({
   const [networkPlayer, setNetworkPlayer] = useState<Player>(
     initialSimulationContext.networkPlayer,
   );
+  const [selectedSimulation, setSelectedSimulation] = useState(
+    initialSimulationContext.selectedSimulation,
+  );
 
   return (
     <SimulationContext.Provider
@@ -107,6 +113,8 @@ export const SimulationProvider = ({
         setBestScore,
         networkPlayer,
         setNetworkPlayer,
+        selectedSimulation,
+        setSelectedSimulation,
       }}
     >
       {children}

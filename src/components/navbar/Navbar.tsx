@@ -1,9 +1,11 @@
-import { useState } from "react";
 import { portfolioURL } from "@/constants";
+import { useSimulation } from "@/contexts";
+import { Simulations } from "@/types";
 import NavItems from "./NavItems";
 
 const Navbar = () => {
-  const [selectedSimulation, setSelectedSimulation] = useState("Snake");
+  const { selectedSimulation } = useSimulation();
+
   return (
     <header className="relative flex h-auto w-full items-center justify-center border-b border-black-300 bg-black/90">
       <div className="mx-2 grid w-full grid-cols-1 gap-y-[clamp(0.5rem,1vh,1rem)] py-[clamp(0.5rem,1vh,1rem)] sm:mx-3 sm:grid-cols-12 sm:gap-x-3 md:mx-4 md:gap-x-4 lg:mx-5 lg:gap-x-5">
@@ -16,7 +18,7 @@ const Navbar = () => {
           </a>
           <img
             src={
-              selectedSimulation === "Snake"
+              selectedSimulation === Simulations.Snake
                 ? "/assets/logo-snake.png"
                 : "/assets/logo-flappybird.png"
             }
@@ -25,10 +27,7 @@ const Navbar = () => {
           />
         </div>
         <div className="flex items-center justify-center sm:col-span-6">
-          <NavItems
-            selectedSimulation={selectedSimulation}
-            setSelectedSimulation={setSelectedSimulation}
-          />
+          <NavItems />
         </div>
         <div className="mx-2 flex items-center justify-center sm:col-span-3 sm:mx-4 sm:justify-end">
           <a

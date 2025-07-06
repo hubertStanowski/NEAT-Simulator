@@ -9,6 +9,11 @@ export enum GameStatus {
   Stopped = "stopped",
 }
 
+export enum Simulations {
+  Snake = "Snake",
+  FlappyBird = "FlappyBird",
+}
+
 export type SimulationContextType = {
   humanPlaying: boolean;
   setHumanPlaying: (value: boolean) => void;
@@ -42,4 +47,7 @@ export type SimulationContextType = {
 
   networkPlayer: Player;
   setNetworkPlayer: (player: Player) => void;
+
+  selectedSimulation: Simulations;
+  setSelectedSimulation: (simulation: Simulations) => void;
 };
