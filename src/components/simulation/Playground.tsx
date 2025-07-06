@@ -40,7 +40,7 @@ const Playground = () => {
         </div>
         <div className="md:col-span-6">
           <div className="grid-container flex items-center justify-center">
-            <div className="relative w-full py-2 sm:py-3 md:py-4">
+            <div className="relative w-full py-2">
               {selectedSimulation === Simulations.Snake && <Snake />}
               {selectedSimulation === Simulations.FlappyBird && <FlappyBird />}
             </div>
