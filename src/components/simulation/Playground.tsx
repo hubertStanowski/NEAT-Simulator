@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import Parameters from "./Parameters";
 import Snake from "./Snake";
+import FlappyBird from "./FlappyBird";
 import Status from "./Status";
 import { useSimulation } from "@/contexts";
+import { Simulations } from "@/types";
 
 const Playground = () => {
-  const { humanPlaying, setHumanPlaying } = useSimulation();
+  const { humanPlaying, setHumanPlaying, selectedSimulation } = useSimulation();
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -39,7 +41,8 @@ const Playground = () => {
         <div className="md:col-span-6">
           <div className="grid-container flex items-center justify-center">
             <div className="relative w-full py-2 sm:py-3 md:py-4">
-              <Snake />
+              {selectedSimulation === Simulations.Snake && <Snake />}
+              {selectedSimulation === Simulations.FlappyBird && <FlappyBird />}
             </div>
           </div>
         </div>
