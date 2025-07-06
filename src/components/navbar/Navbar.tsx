@@ -23,7 +23,7 @@ const Navbar = () => {
                 : "/assets/logo-flappybird.png"
             }
             alt="Logo"
-            className="ml-2 h-[clamp(1.5rem,3vh,2.5rem)] w-[clamp(1.5rem,3vh,2.5rem)] sm:ml-4"
+            className="ml-2 h-[clamp(2rem,4vh,3rem)] sm:ml-4"
           />
         </div>
         <div className="flex items-center justify-center sm:col-span-6">

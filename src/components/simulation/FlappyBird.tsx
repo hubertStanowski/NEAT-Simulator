@@ -1,6 +1,6 @@
 const FlappyBird = () => {
   return (
-    <div id="flappy-bird" className="h-full w-full">
+    <div id="flappybird" className="h-full w-full">
       FlappyBird
     </div>
   );
