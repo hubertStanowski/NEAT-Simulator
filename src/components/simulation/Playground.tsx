@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Parameters from './Parameters';
 import Snake from './snake/SnakeSimulation';
-import FlappyBird from './FlappyBird';
+import FlappyBird from './flappybird/FlappyBird';
 import Status from './Status';
 import { useSimulation } from '@/contexts';
 import { Simulations } from '@/types';
