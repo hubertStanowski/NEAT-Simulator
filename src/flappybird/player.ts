@@ -80,6 +80,8 @@ export class Player implements IPlayer {
   updateCanvasSize(canvasWidth: number, canvasHeight: number): void {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
+    this.x = canvasWidth * PLAYER_X_RATIO;
+    this.y = canvasHeight * PLAYER_Y_RATIO;
   }
 
   kill(): void {

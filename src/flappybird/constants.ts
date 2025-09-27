@@ -12,7 +12,7 @@ export const GRAVITY = 0.6;
 export const FLAP_SPEED = 10;
 
 // Pipes (responsive ratios instead of fixed sizes)
-export const PIPE_GAP_RATIO = 0.1875; // Gap as ratio of canvas height (180/960 = 0.1875)
+export const PIPE_GAP_RATIO = 0.2; // Gap as ratio of canvas height (180/960 = 0.1875)
 export const PIPE_SEPARATION_RATIO = 0.583; // Distance between pipe sets as ratio of canvas width (420/720 = 0.583)
 export const PIPE_WIDTH_RATIO = 0.108; // Pipe width as ratio of canvas width (78/720 = 0.108)
 

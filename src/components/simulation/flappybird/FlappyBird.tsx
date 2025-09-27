@@ -66,10 +66,7 @@ const FlappyBird = () => {
     if (event.code === 'Space') {
       event.preventDefault();
 
-      if (gameStatus === GameStatus.Idle) {
-        // Start new game
-        handleGameStart();
-      } else if (gameStatus === GameStatus.Running) {
+      if (gameStatus === GameStatus.Running) {
         // Flap during game
         player.flap();
       }
@@ -116,13 +113,6 @@ const FlappyBird = () => {
   };
 
   // Game Reset Handlers
-  const handleGameStart = () => {
-    player.reset();
-    pipes.reset();
-    setScore(0);
-    setGameStatus(GameStatus.Running);
-  };
-
   const handleGameReset = () => {
     player.reset();
     pipes.reset();
@@ -333,8 +323,10 @@ const FlappyBird = () => {
 
   // Initial draw
   useEffect(() => {
-    draw();
-  }, [imagesLoaded]);
+    if (imagesLoaded && canvasDimensions.width > 0) {
+      draw();
+    }
+  }, [imagesLoaded, canvasDimensions]);
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-sky-200">
