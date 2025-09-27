@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Parameters from './Parameters';
-import Snake from './Snake';
+import Snake from './snake/SnakeSimulation';
 import FlappyBird from './FlappyBird';
 import Status from './Status';
 import { useSimulation } from '@/contexts';

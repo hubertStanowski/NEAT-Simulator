@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSimulation } from '@/contexts';
-import { Player, styleEyes, Direction, getGridSize, Grid } from '@/snake';
+import { Player, Direction, Grid } from '@/snake';
+import SnakeGrid from './SnakeGrid';
 import { GameStatus } from '@/types';
 import { NeatConfig, Population } from '@/neat';
 
@@ -270,42 +271,7 @@ const Snake = () => {
     return setupKeyboardControls();
   }, [player, gameStatus, humanPlaying]);
 
-  return (
-    <div
-      id="snake"
-      className={`grid-cols-${getGridSize(grid)} grid-rows-${getGridSize(grid)} border-neutral-40 grid h-full w-full border-[0.01px]`}
-    >
-      {grid.map((row, r) => (
-        <div
-          key={r}
-          className={`col-span-${getGridSize(grid)} row-span-1 flex`}
-        >
-          {row.map((cell, c) => {
-            const isHead =
-              r === player.snake[0].row && c === player.snake[0].col;
-            const { eye1Style, eye2Style } = styleEyes(player.direction);
-            return (
-              <div
-                key={`${r}-${c}`}
-                style={{
-                  backgroundColor: `rgb(${cell[0]},${cell[1]},${cell[2]})`,
-                  position: 'relative',
-                }}
-                className="aspect-1 col-span-1 row-span-1 flex-1 border-[0.01px] border-neutral-400"
-              >
-                {isHead && (
-                  <>
-                    <div style={eye1Style} />
-                    <div style={eye2Style} />
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
+  return <SnakeGrid grid={grid} player={player} />;
 };
 
 export default Snake;
