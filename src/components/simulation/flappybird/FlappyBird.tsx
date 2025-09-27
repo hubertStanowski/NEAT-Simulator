@@ -238,12 +238,16 @@ const FlappyBird = () => {
 
     // Draw pipes
     for (const pipeSet of pipes.pipeSets) {
-      // Top pipe (flipped)
+      // Top pipe (flipped) - show top part of source image, cut off bottom
       const topPipe = pipeSet.topPipe.getBoundingBox();
       ctx.save();
       ctx.scale(1, -1);
       ctx.drawImage(
         pipeImg.current,
+        0,
+        0, // Source x, y (start from top of image)
+        pipeImg.current.width,
+        topPipe.height, // Source width, height (show top portion)
         topPipe.x,
         -topPipe.y - topPipe.height,
         topPipe.width,
@@ -251,10 +255,14 @@ const FlappyBird = () => {
       );
       ctx.restore();
 
-      // Bottom pipe (normal)
+      // Bottom pipe (normal) - show top part of source image, cut off bottom
       const bottomPipe = pipeSet.bottomPipe.getBoundingBox();
       ctx.drawImage(
         pipeImg.current,
+        0,
+        0, // Source x, y (start from top of image)
+        pipeImg.current.width,
+        bottomPipe.height, // Source width, height (show top portion)
         bottomPipe.x,
         bottomPipe.y,
         bottomPipe.width,
