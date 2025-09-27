@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { GameStatus } from "@/types";
 import { useSimulation } from "@/contexts";
+import type { Genome, NodeGene, ConnectionGene } from "@/neat";
 
 const Status = () => {
   const {
@@ -32,15 +33,15 @@ const Status = () => {
 
   const drawNetwork = (
     ctx: CanvasRenderingContext2D,
-    genome: any,
+    genome: Genome,
     canvas: HTMLCanvasElement,
   ) => {
     if (!genome.network) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // group nodes by layer
-    const layers: Record<number, any[]> = {};
-    genome.network.forEach((node: any) => {
+    const layers: Record<number, NodeGene[]> = {};
+    genome.network.forEach((node: NodeGene) => {
       layers[node.layer] ||= [];
       layers[node.layer].push(node);
     });
@@ -53,7 +54,7 @@ const Status = () => {
     const xOffset = (50 / 415) * canvas.height;
     const yOffset = yDiff * 8;
 
-    const nodePositions = new Map<any, { x: number; y: number }>();
+    const nodePositions = new Map<NodeGene, { x: number; y: number }>();
     Object.entries(layers).forEach(([layer, nodes]) => {
       const layerIndex = +layer;
       nodes.forEach((node, i) => {
@@ -66,7 +67,7 @@ const Status = () => {
     });
 
     // draw connections
-    genome.connections.forEach((c: any) => {
+    genome.connections.forEach((c: ConnectionGene) => {
       const inPos = nodePositions.get(c.input);
       const outPos = nodePositions.get(c.output);
       if (!inPos || !outPos) return;

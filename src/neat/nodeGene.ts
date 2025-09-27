@@ -1,9 +1,10 @@
 import { INodeGene } from "./types";
+import type { ConnectionGene } from "./connectionGene";
 
 export class NodeGene implements INodeGene {
   id: number;
   layer: number;
-  outputConnections: any[];
+  outputConnections: ConnectionGene[];
   inputSum: number;
   outputValue: number;
 
@@ -43,7 +44,7 @@ export class NodeGene implements INodeGene {
       this.outputValue = this.sigmoid(this.inputSum);
     }
 
-    for (let current_connection of this.outputConnections) {
+    for (const current_connection of this.outputConnections) {
       if (current_connection.enabled) {
         current_connection.output.inputSum +=
           current_connection.weight * this.outputValue;

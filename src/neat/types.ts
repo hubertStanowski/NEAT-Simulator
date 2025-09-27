@@ -18,7 +18,7 @@ export interface INeatConfig {
 export interface INodeGene {
   id: number;
   layer: number;
-  outputConnections: any[];
+  outputConnections: IConnectionGene[];
   inputSum: number;
   outputValue: number;
 }

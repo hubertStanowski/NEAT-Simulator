@@ -1,5 +1,6 @@
 import { NodeGene } from "./nodeGene";
 import { IInnovationHistory } from "./types";
+import type { Genome } from "./genome";
 
 export class InnovationHistory implements IInnovationHistory {
   input: number;
@@ -19,7 +20,7 @@ export class InnovationHistory implements IInnovationHistory {
     this.connectedInnovationNumbers = [...connectedInnovationNumbers];
   }
 
-  matches(genome: any, input: NodeGene, output: NodeGene): boolean {
+  matches(genome: Genome, input: NodeGene, output: NodeGene): boolean {
     if (input.id !== this.input || output.id !== this.output) {
       return false;
     }
