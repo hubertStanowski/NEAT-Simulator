@@ -247,15 +247,22 @@ const FlappyBird = () => {
     ctx.translate(player.x, player.y);
 
     if (!player.isFlying && player.isAlive) {
-      // Bird not flying, no rotation
-    } else if (player.velocity < 10) {
-      ctx.rotate((30 * Math.PI) / 180); // 30 degrees up
+      // Bird not flying, no rotation (face straight)
+      // No rotation needed - bird faces forward naturally
     } else {
-      const angle = Math.max(30 - (player.velocity - 10) * 12, -90);
+      // Rotation based on velocity
+      let angle;
+      if (player.velocity <= 0) {
+        // Bird is jumping/ascending - face upward at 30 degrees
+        angle = -30;
+      } else {
+        // Falling down - gradually face downward based on velocity
+        angle = Math.min(player.velocity * 3, 45);
+      }
       ctx.rotate((angle * Math.PI) / 180);
     }
 
-    ctx.drawImage(birdImg.current, -25, -18, 51, 36); // Center the bird (scaled up 1.5x)
+    ctx.drawImage(birdImg.current, -38, -27, 77, 54); // Center the bird (scaled up 2.25x - 50% bigger than before)
     ctx.restore();
 
     // Debug: Draw hitboxes (toggle with 'D' key)
@@ -366,7 +373,7 @@ const FlappyBird = () => {
       <div className="relative">
         <canvas
           ref={canvasRef}
-          className="h-[clamp(400px,70vh,800px)] w-full border border-gray-400 bg-sky-300"
+          className="h-[clamp(460px,81vh,920px)] w-full border border-gray-400 bg-sky-300"
           style={{ imageRendering: 'pixelated' }}
         />
       </div>

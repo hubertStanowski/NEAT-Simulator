@@ -56,13 +56,13 @@ export class Player implements IPlayer {
 
   getBoundingBox() {
     // Return bounding box that matches the actual visual representation
-    // Bird is drawn centered at (player.x - 25, player.y - 18) with dimensions 51x36 (scaled up 1.5x)
+    // Bird is drawn centered at (player.x - 38, player.y - 27) with dimensions 77x54 (scaled up 2.25x)
     // Using slightly smaller hitbox for better gameplay feel
     return {
-      x: this.x - 22, // Visual center - small buffer
-      y: this.y - 15, // Visual center - small buffer
-      width: 44, // Slightly smaller than visual (51)
-      height: 30, // Slightly smaller than visual (36)
+      x: this.x - 33, // Visual center - small buffer
+      y: this.y - 23, // Visual center - small buffer
+      width: 66, // Slightly smaller than visual (77)
+      height: 45, // Slightly smaller than visual (54)
     };
   }
 
