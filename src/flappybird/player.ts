@@ -41,13 +41,14 @@ export class Player implements IPlayer {
   }
 
   getBoundingBox() {
-    // Return a simple bounding box for collision detection
-    // Adjustments based on the Python collision detection
+    // Return bounding box that matches the actual visual representation
+    // Bird is drawn centered at (player.x - 17, player.y - 12) with dimensions 34x24
+    // Using slightly smaller hitbox for better gameplay feel
     return {
-      x: this.x + 5,
-      y: this.y + 10,
-      width: 25, // Approximate bird width
-      height: 15, // Approximate bird height
+      x: this.x - 15, // Visual center - small buffer
+      y: this.y - 10, // Visual center - small buffer
+      width: 30, // Slightly smaller than visual (34)
+      height: 20, // Slightly smaller than visual (24)
     };
   }
 

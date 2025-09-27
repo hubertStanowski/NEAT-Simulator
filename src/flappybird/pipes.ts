@@ -88,7 +88,7 @@ export class PipeSet implements IPipeSet {
       playerBox.y + playerBox.height > bottomPipeBox.y;
 
     // Check if player flew off the top of the screen
-    const offScreenTop = this.topPipe.x === player.x && player.y < 0;
+    const offScreenTop = player.y < 0;
 
     return topCollision || bottomCollision || offScreenTop;
   }

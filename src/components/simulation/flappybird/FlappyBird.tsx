@@ -20,6 +20,7 @@ const FlappyBird = () => {
   const [ground] = useState(new Ground());
   const [score, setScore] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [showDebugHitboxes, setShowDebugHitboxes] = useState(false);
 
   // Image objects
   const backgroundImg = useRef<HTMLImageElement>(new Image());
@@ -93,6 +94,11 @@ const FlappyBird = () => {
         if (gameState === GameState.RUNNING) {
           player.flap();
         }
+      }
+
+      if (event.code === 'KeyD') {
+        // Toggle debug hitboxes with 'D' key
+        setShowDebugHitboxes((prev) => !prev);
       }
     };
 
@@ -205,6 +211,51 @@ const FlappyBird = () => {
     ctx.drawImage(birdImg.current, -17, -12, 34, 24); // Center the bird
     ctx.restore();
 
+    // Debug: Draw hitboxes (toggle with 'D' key)
+    if (showDebugHitboxes && gameState === GameState.RUNNING) {
+      const playerBox = player.getBoundingBox();
+
+      // Draw bird hitbox
+      ctx.strokeStyle = '#ff0000';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        playerBox.x,
+        playerBox.y,
+        playerBox.width,
+        playerBox.height
+      );
+
+      // Draw pipe hitboxes
+      ctx.strokeStyle = '#00ff00';
+      for (const pipeSet of pipes.pipeSets) {
+        const topPipeBox = pipeSet.topPipe.getBoundingBox();
+        const bottomPipeBox = pipeSet.bottomPipe.getBoundingBox();
+
+        ctx.strokeRect(
+          topPipeBox.x,
+          topPipeBox.y,
+          topPipeBox.width,
+          topPipeBox.height
+        );
+        ctx.strokeRect(
+          bottomPipeBox.x,
+          bottomPipeBox.y,
+          bottomPipeBox.width,
+          bottomPipeBox.height
+        );
+      }
+
+      // Draw ground hitbox
+      ctx.strokeStyle = '#0000ff';
+      const groundBox = ground.getBoundingBox();
+      ctx.strokeRect(
+        groundBox.x,
+        groundBox.y,
+        groundBox.width,
+        groundBox.height
+      );
+    }
+
     // Draw score
     ctx.fillStyle = '#000000';
     ctx.font = '48px Arial';
@@ -217,6 +268,12 @@ const FlappyBird = () => {
       ctx.font = '24px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('Press SPACE to start', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+      ctx.font = '16px Arial';
+      ctx.fillText(
+        'Press D to toggle debug hitboxes',
+        WINDOW_WIDTH / 2,
+        WINDOW_HEIGHT / 2 + 30
+      );
     } else if (gameState === GameState.GAME_OVER) {
       ctx.fillStyle = '#ff0000';
       ctx.font = '32px Arial';
@@ -228,6 +285,12 @@ const FlappyBird = () => {
         'Press SPACE to restart',
         WINDOW_WIDTH / 2,
         WINDOW_HEIGHT / 2
+      );
+      ctx.font = '16px Arial';
+      ctx.fillText(
+        'Press D to toggle debug hitboxes',
+        WINDOW_WIDTH / 2,
+        WINDOW_HEIGHT / 2 + 30
       );
     }
   };
