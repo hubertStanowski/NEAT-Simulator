@@ -122,6 +122,7 @@ const FlappyBird = () => {
     setScore(0);
     setGameStatus(GameStatus.Idle);
     setIsPlayerAlive(true);
+    draw();
   };
 
   const handleResetAndStart = () => {
@@ -130,6 +131,7 @@ const FlappyBird = () => {
     setScore(0);
     setGameStatus(GameStatus.Running);
     setIsPlayerAlive(true);
+    draw();
   };
 
   // Mode Switching Handlers

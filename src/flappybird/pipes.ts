@@ -158,9 +158,10 @@ export class DoublePipeSet {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
     const pipeSeparation = canvasWidth * PIPE_SEPARATION_RATIO;
+    const initialOffset = -canvasWidth * 0.2;
     this.pipeSets = [
-      new PipeSet(0, canvasWidth, canvasHeight),
-      new PipeSet(pipeSeparation, canvasWidth, canvasHeight),
+      new PipeSet(initialOffset, canvasWidth, canvasHeight),
+      new PipeSet(initialOffset + pipeSeparation, canvasWidth, canvasHeight),
     ];
     this.score = 0;
   }
@@ -197,9 +198,14 @@ export class DoublePipeSet {
 
   reset(): void {
     const pipeSeparation = this.canvasWidth * PIPE_SEPARATION_RATIO;
+    const initialOffset = -this.canvasWidth * 0.2;
     this.pipeSets = [
-      new PipeSet(0, this.canvasWidth, this.canvasHeight),
-      new PipeSet(pipeSeparation, this.canvasWidth, this.canvasHeight),
+      new PipeSet(initialOffset, this.canvasWidth, this.canvasHeight),
+      new PipeSet(
+        initialOffset + pipeSeparation,
+        this.canvasWidth,
+        this.canvasHeight
+      ),
     ];
     this.score = 0;
   }
@@ -207,5 +213,13 @@ export class DoublePipeSet {
   updateCanvasSize(canvasWidth: number, canvasHeight: number): void {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
+
+    // Recreate pipes with new dimensions and proper positioning
+    const pipeSeparation = canvasWidth * PIPE_SEPARATION_RATIO;
+    const initialOffset = -canvasWidth * 0.2;
+    this.pipeSets = [
+      new PipeSet(initialOffset, canvasWidth, canvasHeight),
+      new PipeSet(initialOffset + pipeSeparation, canvasWidth, canvasHeight),
+    ];
   }
 }
