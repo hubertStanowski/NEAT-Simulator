@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSimulation } from '@/contexts';
 import {
   Player,
   DoublePipeSet,
   Ground,
-  GameState,
   BACKGROUND_Y_OFFSET_RATIO,
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
@@ -12,14 +12,23 @@ import {
   GROUND_IMG,
   PIPE_IMG,
 } from '@/flappybird';
+import { GameStatus } from '@/types';
 
 const FlappyBird = () => {
+  const {
+    humanPlaying,
+    speed,
+    gameStatus,
+    setGameStatus,
+    setScore,
+    bestScore,
+    setBestScore,
+  } = useSimulation();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gameState, setGameState] = useState<GameState>(GameState.IDLE);
   const [player] = useState(new Player());
   const [pipes] = useState(new DoublePipeSet());
   const [ground] = useState(new Ground());
-  const [score, setScore] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [showDebugHitboxes, setShowDebugHitboxes] = useState(false); // Set to true for debugging
   const [canvasDimensions, setCanvasDimensions] = useState({
@@ -83,60 +92,91 @@ const FlappyBird = () => {
     ground.updateCanvasSize(canvasDimensions.width, canvasDimensions.height);
   }, [canvasDimensions, player, pipes, ground]);
 
-  // Game loop
-  useEffect(() => {
-    if (gameState !== GameState.RUNNING || !imagesLoaded) return;
+  // Keyboard Control Handlers
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.code === 'Space') {
+      event.preventDefault();
 
-    const gameLoop = () => {
-      if (player.isFlying || gameState === GameState.RUNNING) {
-        pipes.update(player.x);
+      if (gameStatus === GameStatus.Idle) {
+        // Start new game
+        handleGameStart();
+      } else if (gameStatus === GameStatus.Running) {
+        // Flap during game
+        player.flap();
       }
+    }
 
-      if (player.isAlive || gameState === GameState.RUNNING) {
-        ground.update();
-      }
+    if (event.code === 'KeyD') {
+      // Toggle debug hitboxes with 'D' key
+      setShowDebugHitboxes((prev) => !prev);
+    }
+  };
 
-      if (gameState === GameState.RUNNING) {
-        player.update();
-        checkCollisions();
-        setScore(pipes.score);
-      }
-
-      draw();
-    };
-
-    const interval = setInterval(gameLoop, 1000 / 60); // 60 FPS
-    return () => clearInterval(interval);
-  }, [gameState, player, pipes, ground, imagesLoaded]);
-
-  // Keyboard controls
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
-        event.preventDefault();
-
-        if (gameState === GameState.IDLE || gameState === GameState.GAME_OVER) {
-          // Start new game
-          player.reset();
-          pipes.reset();
-          setScore(0);
-          setGameState(GameState.RUNNING);
-        }
-
-        if (gameState === GameState.RUNNING) {
-          player.flap();
-        }
-      }
-
-      if (event.code === 'KeyD') {
-        // Toggle debug hitboxes with 'D' key
-        setShowDebugHitboxes((prev) => !prev);
-      }
-    };
-
+  const setupKeyboardControls = () => {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [gameState, player, pipes]);
+  };
+
+  // Game Loop Handlers
+  const handleGameStep = () => {
+    if (player.isFlying || gameStatus === GameStatus.Running) {
+      pipes.update(player.x);
+    }
+
+    if (player.isAlive || gameStatus === GameStatus.Running) {
+      ground.update();
+    }
+
+    if (gameStatus === GameStatus.Running) {
+      player.update();
+      checkCollisions();
+      setScore(pipes.score);
+
+      // Check if player died
+      if (!player.isAlive) {
+        setGameStatus(GameStatus.Idle);
+        // Update best score if current score is better
+        if (pipes.score > bestScore) {
+          setBestScore(pipes.score);
+        }
+      }
+    }
+
+    draw();
+  };
+
+  const setupGameLoop = () => {
+    // Use speed from context: higher speed = faster game = shorter interval
+    const interval = setInterval(handleGameStep, Math.max(10, 1000 / speed));
+    return () => clearInterval(interval);
+  };
+
+  // Game Reset Handlers
+  const handleGameStart = () => {
+    player.reset();
+    pipes.reset();
+    setScore(0);
+    setGameStatus(GameStatus.Running);
+  };
+
+  const handleGameReset = () => {
+    player.reset();
+    pipes.reset();
+    setScore(0);
+    setGameStatus(GameStatus.Idle);
+  };
+
+  // Mode Switching Handlers
+  const handleModeSwitch = () => {
+    if (humanPlaying) {
+      // Switch to human mode
+      setGameStatus(GameStatus.Idle);
+    } else {
+      // Switch to AI mode - for now just go to idle
+      // TODO: Implement AI training mode when NEAT is integrated
+      setGameStatus(GameStatus.Idle);
+    }
+  };
 
   const checkCollisions = () => {
     if (!player.isAlive) return;
@@ -144,14 +184,12 @@ const FlappyBird = () => {
     // Check pipe collisions
     if (pipes.collidesWithPlayer(player)) {
       player.kill();
-      setGameState(GameState.GAME_OVER);
       return;
     }
 
     // Check ground collision
     if (ground.collidesWithPlayer(player)) {
       player.kill();
-      setGameState(GameState.GAME_OVER);
       return;
     }
 
@@ -266,7 +304,7 @@ const FlappyBird = () => {
     ctx.restore();
 
     // Debug: Draw hitboxes (toggle with 'D' key)
-    if (showDebugHitboxes && gameState === GameState.RUNNING) {
+    if (showDebugHitboxes && gameStatus === GameStatus.Running) {
       const playerBox = player.getBoundingBox();
 
       // Draw bird hitbox
@@ -317,51 +355,64 @@ const FlappyBird = () => {
     ctx.font = `${canvasDimensions.height * 0.075}px Arial`; // 0.075 = 72/960
     ctx.textAlign = 'center';
     ctx.fillText(
-      score.toString(),
+      pipes.score.toString(),
       canvasDimensions.width / 2,
       canvasDimensions.height * 0.078
     ); // 0.078 = 75/960
 
     // Draw game state text (responsive)
-    if (gameState === GameState.IDLE) {
+    if (gameStatus === GameStatus.Idle) {
       ctx.fillStyle = '#000000';
       ctx.font = `${canvasDimensions.height * 0.0375}px Arial`; // 0.0375 = 36/960
       ctx.textAlign = 'center';
-      ctx.fillText(
-        'Press SPACE to start',
-        canvasDimensions.width / 2,
-        canvasDimensions.height / 2
-      );
-      ctx.font = `${canvasDimensions.height * 0.025}px Arial`; // 0.025 = 24/960
-      ctx.fillText(
-        'Press D to toggle debug hitboxes',
-        canvasDimensions.width / 2,
-        canvasDimensions.height / 2 + canvasDimensions.height * 0.047 // 0.047 = 45/960
-      );
-    } else if (gameState === GameState.GAME_OVER) {
-      ctx.fillStyle = '#ff0000';
-      ctx.font = `${canvasDimensions.height * 0.05}px Arial`; // 0.05 = 48/960
-      ctx.textAlign = 'center';
-      ctx.fillText(
-        'GAME OVER',
-        canvasDimensions.width / 2,
-        canvasDimensions.height / 2 - canvasDimensions.height * 0.078
-      ); // 0.078 = 75/960
-      ctx.fillStyle = '#000000';
-      ctx.font = `${canvasDimensions.height * 0.0375}px Arial`;
-      ctx.fillText(
-        'Press SPACE to restart',
-        canvasDimensions.width / 2,
-        canvasDimensions.height / 2
-      );
-      ctx.font = `${canvasDimensions.height * 0.025}px Arial`;
-      ctx.fillText(
-        'Press D to toggle debug hitboxes',
-        canvasDimensions.width / 2,
-        canvasDimensions.height / 2 + canvasDimensions.height * 0.047
-      );
+
+      if (humanPlaying) {
+        ctx.fillText(
+          'Press SPACE to start',
+          canvasDimensions.width / 2,
+          canvasDimensions.height / 2
+        );
+        ctx.font = `${canvasDimensions.height * 0.025}px Arial`; // 0.025 = 24/960
+        ctx.fillText(
+          'Press D to toggle debug hitboxes',
+          canvasDimensions.width / 2,
+          canvasDimensions.height / 2 + canvasDimensions.height * 0.047 // 0.047 = 45/960
+        );
+      } else {
+        ctx.fillText(
+          'AI Training Mode - Game Stopped',
+          canvasDimensions.width / 2,
+          canvasDimensions.height / 2
+        );
+      }
     }
   };
+
+  // Main game loop - handles bird movement and game state
+  useEffect(() => {
+    if (gameStatus !== GameStatus.Running || !imagesLoaded) return;
+    return setupGameLoop();
+  }, [gameStatus, imagesLoaded, speed]);
+
+  // Setup keyboard controls when human is playing
+  useEffect(() => {
+    if (!humanPlaying) return;
+    if (gameStatus !== GameStatus.Running && gameStatus !== GameStatus.Idle)
+      return;
+    return setupKeyboardControls();
+  }, [gameStatus, humanPlaying]);
+
+  // Handle game reset
+  useEffect(() => {
+    if (gameStatus !== GameStatus.Reset) return;
+    handleGameReset();
+  }, [gameStatus]);
+
+  // Switch between human and AI modes
+  useEffect(() => {
+    if (gameStatus === GameStatus.Idle) return;
+    handleModeSwitch();
+  }, [humanPlaying]);
 
   // Initial draw
   useEffect(() => {
