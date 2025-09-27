@@ -1,12 +1,12 @@
 import { IPipe, IPipeSet } from './types';
 import { Player } from './player';
 import {
-  WINDOW_WIDTH,
-  WINDOW_HEIGHT,
   SCROLL_SPEED,
-  PIPE_GAP,
-  PIPE_SEPARATION,
-  PIPE_WIDTH,
+  PIPE_GAP_RATIO,
+  PIPE_SEPARATION_RATIO,
+  PIPE_WIDTH_RATIO,
+  DEFAULT_CANVAS_WIDTH,
+  DEFAULT_CANVAS_HEIGHT,
 } from './constants';
 
 export class Pipe implements IPipe {
@@ -15,18 +15,31 @@ export class Pipe implements IPipe {
   width: number;
   height: number;
   isTop: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
 
-  constructor(x: number, y: number, isTop: boolean) {
+  constructor(
+    x: number,
+    y: number,
+    isTop: boolean,
+    canvasWidth: number = DEFAULT_CANVAS_WIDTH,
+    canvasHeight: number = DEFAULT_CANVAS_HEIGHT
+  ) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
     this.x = x;
-    this.width = PIPE_WIDTH;
+    this.width = canvasWidth * PIPE_WIDTH_RATIO;
     this.isTop = isTop;
 
+    const pipeGap = canvasHeight * PIPE_GAP_RATIO;
+    const groundHeight = canvasHeight * 0.172; // Same ratio as ground
+
     if (isTop) {
-      this.height = y - PIPE_GAP / 2;
+      this.height = y - pipeGap / 2;
       this.y = 0;
     } else {
-      this.height = WINDOW_HEIGHT - (y + PIPE_GAP / 2) - 110; // Account for ground height
-      this.y = y + PIPE_GAP / 2;
+      this.height = canvasHeight - (y + pipeGap / 2) - groundHeight;
+      this.y = y + pipeGap / 2;
     }
   }
 
@@ -48,14 +61,35 @@ export class PipeSet implements IPipeSet {
   topPipe: Pipe;
   bottomPipe: Pipe;
   passed: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
 
-  constructor(xOffset: number = 0) {
-    // Random pipe height between -200 and 150 (similar to Python)
-    const pipeHeight = Math.random() * 350 - 200;
-    const centerY = WINDOW_HEIGHT / 2 + pipeHeight;
+  constructor(
+    xOffset: number = 0,
+    canvasWidth: number = DEFAULT_CANVAS_WIDTH,
+    canvasHeight: number = DEFAULT_CANVAS_HEIGHT
+  ) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
 
-    this.topPipe = new Pipe(WINDOW_WIDTH + xOffset, centerY, true);
-    this.bottomPipe = new Pipe(WINDOW_WIDTH + xOffset, centerY, false);
+    // Random pipe height as ratio of canvas height (was -300 to 225, now as ratios)
+    const pipeHeightRatio = Math.random() * 0.547 - 0.3125; // 0.547 = 525/960, 0.3125 = 300/960
+    const centerY = canvasHeight / 2 + canvasHeight * pipeHeightRatio;
+
+    this.topPipe = new Pipe(
+      canvasWidth + xOffset,
+      centerY,
+      true,
+      canvasWidth,
+      canvasHeight
+    );
+    this.bottomPipe = new Pipe(
+      canvasWidth + xOffset,
+      centerY,
+      false,
+      canvasWidth,
+      canvasHeight
+    );
     this.passed = false;
   }
 
@@ -105,9 +139,20 @@ export class PipeSet implements IPipeSet {
 export class DoublePipeSet {
   pipeSets: PipeSet[];
   score: number;
+  canvasWidth: number;
+  canvasHeight: number;
 
-  constructor() {
-    this.pipeSets = [new PipeSet(), new PipeSet(PIPE_SEPARATION)];
+  constructor(
+    canvasWidth: number = DEFAULT_CANVAS_WIDTH,
+    canvasHeight: number = DEFAULT_CANVAS_HEIGHT
+  ) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
+    const pipeSeparation = canvasWidth * PIPE_SEPARATION_RATIO;
+    this.pipeSets = [
+      new PipeSet(0, canvasWidth, canvasHeight),
+      new PipeSet(pipeSeparation, canvasWidth, canvasHeight),
+    ];
     this.score = 0;
   }
 
@@ -129,7 +174,7 @@ export class DoublePipeSet {
     if (needsNewPipe) {
       // Remove the first pipe set and add a new one
       this.pipeSets.shift();
-      this.pipeSets.push(new PipeSet());
+      this.pipeSets.push(new PipeSet(0, this.canvasWidth, this.canvasHeight));
     }
   }
 
@@ -142,7 +187,16 @@ export class DoublePipeSet {
   }
 
   reset(): void {
-    this.pipeSets = [new PipeSet(), new PipeSet(PIPE_SEPARATION)];
+    const pipeSeparation = this.canvasWidth * PIPE_SEPARATION_RATIO;
+    this.pipeSets = [
+      new PipeSet(0, this.canvasWidth, this.canvasHeight),
+      new PipeSet(pipeSeparation, this.canvasWidth, this.canvasHeight),
+    ];
     this.score = 0;
+  }
+
+  updateCanvasSize(canvasWidth: number, canvasHeight: number): void {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
   }
 }

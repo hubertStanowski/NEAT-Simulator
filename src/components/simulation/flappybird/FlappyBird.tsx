@@ -4,8 +4,9 @@ import {
   DoublePipeSet,
   Ground,
   GameState,
-  WINDOW_WIDTH,
-  WINDOW_HEIGHT,
+  BACKGROUND_Y_OFFSET_RATIO,
+  DEFAULT_CANVAS_WIDTH,
+  DEFAULT_CANVAS_HEIGHT,
   BACKGROUND_IMG,
   BIRD_IMG,
   GROUND_IMG,
@@ -20,13 +21,37 @@ const FlappyBird = () => {
   const [ground] = useState(new Ground());
   const [score, setScore] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [showDebugHitboxes, setShowDebugHitboxes] = useState(false);
+  const [showDebugHitboxes, setShowDebugHitboxes] = useState(false); // Set to true for debugging
+  const [canvasDimensions, setCanvasDimensions] = useState({
+    width: DEFAULT_CANVAS_WIDTH,
+    height: DEFAULT_CANVAS_HEIGHT,
+  }); // Default dimensions
 
   // Image objects
   const backgroundImg = useRef<HTMLImageElement>(new Image());
   const birdImg = useRef<HTMLImageElement>(new Image());
   const groundImg = useRef<HTMLImageElement>(new Image());
   const pipeImg = useRef<HTMLImageElement>(new Image());
+
+  // Set up canvas dimensions dynamically
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const updateCanvasDimensions = () => {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        setCanvasDimensions({
+          width: canvas.clientWidth,
+          height: canvas.clientHeight,
+        });
+      };
+
+      updateCanvasDimensions();
+      window.addEventListener('resize', updateCanvasDimensions);
+
+      return () => window.removeEventListener('resize', updateCanvasDimensions);
+    }
+  }, []);
 
   // Load images
   useEffect(() => {
@@ -50,6 +75,13 @@ const FlappyBird = () => {
     groundImg.current.src = GROUND_IMG;
     pipeImg.current.src = PIPE_IMG;
   }, []);
+
+  // Update game objects when canvas dimensions change
+  useEffect(() => {
+    player.updateCanvasSize(canvasDimensions.width, canvasDimensions.height);
+    pipes.updateCanvasSize(canvasDimensions.width, canvasDimensions.height);
+    ground.updateCanvasSize(canvasDimensions.width, canvasDimensions.height);
+  }, [canvasDimensions, player, pipes, ground]);
 
   // Game loop
   useEffect(() => {
@@ -134,22 +166,39 @@ const FlappyBird = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // Fill canvas with background color to prevent edge gaps
+    ctx.fillStyle = '#010103';
+    ctx.fillRect(0, 0, canvasDimensions.width, canvasDimensions.height);
 
     if (!imagesLoaded) {
       // Show loading screen
-      ctx.fillStyle = '#70c5ce';
-      ctx.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-      ctx.fillStyle = '#000000';
-      ctx.font = '24px Arial';
+      ctx.fillStyle = '#010103';
+      ctx.font = `${canvasDimensions.height * 0.0375}px Arial`; // Responsive font size
       ctx.textAlign = 'center';
-      ctx.fillText('Loading...', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+      ctx.fillText(
+        'Loading...',
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2
+      );
       return;
     }
+    // Draw background (moved up to show bottom portion, with slight overscaling to prevent gaps)
+    const backgroundYOffset =
+      canvasDimensions.height * BACKGROUND_Y_OFFSET_RATIO;
+    const backgroundScale = 1.02; // Slight overscale to prevent edge gaps
+    const scaledWidth = canvasDimensions.width * backgroundScale;
+    const scaledHeight = canvasDimensions.height * backgroundScale;
+    const offsetX = (scaledWidth - canvasDimensions.width) / -2;
+    const offsetY =
+      backgroundYOffset - (scaledHeight - canvasDimensions.height) / 2;
 
-    // Draw background
-    ctx.drawImage(backgroundImg.current, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    ctx.drawImage(
+      backgroundImg.current,
+      offsetX,
+      offsetY,
+      scaledWidth,
+      scaledHeight
+    );
 
     // Draw pipes
     for (const pipeSet of pipes.pipeSets) {
@@ -177,23 +226,21 @@ const FlappyBird = () => {
       );
     }
 
-    // Draw ground (repeat to fill screen for scrolling effect)
+    // Draw ground with seamless scrolling and overlap to prevent gaps
     const groundBox = ground.getBoundingBox();
-    ctx.drawImage(
-      groundImg.current,
-      groundBox.x,
-      groundBox.y,
-      groundBox.width,
-      groundBox.height
-    );
-    // Draw second ground image for seamless scrolling
-    ctx.drawImage(
-      groundImg.current,
-      groundBox.x + groundBox.width,
-      groundBox.y,
-      groundBox.width,
-      groundBox.height
-    );
+    const groundOverlap = 2; // Small overlap to prevent gaps
+
+    // Draw multiple ground segments to ensure full coverage
+    const numSegments = Math.ceil(canvasDimensions.width / groundBox.width) + 2;
+    for (let i = 0; i < numSegments; i++) {
+      ctx.drawImage(
+        groundImg.current,
+        groundBox.x + i * groundBox.width - groundOverlap,
+        groundBox.y,
+        groundBox.width + groundOverlap * 2,
+        groundBox.height + 2 // Slightly taller to prevent bottom gaps
+      );
+    }
 
     // Draw player (bird) with rotation based on velocity
     ctx.save();
@@ -208,7 +255,7 @@ const FlappyBird = () => {
       ctx.rotate((angle * Math.PI) / 180);
     }
 
-    ctx.drawImage(birdImg.current, -17, -12, 34, 24); // Center the bird
+    ctx.drawImage(birdImg.current, -25, -18, 51, 36); // Center the bird (scaled up 1.5x)
     ctx.restore();
 
     // Debug: Draw hitboxes (toggle with 'D' key)
@@ -227,6 +274,7 @@ const FlappyBird = () => {
 
       // Draw pipe hitboxes
       ctx.strokeStyle = '#00ff00';
+      ctx.lineWidth = 1;
       for (const pipeSet of pipes.pipeSets) {
         const topPipeBox = pipeSet.topPipe.getBoundingBox();
         const bottomPipeBox = pipeSet.bottomPipe.getBoundingBox();
@@ -247,6 +295,7 @@ const FlappyBird = () => {
 
       // Draw ground hitbox
       ctx.strokeStyle = '#0000ff';
+      ctx.lineWidth = 1;
       const groundBox = ground.getBoundingBox();
       ctx.strokeRect(
         groundBox.x,
@@ -256,41 +305,53 @@ const FlappyBird = () => {
       );
     }
 
-    // Draw score
+    // Draw score (responsive size)
     ctx.fillStyle = '#000000';
-    ctx.font = '48px Arial';
+    ctx.font = `${canvasDimensions.height * 0.075}px Arial`; // 0.075 = 72/960
     ctx.textAlign = 'center';
-    ctx.fillText(score.toString(), WINDOW_WIDTH / 2, 50);
+    ctx.fillText(
+      score.toString(),
+      canvasDimensions.width / 2,
+      canvasDimensions.height * 0.078
+    ); // 0.078 = 75/960
 
-    // Draw game state text
+    // Draw game state text (responsive)
     if (gameState === GameState.IDLE) {
       ctx.fillStyle = '#000000';
-      ctx.font = '24px Arial';
+      ctx.font = `${canvasDimensions.height * 0.0375}px Arial`; // 0.0375 = 36/960
       ctx.textAlign = 'center';
-      ctx.fillText('Press SPACE to start', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-      ctx.font = '16px Arial';
+      ctx.fillText(
+        'Press SPACE to start',
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2
+      );
+      ctx.font = `${canvasDimensions.height * 0.025}px Arial`; // 0.025 = 24/960
       ctx.fillText(
         'Press D to toggle debug hitboxes',
-        WINDOW_WIDTH / 2,
-        WINDOW_HEIGHT / 2 + 30
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2 + canvasDimensions.height * 0.047 // 0.047 = 45/960
       );
     } else if (gameState === GameState.GAME_OVER) {
       ctx.fillStyle = '#ff0000';
-      ctx.font = '32px Arial';
+      ctx.font = `${canvasDimensions.height * 0.05}px Arial`; // 0.05 = 48/960
       ctx.textAlign = 'center';
-      ctx.fillText('GAME OVER', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 50);
+      ctx.fillText(
+        'GAME OVER',
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2 - canvasDimensions.height * 0.078
+      ); // 0.078 = 75/960
       ctx.fillStyle = '#000000';
-      ctx.font = '24px Arial';
+      ctx.font = `${canvasDimensions.height * 0.0375}px Arial`;
       ctx.fillText(
         'Press SPACE to restart',
-        WINDOW_WIDTH / 2,
-        WINDOW_HEIGHT / 2
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2
       );
-      ctx.font = '16px Arial';
+      ctx.font = `${canvasDimensions.height * 0.025}px Arial`;
       ctx.fillText(
         'Press D to toggle debug hitboxes',
-        WINDOW_WIDTH / 2,
-        WINDOW_HEIGHT / 2 + 30
+        canvasDimensions.width / 2,
+        canvasDimensions.height / 2 + canvasDimensions.height * 0.047
       );
     }
   };
@@ -305,9 +366,7 @@ const FlappyBird = () => {
       <div className="relative">
         <canvas
           ref={canvasRef}
-          width={WINDOW_WIDTH}
-          height={WINDOW_HEIGHT}
-          className="border border-gray-400 bg-sky-300"
+          className="h-[clamp(400px,70vh,800px)] w-full border border-gray-400 bg-sky-300"
           style={{ imageRendering: 'pixelated' }}
         />
       </div>
