@@ -164,7 +164,15 @@ const Snake = () => {
   };
 
   const resetPopulation = () => {
-    setPopulation(new Population(config, populationSize));
+    const newPopulation = new Population(config, populationSize);
+    setPopulation(newPopulation);
+
+    // Reset all simulation state values
+    setNetworkPlayer(player);
+    setCurrentGeneration(0);
+    setAliveCount(populationSize);
+    setScore(0);
+    setBestScore(0);
     setTrainedGenerations(0);
   };
 
