@@ -27,6 +27,7 @@ const Snake = () => {
     new Population(config, populationSize),
   );
 
+  // Reset population when population size changes
   useEffect(() => {
     setPopulation(new Population(config, populationSize));
     if (gameStatus !== GameStatus.Idle && !humanPlaying) {
@@ -35,6 +36,7 @@ const Snake = () => {
     console.log("NEW POPULATION");
   }, [populationSize]);
 
+  // Main training loop - evolve population and switch to best player when target reached
   useEffect(() => {
     if (gameStatus !== GameStatus.Training) return;
     const interval = setInterval(() => {
@@ -76,6 +78,7 @@ const Snake = () => {
     return () => clearInterval(interval);
   }, [population, gameStatus, targetGeneration]);
 
+  // Setup keyboard controls when human is playing
   useEffect(() => {
     if (gameStatus !== GameStatus.Running || !humanPlaying) return;
     const onKey = (e: KeyboardEvent) => {
@@ -102,6 +105,7 @@ const Snake = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [player, gameStatus, humanPlaying]);
 
+  // Main game loop - handles snake movement for both human and AI players
   useEffect(() => {
     if (gameStatus !== GameStatus.Running) return;
 
@@ -149,6 +153,7 @@ const Snake = () => {
     return () => clearInterval(iv);
   }, [player, gameStatus, humanPlaying, speed, population]);
 
+  // Handle game reset - create fresh player or population
   useEffect(() => {
     if (gameStatus !== GameStatus.Reset) return;
 
@@ -164,6 +169,7 @@ const Snake = () => {
     setGameStatus(GameStatus.Idle);
   }, [gameStatus]);
 
+  // Switch between human and AI modes
   useEffect(() => {
     if (gameStatus === GameStatus.Idle) return;
     if (humanPlaying) {
@@ -177,6 +183,7 @@ const Snake = () => {
     }
   }, [humanPlaying]);
 
+  // Switch to specific generation player when target generation changes
   useEffect(() => {
     if (humanPlaying || gameStatus === GameStatus.Idle) return;
     if (population.generation - 1 >= targetGeneration) {
