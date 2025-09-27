@@ -1,5 +1,6 @@
 import { GameStatus } from '@/types';
 import { useSimulation } from '@/contexts';
+import { useMemo } from 'react';
 
 const Parameters = () => {
   const {
@@ -28,6 +29,26 @@ const Parameters = () => {
     if (generation === 1) return 1;
     return generation;
   };
+
+  // Memoize button visibility to prevent flickering during rapid status changes
+  const buttonStates = useMemo(() => {
+    // Treat Reset status as equivalent to the previous stable state to prevent flicker
+    const effectiveGameStatus =
+      gameStatus === GameStatus.Reset ? GameStatus.Idle : gameStatus;
+
+    return {
+      showStartTraining:
+        !humanPlaying &&
+        (effectiveGameStatus === GameStatus.Idle ||
+          effectiveGameStatus === GameStatus.Stopped),
+      showStopTraining:
+        !humanPlaying && effectiveGameStatus === GameStatus.Training,
+      showStartButton:
+        effectiveGameStatus === GameStatus.Paused ||
+        (effectiveGameStatus === GameStatus.Idle && humanPlaying),
+      showPauseButton: effectiveGameStatus === GameStatus.Running,
+    };
+  }, [humanPlaying, gameStatus]);
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-[clamp(0.5rem,2vh,1.5rem)] px-2 py-[clamp(1rem,3vh,2rem)] text-center text-white sm:px-3 md:px-4">
@@ -99,28 +120,25 @@ const Parameters = () => {
       </div>
 
       <div className="mt-[clamp(0.5rem,2vh,2rem)] flex flex-col gap-[clamp(0.5rem,1.5vh,1rem)] text-[clamp(1rem,2.5vh,1.5rem)]">
-        {!humanPlaying &&
-          (gameStatus === GameStatus.Idle ||
-            gameStatus === GameStatus.Stopped ||
-            gameStatus === GameStatus.Reset) && (
-            <button
-              className={`parameter-button ${
-                targetGeneration <= trainedGenerations
-                  ? 'bg-green-600 hover:bg-green-700'
-                  : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-              onClick={(e) => {
-                e.currentTarget.blur();
-                setGameStatus(GameStatus.Training);
-              }}
-            >
-              {targetGeneration <= trainedGenerations
-                ? 'Start Simulation'
-                : 'Start Training'}
-            </button>
-          )}
+        {buttonStates.showStartTraining && (
+          <button
+            className={`parameter-button ${
+              targetGeneration <= trainedGenerations
+                ? 'bg-green-600 hover:bg-green-700'
+                : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+            onClick={(e) => {
+              e.currentTarget.blur();
+              setGameStatus(GameStatus.Training);
+            }}
+          >
+            {targetGeneration <= trainedGenerations
+              ? 'Start Simulation'
+              : 'Start Training'}
+          </button>
+        )}
 
-        {!humanPlaying && gameStatus === GameStatus.Training && (
+        {buttonStates.showStopTraining && (
           <button
             className="parameter-button bg-yellow-600 hover:bg-yellow-700"
             onClick={(e) => {
@@ -132,8 +150,7 @@ const Parameters = () => {
           </button>
         )}
 
-        {(gameStatus === GameStatus.Paused ||
-          (gameStatus === GameStatus.Idle && humanPlaying)) && (
+        {buttonStates.showStartButton && (
           <button
             className="parameter-button bg-green-600 hover:bg-green-700"
             onClick={(e) => {
@@ -145,7 +162,7 @@ const Parameters = () => {
           </button>
         )}
 
-        {gameStatus === GameStatus.Running && (
+        {buttonStates.showPauseButton && (
           <button
             className="parameter-button bg-yellow-600 hover:bg-yellow-700"
             onClick={(e) => {
