@@ -164,24 +164,22 @@ const Snake = () => {
   };
 
   // Game Reset Handlers
-  const resetHumanGame = () => {
+  const resetPlayer = () => {
     const fresh = new Player(false);
     setPlayer(fresh);
     setGrid(fresh.getGrid());
     setScore(fresh.getScore());
   };
 
-  const resetAIGame = () => {
+  const resetPopulation = () => {
     setPopulation(new Population(config, populationSize));
     setTrainedGenerations(0);
   };
 
   const handleGameReset = () => {
-    if (humanPlaying) {
-      resetHumanGame();
-    } else {
-      resetAIGame();
-    }
+    resetPlayer();
+    resetPopulation();
+
     setGameStatus(GameStatus.Idle);
   };
 
