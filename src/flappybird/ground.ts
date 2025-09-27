@@ -45,26 +45,15 @@ export class Ground implements IGround {
 
   collidesWithPlayer(player: Player): boolean {
     const playerBox = player.getBoundingBox();
-    const groundBox = {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-    };
-
-    return (
-      playerBox.x < groundBox.x + groundBox.width &&
-      playerBox.x + playerBox.width > groundBox.x &&
-      playerBox.y < groundBox.y + groundBox.height &&
-      playerBox.y + playerBox.height > groundBox.y
-    );
+    // Simple ground collision: check if player's bottom edge touches ground top
+    return playerBox.y + playerBox.height >= this.y;
   }
 
   getBoundingBox() {
     return {
-      x: this.x,
+      x: 0,
       y: this.y,
-      width: this.width,
+      width: this.canvasWidth,
       height: this.height,
     };
   }
