@@ -1,29 +1,29 @@
-import { useEffect } from "react";
-import Parameters from "./Parameters";
-import Snake from "./Snake";
-import FlappyBird from "./FlappyBird";
-import Status from "./Status";
-import { useSimulation } from "@/contexts";
-import { Simulations } from "@/types";
+import { useEffect } from 'react';
+import Parameters from './Parameters';
+import Snake from './Snake';
+import FlappyBird from './FlappyBird';
+import Status from './Status';
+import { useSimulation } from '@/contexts';
+import { Simulations } from '@/types';
 
 const Playground = () => {
   const { humanPlaying, setHumanPlaying, selectedSimulation } = useSimulation();
 
   useEffect(() => {
     if (window.innerWidth < 768) {
-      alert("This project is not suitable for small screens");
+      alert('This project is not suitable for small screens');
     }
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === "Space") {
+      if (event.code === 'Space') {
         setHumanPlaying(!humanPlaying);
       }
     };
 
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, [humanPlaying, setHumanPlaying]);
 

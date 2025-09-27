@@ -1,5 +1,5 @@
-import { INodeGene } from "./types";
-import type { ConnectionGene } from "./connectionGene";
+import { INodeGene } from './types';
+import type { ConnectionGene } from './connectionGene';
 
 export class NodeGene implements INodeGene {
   id: number;

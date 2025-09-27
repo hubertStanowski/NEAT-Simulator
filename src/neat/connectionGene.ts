@@ -1,6 +1,6 @@
-import { NodeGene } from "./nodeGene";
-import { NeatConfig } from "./neatConfig";
-import { IConnectionGene } from "./types";
+import { NodeGene } from './nodeGene';
+import { NeatConfig } from './neatConfig';
+import { IConnectionGene } from './types';
 
 export class ConnectionGene implements IConnectionGene {
   input: NodeGene;
@@ -14,7 +14,7 @@ export class ConnectionGene implements IConnectionGene {
     output: NodeGene,
     weight: number,
     innovationNumber: number,
-    enabled: boolean = true,
+    enabled: boolean = true
   ) {
     this.input = input;
     this.output = output;
@@ -46,7 +46,7 @@ export class ConnectionGene implements IConnectionGene {
       output,
       this.weight,
       this.innovationNumber,
-      this.enabled,
+      this.enabled
     );
   }
 

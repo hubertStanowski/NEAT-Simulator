@@ -1,8 +1,8 @@
-import { NodeGene } from "./nodeGene";
-import { ConnectionGene } from "./connectionGene";
-import { InnovationHistory } from "./innovationHistory";
-import { NeatConfig } from "./neatConfig";
-import { IGenome } from "./types";
+import { NodeGene } from './nodeGene';
+import { ConnectionGene } from './connectionGene';
+import { InnovationHistory } from './innovationHistory';
+import { NeatConfig } from './neatConfig';
+import { IGenome } from './types';
 
 export class Genome implements IGenome {
   nodes: NodeGene[];
@@ -75,7 +75,7 @@ export class Genome implements IGenome {
 
   addConnection(
     config: NeatConfig,
-    innovationHistory: InnovationHistory[],
+    innovationHistory: InnovationHistory[]
   ): void {
     if (this.fullyConnected()) {
       return;
@@ -97,7 +97,7 @@ export class Genome implements IGenome {
       config,
       innovationHistory,
       this.nodes[node1],
-      this.nodes[node2],
+      this.nodes[node2]
     );
 
     this.connections.push(
@@ -105,8 +105,8 @@ export class Genome implements IGenome {
         this.nodes[node1],
         this.nodes[node2],
         Math.random() * 2 - 1,
-        connectionInnovationNumber,
-      ),
+        connectionInnovationNumber
+      )
     );
 
     this.connectNodes();
@@ -145,30 +145,30 @@ export class Genome implements IGenome {
       config,
       innovationHistory,
       this.connections[chosenConnection].input,
-      this.getNode(newNodeId),
+      this.getNode(newNodeId)
     );
     this.connections.push(
       new ConnectionGene(
         this.connections[chosenConnection].input,
         this.getNode(newNodeId),
         1,
-        currentInnovationNumber,
-      ),
+        currentInnovationNumber
+      )
     );
 
     currentInnovationNumber = this.getInnovationNumber(
       config,
       innovationHistory,
       this.getNode(newNodeId),
-      this.connections[chosenConnection].output,
+      this.connections[chosenConnection].output
     );
     this.connections.push(
       new ConnectionGene(
         this.getNode(newNodeId),
         this.connections[chosenConnection].output,
         this.connections[chosenConnection].weight,
-        currentInnovationNumber,
-      ),
+        currentInnovationNumber
+      )
     );
 
     this.getNode(newNodeId).layer =
@@ -178,15 +178,15 @@ export class Genome implements IGenome {
       config,
       innovationHistory,
       this.nodes[this.biasNode!],
-      this.getNode(newNodeId),
+      this.getNode(newNodeId)
     );
     this.connections.push(
       new ConnectionGene(
         this.nodes[this.biasNode!],
         this.getNode(newNodeId),
         0,
-        currentInnovationNumber,
-      ),
+        currentInnovationNumber
+      )
     );
 
     if (
@@ -219,7 +219,7 @@ export class Genome implements IGenome {
     for (const connection of this.connections) {
       const parentConnection = this.getMatchingConnection(
         parent,
-        connection.innovationNumber,
+        connection.innovationNumber
       );
       let childEnable = true;
 
@@ -262,7 +262,7 @@ export class Genome implements IGenome {
 
   fullyConnect(
     config: NeatConfig,
-    innovationHistory: InnovationHistory[],
+    innovationHistory: InnovationHistory[]
   ): void {
     for (let i = 0; i < this.inputs; i++) {
       for (let j = 0; j < this.outputs; j++) {
@@ -270,15 +270,15 @@ export class Genome implements IGenome {
           config,
           innovationHistory,
           this.nodes[i],
-          this.nodes[this.inputs + j],
+          this.nodes[this.inputs + j]
         );
         this.connections.push(
           new ConnectionGene(
             this.nodes[i],
             this.nodes[this.inputs + j],
             Math.random() * 2 - 1,
-            currInnovationNumber,
-          ),
+            currInnovationNumber
+          )
         );
         config.updateNextInnovationNumber();
       }
@@ -290,7 +290,7 @@ export class Genome implements IGenome {
     config: NeatConfig,
     innovationHistory: InnovationHistory[],
     input: NodeGene,
-    output: NodeGene,
+    output: NodeGene
   ): number {
     let newInnovation = true;
     let currentInnovationNumber = config.getNextInnovationNumber();
@@ -314,8 +314,8 @@ export class Genome implements IGenome {
           input.id,
           output.id,
           currentInnovationNumber,
-          connectedInnovationNumbers,
-        ),
+          connectedInnovationNumbers
+        )
       );
 
       config.updateNextInnovationNumber();
@@ -430,8 +430,8 @@ export class Genome implements IGenome {
       clone.connections.push(
         connection.clone(
           clone.getNode(connection.input.id),
-          clone.getNode(connection.output.id),
-        ),
+          clone.getNode(connection.output.id)
+        )
       );
     }
 

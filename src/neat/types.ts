@@ -1,4 +1,4 @@
-import { IPlayer } from "@/snake";
+import { IPlayer } from '@/snake';
 
 export interface INeatConfig {
   nextInnovationNumber: number;

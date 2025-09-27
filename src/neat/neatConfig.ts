@@ -1,4 +1,4 @@
-import { INeatConfig } from "./types";
+import { INeatConfig } from './types';
 
 export class NeatConfig implements INeatConfig {
   nextInnovationNumber: number;

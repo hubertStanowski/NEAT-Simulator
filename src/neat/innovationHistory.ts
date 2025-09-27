@@ -1,6 +1,6 @@
-import { NodeGene } from "./nodeGene";
-import { IInnovationHistory } from "./types";
-import type { Genome } from "./genome";
+import { NodeGene } from './nodeGene';
+import { IInnovationHistory } from './types';
+import type { Genome } from './genome';
 
 export class InnovationHistory implements IInnovationHistory {
   input: number;
@@ -12,7 +12,7 @@ export class InnovationHistory implements IInnovationHistory {
     input: number,
     output: number,
     innovationNumber: number,
-    connectedInnovationNumbers: number[],
+    connectedInnovationNumbers: number[]
   ) {
     this.input = input;
     this.output = output;
@@ -31,7 +31,7 @@ export class InnovationHistory implements IInnovationHistory {
     for (let i = 0; i < genome.connections.length; i++) {
       if (
         !this.connectedInnovationNumbers.includes(
-          genome.connections[i].innovationNumber,
+          genome.connections[i].innovationNumber
         )
       ) {
         return false;

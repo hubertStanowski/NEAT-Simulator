@@ -1,13 +1,13 @@
-import { createGrid } from "./grid";
-import { updateColor } from "./visuals";
+import { createGrid } from './grid';
+import { updateColor } from './visuals';
 import {
   trainingGridSize,
   simulationGridSize,
   startingPlayerSize,
   trainingPlayerSize,
-} from "@/constants";
-import { Genome, NeatConfig } from "@/neat";
-import { IPlayer, Direction, Grid } from "./types";
+} from '@/constants';
+import { Genome, NeatConfig } from '@/neat';
+import { IPlayer, Direction, Grid } from './types';
 
 export class Player implements IPlayer {
   snake: { row: number; col: number }[];
@@ -40,7 +40,7 @@ export class Player implements IPlayer {
       (_, i) => ({
         row: middle,
         col: middle - i,
-      }),
+      })
     );
 
     this.grid = createGrid(this.gridSize, this.gridSize);
@@ -116,14 +116,14 @@ export class Player implements IPlayer {
     } while (
       this.snake.some(
         (segment) =>
-          segment.row === this.food.row && segment.col === this.food.col,
+          segment.row === this.food.row && segment.col === this.food.col
       )
     );
   }
 
   checkCollisions(
     newHead: { row: number; col: number },
-    newSnake: { row: number; col: number }[],
+    newSnake: { row: number; col: number }[]
   ) {
     // Border collisions
     if (
@@ -151,7 +151,7 @@ export class Player implements IPlayer {
       newGrid[segment.row][segment.col] = updateColor(
         index,
         this.snake.length,
-        this.lifespan,
+        this.lifespan
       );
     });
     newGrid[this.food.row][this.food.col] = [255, 0, 0];
@@ -278,7 +278,7 @@ export class Player implements IPlayer {
       this.steps > this.stepLimit * 0.8 && score === 0
         ? Math.pow(
             (this.steps - this.stepLimit * 0.8) / (this.stepLimit * 0.2),
-            2,
+            2
           ) * 20
         : 0;
 
@@ -306,7 +306,7 @@ export class Player implements IPlayer {
         distanceBonus -
         movementPenalty -
         stepPenalty +
-        deathModifier,
+        deathModifier
     );
   }
 
@@ -316,7 +316,7 @@ export class Player implements IPlayer {
       start1: number,
       stop1: number,
       start2: number,
-      stop2: number,
+      stop2: number
     ): number => {
       return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
     };
@@ -441,7 +441,7 @@ export class Player implements IPlayer {
       0,
       this.gridSize * 2,
       1,
-      0,
+      0
     );
 
     // Snake length normalized
@@ -450,7 +450,7 @@ export class Player implements IPlayer {
       3,
       this.gridSize * this.gridSize,
       0,
-      1,
+      1
     );
 
     // Hunger level

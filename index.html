@@ -16,21 +16,21 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       function updateFavicon() {
-        const favicon = document.getElementById("dynamic-favicon");
-        const snakeElement = document.getElementById("snake");
-        const flappybirdElement = document.getElementById("flappybird");
+        const favicon = document.getElementById('dynamic-favicon');
+        const snakeElement = document.getElementById('snake');
+        const flappybirdElement = document.getElementById('flappybird');
 
         if (snakeElement) {
-          favicon.href = "assets/logo-snake.png";
+          favicon.href = 'assets/logo-snake.png';
         } else if (flappybirdElement) {
-          favicon.href = "assets/logo-flappybird.png";
+          favicon.href = 'assets/logo-flappybird.png';
         }
         // Default stays as snake if neither is found
       }
 
       const observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
-          if (mutation.type === "childList") {
+          if (mutation.type === 'childList') {
             updateFavicon();
           }
         });
@@ -41,7 +41,7 @@
         subtree: true,
       });
 
-      window.addEventListener("load", updateFavicon);
+      window.addEventListener('load', updateFavicon);
 
       setInterval(updateFavicon, 1000);
     </script>

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useSimulation } from "@/contexts";
-import { Player, styleEyes, Direction, getGridSize, Grid } from "@/snake";
-import { GameStatus } from "@/types";
-import { NeatConfig, Population } from "@/neat";
+import { useState, useEffect } from 'react';
+import { useSimulation } from '@/contexts';
+import { Player, styleEyes, Direction, getGridSize, Grid } from '@/snake';
+import { GameStatus } from '@/types';
+import { NeatConfig, Population } from '@/neat';
 
 const Snake = () => {
   const {
@@ -24,7 +24,7 @@ const Snake = () => {
   const [grid, setGrid] = useState<Grid>(player.getGrid());
   const config = new NeatConfig();
   const [population, setPopulation] = useState(
-    new Population(config, populationSize),
+    new Population(config, populationSize)
   );
 
   // Reset population when population size changes
@@ -33,7 +33,7 @@ const Snake = () => {
     if (gameStatus !== GameStatus.Idle && !humanPlaying) {
       setGameStatus(GameStatus.Training);
     }
-    console.log("NEW POPULATION");
+    console.log('NEW POPULATION');
   }, [populationSize]);
 
   // Main training loop - evolve population and switch to best player when target reached
@@ -47,7 +47,7 @@ const Snake = () => {
           setPlayer(player);
         } else {
           setPlayer(
-            population.genBestPlayers[targetGeneration - 1].clone(false),
+            population.genBestPlayers[targetGeneration - 1].clone(false)
           );
         }
         setGameStatus(GameStatus.Running);
@@ -60,10 +60,10 @@ const Snake = () => {
             population.players.length;
           console.log(
             `Gen:${population.generation} CurrBest:${
-              population.currBestPlayer?.getScore() ?? "N/A"
+              population.currBestPlayer?.getScore() ?? 'N/A'
             } / BestEver:${
-              population.bestEverPlayer?.getScore() ?? "N/A"
-            } Avg:${avg.toFixed(2)}`,
+              population.bestEverPlayer?.getScore() ?? 'N/A'
+            } Avg:${avg.toFixed(2)}`
           );
           population.naturalSelection();
         }
@@ -83,26 +83,26 @@ const Snake = () => {
     if (gameStatus !== GameStatus.Running || !humanPlaying) return;
     const onKey = (e: KeyboardEvent) => {
       switch (e.key) {
-        case "ArrowUp":
+        case 'ArrowUp':
           if (player.direction !== Direction.DOWN)
             player.setDirection(Direction.UP);
           break;
-        case "ArrowDown":
+        case 'ArrowDown':
           if (player.direction !== Direction.UP)
             player.setDirection(Direction.DOWN);
           break;
-        case "ArrowLeft":
+        case 'ArrowLeft':
           if (player.direction !== Direction.RIGHT)
             player.setDirection(Direction.LEFT);
           break;
-        case "ArrowRight":
+        case 'ArrowRight':
           if (player.direction !== Direction.LEFT)
             player.setDirection(Direction.RIGHT);
           break;
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [player, gameStatus, humanPlaying]);
 
   // Main game loop - handles snake movement for both human and AI players
@@ -145,7 +145,7 @@ const Snake = () => {
         setGameStatus(
           targetGeneration >= population.generation
             ? GameStatus.Training
-            : GameStatus.Idle,
+            : GameStatus.Idle
         );
         clearInterval(iv);
       }
@@ -218,7 +218,7 @@ const Snake = () => {
                 key={`${r}-${c}`}
                 style={{
                   backgroundColor: `rgb(${cell[0]},${cell[1]},${cell[2]})`,
-                  position: "relative",
+                  position: 'relative',
                 }}
                 className="col-span-1 row-span-1 aspect-1 flex-1 border-[0.01px] border-neutral-400"
               >

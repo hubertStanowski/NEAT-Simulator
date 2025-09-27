@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
-import { GameStatus, SimulationContextType, Simulations } from "@/types";
-import { Player } from "@/snake";
+import React, { createContext, useContext, useState } from 'react';
+import { GameStatus, SimulationContextType, Simulations } from '@/types';
+import { Player } from '@/snake';
 
 const noop = () => {};
 
@@ -43,7 +43,7 @@ const initialSimulationContext: SimulationContextType = {
 };
 
 const SimulationContext = createContext<SimulationContextType>(
-  initialSimulationContext,
+  initialSimulationContext
 );
 
 export const useSimulation = () => useContext(SimulationContext);
@@ -54,38 +54,38 @@ export const SimulationProvider = ({
   children: React.ReactNode;
 }) => {
   const [humanPlaying, setHumanPlaying] = useState(
-    initialSimulationContext.humanPlaying,
+    initialSimulationContext.humanPlaying
   );
   const [populationSize, setPopulationSize] = useState(
-    initialSimulationContext.populationSize,
+    initialSimulationContext.populationSize
   );
   const [speed, setSpeed] = useState(initialSimulationContext.speed);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>(
-    initialSimulationContext.gameStatus,
+    initialSimulationContext.gameStatus
   );
   const [targetGeneration, setTargetGeneration] = useState(
-    initialSimulationContext.targetGeneration,
+    initialSimulationContext.targetGeneration
   );
   const [currentGeneration, setCurrentGeneration] = useState(
-    initialSimulationContext.currentGeneration,
+    initialSimulationContext.currentGeneration
   );
   const [trainedGenerations, setTrainedGenerations] = useState(
-    initialSimulationContext.trainedGenerations,
+    initialSimulationContext.trainedGenerations
   );
 
   const [aliveCount, setAliveCount] = useState(
-    initialSimulationContext.aliveCount,
+    initialSimulationContext.aliveCount
   );
   const [score, setScore] = useState(initialSimulationContext.score);
   const [bestScore, setBestScore] = useState(
-    initialSimulationContext.bestScore,
+    initialSimulationContext.bestScore
   );
   const [networkPlayer, setNetworkPlayer] = useState<Player>(
-    initialSimulationContext.networkPlayer,
+    initialSimulationContext.networkPlayer
   );
   const [selectedSimulation, setSelectedSimulation] = useState(
-    initialSimulationContext.selectedSimulation,
+    initialSimulationContext.selectedSimulation
   );
 
   return (

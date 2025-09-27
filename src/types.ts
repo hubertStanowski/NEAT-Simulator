@@ -1,17 +1,17 @@
-import { Player } from "@/snake";
+import { Player } from '@/snake';
 
 export enum GameStatus {
-  Running = "running",
-  Paused = "paused",
-  Idle = "idle",
-  Reset = "reset",
-  Training = "training",
-  Stopped = "stopped",
+  Running = 'running',
+  Paused = 'paused',
+  Idle = 'idle',
+  Reset = 'reset',
+  Training = 'training',
+  Stopped = 'stopped',
 }
 
 export enum Simulations {
-  Snake = "Snake",
-  FlappyBird = "FlappyBird",
+  Snake = 'Snake',
+  FlappyBird = 'FlappyBird',
 }
 
 export type SimulationContextType = {

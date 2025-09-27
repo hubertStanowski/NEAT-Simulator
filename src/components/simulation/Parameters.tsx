@@ -1,5 +1,5 @@
-import { GameStatus } from "@/types";
-import { useSimulation } from "@/contexts";
+import { GameStatus } from '@/types';
+import { useSimulation } from '@/contexts';
 
 const Parameters = () => {
   const {
@@ -34,15 +34,15 @@ const Parameters = () => {
       <button
         className={`parameter-button highlighted-parameter-button text-[clamp(1rem,2.5vh,1.5rem)] ${
           humanPlaying
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-purple-700 hover:bg-purple-800"
+            ? 'bg-green-600 hover:bg-green-700'
+            : 'bg-purple-700 hover:bg-purple-800'
         }`}
         onClick={(e) => {
           e.currentTarget.blur();
           setHumanPlaying(!humanPlaying);
         }}
       >
-        {humanPlaying ? "Human Playing" : "AI Playing"}
+        {humanPlaying ? 'Human Playing' : 'AI Playing'}
       </button>
 
       <div className="w-full items-center px-1 sm:px-2">
@@ -74,7 +74,7 @@ const Parameters = () => {
           onChange={(e) => setSpeed(Number(e.target.value))}
           onClick={(e) => e.currentTarget.blur()}
           className={`mb-[clamp(0.5rem,1.5vh,1rem)] h-[clamp(1rem,2vh,1.5rem)] w-full ${
-            humanPlaying && speed >= 80 ? "accent-red-700" : "accent-purple-700"
+            humanPlaying && speed >= 80 ? 'accent-red-700' : 'accent-purple-700'
           }`}
         />
       </div>
@@ -106,8 +106,8 @@ const Parameters = () => {
             <button
               className={`parameter-button ${
                 targetGeneration <= trainedGenerations
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? 'bg-green-600 hover:bg-green-700'
+                  : 'bg-blue-600 hover:bg-blue-700'
               }`}
               onClick={(e) => {
                 e.currentTarget.blur();
@@ -115,8 +115,8 @@ const Parameters = () => {
               }}
             >
               {targetGeneration <= trainedGenerations
-                ? "Start Simulation"
-                : "Start Training"}
+                ? 'Start Simulation'
+                : 'Start Training'}
             </button>
           )}
 
@@ -164,7 +164,7 @@ const Parameters = () => {
             setGameStatus(GameStatus.Reset);
           }}
         >
-          {humanPlaying ? "Reset" : "Population Reset"}
+          {humanPlaying ? 'Reset' : 'Population Reset'}
         </button>
       </div>
     </div>

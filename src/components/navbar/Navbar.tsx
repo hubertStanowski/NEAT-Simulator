@@ -1,7 +1,7 @@
-import { portfolioURL } from "@/constants";
-import { useSimulation } from "@/contexts";
-import { Simulations } from "@/types";
-import NavItems from "./NavItems";
+import { portfolioURL } from '@/constants';
+import { useSimulation } from '@/contexts';
+import { Simulations } from '@/types';
+import NavItems from './NavItems';
 
 const Navbar = () => {
   const { selectedSimulation } = useSimulation();
@@ -19,8 +19,8 @@ const Navbar = () => {
           <img
             src={
               selectedSimulation === Simulations.Snake
-                ? "/assets/logo-snake.png"
-                : "/assets/logo-flappybird.png"
+                ? '/assets/logo-snake.png'
+                : '/assets/logo-flappybird.png'
             }
             alt="Logo"
             className="ml-2 h-[clamp(2rem,4vh,3rem)] sm:ml-4"

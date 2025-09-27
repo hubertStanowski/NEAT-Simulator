@@ -1,7 +1,7 @@
 export const hsvToRgb = (
   h: number,
   s: number,
-  v: number,
+  v: number
 ): [number, number, number] => {
   let r = 1,
     g = 1,
@@ -51,7 +51,7 @@ export const hsvToRgb = (
 export const updateColor = (
   index: number,
   total: number,
-  step: number,
+  step: number
 ): [number, number, number] => {
   const hue = index / total;
   const brightness = (1 + 0.5 * Math.sin((step + index) / 2.5)) / 1.5;
@@ -69,18 +69,18 @@ export const updateColor = (
 export const styleEyes = (direction: string) => {
   const eyeOffset = 25;
   const eyeStyle = {
-    width: "20%",
-    height: "20%",
-    backgroundColor: "black",
-    position: "absolute",
-    borderRadius: "50%",
+    width: '20%',
+    height: '20%',
+    backgroundColor: 'black',
+    position: 'absolute',
+    borderRadius: '50%',
   };
 
   let eye1Style = {};
   let eye2Style = {};
 
   switch (direction) {
-    case "UP":
+    case 'UP':
       eye1Style = {
         ...eyeStyle,
         top: `${eyeOffset}%`,
@@ -92,7 +92,7 @@ export const styleEyes = (direction: string) => {
         right: `${eyeOffset}%`,
       };
       break;
-    case "DOWN":
+    case 'DOWN':
       eye1Style = {
         ...eyeStyle,
         bottom: `${eyeOffset}%`,
@@ -104,7 +104,7 @@ export const styleEyes = (direction: string) => {
         right: `${eyeOffset}%`,
       };
       break;
-    case "LEFT":
+    case 'LEFT':
       eye1Style = {
         ...eyeStyle,
         top: `${eyeOffset}%`,
@@ -116,7 +116,7 @@ export const styleEyes = (direction: string) => {
         left: `${eyeOffset}%`,
       };
       break;
-    case "RIGHT":
+    case 'RIGHT':
       eye1Style = {
         ...eyeStyle,
         top: `${eyeOffset}%`,

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
-import { GameStatus } from "@/types";
-import { useSimulation } from "@/contexts";
-import type { Genome, NodeGene, ConnectionGene } from "@/neat";
+import { useEffect, useRef } from 'react';
+import { GameStatus } from '@/types';
+import { useSimulation } from '@/contexts';
+import type { Genome, NodeGene, ConnectionGene } from '@/neat';
 
 const Status = () => {
   const {
@@ -24,7 +24,7 @@ const Status = () => {
     if (canvas && networkPlayer.genome.network) {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       if (ctx) {
         drawNetwork(ctx, networkPlayer.genome, canvas);
       }
@@ -34,7 +34,7 @@ const Status = () => {
   const drawNetwork = (
     ctx: CanvasRenderingContext2D,
     genome: Genome,
-    canvas: HTMLCanvasElement,
+    canvas: HTMLCanvasElement
   ) => {
     if (!genome.network) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -83,25 +83,25 @@ const Status = () => {
     nodePositions.forEach((pos, node) => {
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, nodeRadius, 0, 2 * Math.PI);
-      let label = "";
+      let label = '';
       if (node.id < genome.inputs) {
-        ctx.fillStyle = "green";
-        label = "Input";
+        ctx.fillStyle = 'green';
+        label = 'Input';
       } else if (node.id < genome.inputs + genome.outputs) {
-        ctx.fillStyle = "red";
-        label = "Output";
+        ctx.fillStyle = 'red';
+        label = 'Output';
       } else if (node.id === genome.inputs + genome.outputs) {
-        ctx.fillStyle = "gray";
-        label = "Bias";
+        ctx.fillStyle = 'gray';
+        label = 'Bias';
       } else {
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = 'blue';
       }
       ctx.fill();
 
-      ctx.fillStyle = "white";
-      ctx.font = "12px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      ctx.fillStyle = 'white';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText(label, pos.x, pos.y);
     });
   };
@@ -110,8 +110,8 @@ const Status = () => {
     <div
       className={`flex h-full flex-col items-center text-center text-[clamp(0.875rem,2vh,1.25rem)] text-white ${
         humanPlaying
-          ? "justify-start"
-          : "justify-center py-[clamp(1rem,2vh,1.5rem)]"
+          ? 'justify-start'
+          : 'justify-center py-[clamp(1rem,2vh,1.5rem)]'
       }`}
     >
       {humanPlaying ? (
@@ -145,8 +145,8 @@ const Status = () => {
                 (gameStatus === GameStatus.Training ||
                   gameStatus === GameStatus.Stopped) &&
                 trainedGenerations < targetGeneration
-                  ? "visible"
-                  : "invisible"
+                  ? 'visible'
+                  : 'invisible'
               }`}
             >
               Alive: {aliveCount} / {populationSize}
@@ -155,7 +155,7 @@ const Status = () => {
 
           {/* Always render the HR and neural network section, but hide when humanPlaying */}
           <div
-            className={`${!humanPlaying ? "visible" : "invisible"} flex w-full flex-col items-center`}
+            className={`${!humanPlaying ? 'visible' : 'invisible'} flex w-full flex-col items-center`}
           >
             <hr className="mb-[clamp(0.5rem,1.5vh,1rem)] w-4/5 border-t-2 border-white" />
             <div className="mb-[clamp(0.5rem,1vh,0.75rem)]">Neural Network</div>

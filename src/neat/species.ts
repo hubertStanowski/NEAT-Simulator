@@ -1,8 +1,8 @@
-import { Player } from "@/snake";
-import { Genome } from "./genome";
-import { InnovationHistory } from "./innovationHistory";
-import { NeatConfig } from "./neatConfig";
-import { ISpecies } from "./types";
+import { Player } from '@/snake';
+import { Genome } from './genome';
+import { InnovationHistory } from './innovationHistory';
+import { NeatConfig } from './neatConfig';
+import { ISpecies } from './types';
 
 export class Species implements ISpecies {
   players: Player[];
@@ -21,7 +21,7 @@ export class Species implements ISpecies {
 
   reproduce(
     config: NeatConfig,
-    innovationHistory: InnovationHistory[],
+    innovationHistory: InnovationHistory[]
   ): Player | undefined {
     if (this.players.length < 1) {
       return;
@@ -56,16 +56,16 @@ export class Species implements ISpecies {
   isThisSpecies(config: NeatConfig, testedGenome: Genome): boolean {
     const largeGenomeNormalizer = Math.max(
       testedGenome.connections.length - 20,
-      1,
+      1
     );
 
     const averageWeightDifference = this.getAverageWeightDifference(
       testedGenome,
-      this.representative.genome,
+      this.representative.genome
     );
     const excessDisjointCount = this.getExcessDisjointCount(
       testedGenome,
-      this.representative.genome,
+      this.representative.genome
     );
 
     const compatibility =
@@ -146,7 +146,7 @@ export class Species implements ISpecies {
   selectPlayer(): Player {
     const fitnessSum = this.players.reduce(
       (sum, player) => sum + player.fitness,
-      0,
+      0
     );
     const randomThreshold = Math.random() * fitnessSum;
 

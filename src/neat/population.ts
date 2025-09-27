@@ -1,8 +1,8 @@
-import { NeatConfig } from "./neatConfig";
-import { InnovationHistory } from "./innovationHistory";
-import { Player } from "@/snake";
-import { Species } from "./species";
-import { IPopulation } from "./types";
+import { NeatConfig } from './neatConfig';
+import { InnovationHistory } from './innovationHistory';
+import { Player } from '@/snake';
+import { Species } from './species';
+import { IPopulation } from './types';
 
 export class Population implements IPopulation {
   config: NeatConfig;
@@ -121,7 +121,7 @@ export class Population implements IPopulation {
       // Representative is already the best of the species
       this.players.push(s.representative.clone());
       const childrenCount = Math.floor(
-        (s.averageFitness / averageFitnessSum) * this.size - 1,
+        (s.averageFitness / averageFitnessSum) * this.size - 1
       );
 
       for (let i = 0; i < childrenCount; i++) {
@@ -137,7 +137,7 @@ export class Population implements IPopulation {
       if (this.species.length > 0) {
         this.players.push(
           this.species[0].reproduce(this.config, this.innovationHistory) ||
-            new Player(),
+            new Player()
         );
       } else {
         // If no species exist, create new random player
@@ -245,7 +245,7 @@ export class Population implements IPopulation {
   getAvgFitnessSum(): number {
     return this.species.reduce(
       (sum, species) => sum + species.averageFitness,
-      0,
+      0
     );
   }
 }

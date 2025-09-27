@@ -1,13 +1,13 @@
-import { IGenome } from "@/neat";
+import { IGenome } from '@/neat';
 
 export type GridCell = [number, number, number];
 export type Grid = GridCell[][];
 
 export enum Direction {
-  UP = "UP",
-  DOWN = "DOWN",
-  LEFT = "LEFT",
-  RIGHT = "RIGHT",
+  UP = 'UP',
+  DOWN = 'DOWN',
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
 }
 
 export interface IPlayer {
