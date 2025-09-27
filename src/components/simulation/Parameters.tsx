@@ -15,6 +15,8 @@ const Parameters = () => {
     targetGeneration,
     setTargetGeneration,
     trainedGenerations,
+    isPlayerAlive,
+    resetAndStartGame,
   } = useSimulation();
 
   // Helper function to map slider values to valid generation values
@@ -155,7 +157,13 @@ const Parameters = () => {
             className="parameter-button bg-green-600 hover:bg-green-700"
             onClick={(e) => {
               e.currentTarget.blur();
-              setGameStatus(GameStatus.Running);
+              // If player is dead, reset and start the game
+              if (humanPlaying && !isPlayerAlive) {
+                resetAndStartGame();
+              } else {
+                // If player is alive (paused state), just start
+                setGameStatus(GameStatus.Running);
+              }
             }}
           >
             Start

@@ -50,4 +50,10 @@ export type SimulationContextType = {
 
   selectedSimulation: Simulations;
   setSelectedSimulation: (simulation: Simulations) => void;
+
+  isPlayerAlive: boolean;
+  setIsPlayerAlive: (value: boolean) => void;
+
+  resetAndStartGame: () => void;
+  setResetAndStartGame: (fn: () => void) => void;
 };

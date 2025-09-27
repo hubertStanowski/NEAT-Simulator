@@ -19,6 +19,8 @@ const Snake = () => {
     setScore,
     setBestScore,
     setNetworkPlayer,
+    setIsPlayerAlive,
+    setResetAndStartGame,
   } = useSimulation();
 
   const [player, setPlayer] = useState(new Player(false));
@@ -116,6 +118,7 @@ const Snake = () => {
       setScore(player.getScore());
     } else {
       setGameStatus(GameStatus.Idle);
+      setIsPlayerAlive(false);
     }
   };
 
@@ -141,6 +144,7 @@ const Snake = () => {
   const setupHumanGameLoop = () => {
     if (!player.isAlive) {
       setGameStatus(GameStatus.Reset);
+      setIsPlayerAlive(false);
       return;
     }
     const interval = setInterval(handleHumanGameStep, 110 - speed);
@@ -183,6 +187,13 @@ const Snake = () => {
     }
 
     setGameStatus(GameStatus.Idle);
+    setIsPlayerAlive(true);
+  };
+
+  const handleResetAndStart = () => {
+    resetPlayer();
+    setGameStatus(GameStatus.Running);
+    setIsPlayerAlive(true);
   };
 
   // Population Management Handlers
@@ -280,6 +291,11 @@ const Snake = () => {
     if (gameStatus !== GameStatus.Running || !humanPlaying) return;
     return setupKeyboardControls();
   }, [player, gameStatus, humanPlaying]);
+
+  // Set up reset and start function for the Parameters component to use
+  useEffect(() => {
+    setResetAndStartGame(() => handleResetAndStart);
+  }, []);
 
   return <SnakeGrid grid={grid} player={player} />;
 };

@@ -23,6 +23,8 @@ const FlappyBird = () => {
     setScore,
     bestScore,
     setBestScore,
+    setIsPlayerAlive,
+    setResetAndStartGame,
   } = useSimulation();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -96,6 +98,7 @@ const FlappyBird = () => {
       // Check if player died
       if (!player.isAlive) {
         setGameStatus(GameStatus.Idle);
+        setIsPlayerAlive(false);
         // Update best score if current score is better
         if (pipes.score > bestScore) {
           setBestScore(pipes.score);
@@ -118,6 +121,15 @@ const FlappyBird = () => {
     pipes.reset();
     setScore(0);
     setGameStatus(GameStatus.Idle);
+    setIsPlayerAlive(true);
+  };
+
+  const handleResetAndStart = () => {
+    player.reset();
+    pipes.reset();
+    setScore(0);
+    setGameStatus(GameStatus.Running);
+    setIsPlayerAlive(true);
   };
 
   // Mode Switching Handlers
@@ -327,6 +339,11 @@ const FlappyBird = () => {
       draw();
     }
   }, [imagesLoaded, canvasDimensions]);
+
+  // Set up reset and start function for the Parameters component to use
+  useEffect(() => {
+    setResetAndStartGame(() => handleResetAndStart);
+  }, []);
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-sky-200">

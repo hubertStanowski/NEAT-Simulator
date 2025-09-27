@@ -40,6 +40,12 @@ const initialSimulationContext: SimulationContextType = {
 
   selectedSimulation: Simulations.Snake,
   setSelectedSimulation: noop,
+
+  isPlayerAlive: true,
+  setIsPlayerAlive: noop,
+
+  resetAndStartGame: noop,
+  setResetAndStartGame: noop,
 };
 
 const SimulationContext = createContext<SimulationContextType>(
@@ -88,6 +94,13 @@ export const SimulationProvider = ({
     initialSimulationContext.selectedSimulation
   );
 
+  const [isPlayerAlive, setIsPlayerAlive] = useState(
+    initialSimulationContext.isPlayerAlive
+  );
+  const [resetAndStartGame, setResetAndStartGame] = useState<() => void>(
+    () => initialSimulationContext.resetAndStartGame
+  );
+
   return (
     <SimulationContext.Provider
       value={{
@@ -115,6 +128,10 @@ export const SimulationProvider = ({
         setNetworkPlayer,
         selectedSimulation,
         setSelectedSimulation,
+        isPlayerAlive,
+        setIsPlayerAlive,
+        resetAndStartGame,
+        setResetAndStartGame,
       }}
     >
       {children}
