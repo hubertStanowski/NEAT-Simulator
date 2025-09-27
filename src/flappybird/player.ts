@@ -21,7 +21,8 @@ export class Player implements IPlayer {
 
   constructor(
     canvasWidth: number = DEFAULT_CANVAS_WIDTH,
-    canvasHeight: number = DEFAULT_CANVAS_HEIGHT
+    canvasHeight: number = DEFAULT_CANVAS_HEIGHT,
+    isAi: boolean = true
   ) {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
@@ -29,7 +30,7 @@ export class Player implements IPlayer {
     this.y = canvasHeight * PLAYER_Y_RATIO;
     this.velocity = 0;
     this.isAlive = true;
-    this.isFlying = true;
+    this.isFlying = isAi;
     this.score = 0;
     this.lifespan = 0;
   }

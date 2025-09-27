@@ -26,7 +26,9 @@ const FlappyBird = () => {
   } = useSimulation();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [player] = useState(new Player());
+  const [player] = useState(
+    new Player(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, false)
+  );
   const [pipes] = useState(new DoublePipeSet());
   const [ground] = useState(new Ground());
   const [imagesLoaded, setImagesLoaded] = useState(false);
