@@ -178,7 +178,9 @@ const Snake = () => {
 
   const handleGameReset = () => {
     resetPlayer();
-    resetPopulation();
+    if (!humanPlaying) {
+      resetPopulation();
+    }
 
     setGameStatus(GameStatus.Idle);
   };

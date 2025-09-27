@@ -13,18 +13,6 @@ const Playground = () => {
     if (window.innerWidth < 768) {
       alert('This project is not suitable for small screens');
     }
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
-        setHumanPlaying(!humanPlaying);
-      }
-    };
-
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keyup', handleKeyUp);
-    };
   }, [humanPlaying, setHumanPlaying]);
 
   return (
