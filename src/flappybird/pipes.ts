@@ -5,6 +5,7 @@ import {
   PIPE_GAP_RATIO,
   PIPE_SEPARATION_RATIO,
   PIPE_WIDTH_RATIO,
+  PIPE_MIN_HEIGHT_RATIO,
   DEFAULT_CANVAS_WIDTH,
   DEFAULT_CANVAS_HEIGHT,
 } from './constants';
@@ -72,9 +73,17 @@ export class PipeSet implements IPipeSet {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
 
-    // Random pipe height as ratio of canvas height (was -300 to 225, now as ratios)
-    const pipeHeightRatio = Math.random() * 0.547 - 0.3125; // 0.547 = 525/960, 0.3125 = 300/960
-    const centerY = canvasHeight / 2 + canvasHeight * pipeHeightRatio;
+    // Calculate pipe gap and minimum height
+    const pipeGap = canvasHeight * PIPE_GAP_RATIO;
+    const groundHeight = canvasHeight * 0.172; // Same ratio as ground
+    const minHeight = canvasHeight * PIPE_MIN_HEIGHT_RATIO;
+
+    // Calculate valid range for centerY to ensure minimum pipe heights
+    const minCenterY = minHeight + pipeGap / 2;
+    const maxCenterY = canvasHeight - minHeight - pipeGap / 2 - groundHeight;
+
+    // Generate random centerY within valid range
+    const centerY = minCenterY + Math.random() * (maxCenterY - minCenterY);
 
     this.topPipe = new Pipe(
       canvasWidth + xOffset,
