@@ -110,7 +110,6 @@ const FlappyBird = () => {
   };
 
   const setupGameLoop = () => {
-    // Use speed from context: higher speed = faster game = shorter interval
     const interval = setInterval(handleGameStep, Math.max(10, 1000 / speed));
     return () => clearInterval(interval);
   };
