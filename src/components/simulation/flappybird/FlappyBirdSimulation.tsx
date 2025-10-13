@@ -88,8 +88,8 @@ const FlappyBirdSimulation = () => {
     if (population.genBestPlayers[targetGeneration - 1]) {
       const targetPlayer =
         population.genBestPlayers[targetGeneration - 1].clone();
-      targetPlayer.isFlying = true;
       targetPlayer.reset();
+      targetPlayer.isFlying = true;
       setHumanPlayer(targetPlayer);
       pipes.reset();
       setGameStatus(GameStatus.Running);
@@ -345,8 +345,8 @@ const FlappyBirdSimulation = () => {
       if (population.genBestPlayers[targetGeneration - 1]) {
         const targetPlayer =
           population.genBestPlayers[targetGeneration - 1].clone();
-        targetPlayer.isFlying = true;
         targetPlayer.reset();
+        targetPlayer.isFlying = true;
         setHumanPlayer(targetPlayer);
         pipes.reset();
       }
