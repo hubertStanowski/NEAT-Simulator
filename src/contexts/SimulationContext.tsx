@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { GameStatus, SimulationContextType, Simulations } from '@/types';
 import { INeatPlayer } from '@/neat';
 
@@ -57,6 +58,16 @@ export const SimulationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const getSimulationFromPath = (pathname: string): Simulations => {
+    if (pathname === '/flappybird') {
+      return Simulations.FlappyBird;
+    }
+    return Simulations.Snake;
+  };
+
   const [humanPlaying, setHumanPlaying] = useState(
     initialSimulationContext.humanPlaying
   );
@@ -89,7 +100,7 @@ export const SimulationProvider = ({
     initialSimulationContext.networkPlayer
   );
   const [selectedSimulation, setSelectedSimulation] = useState(
-    initialSimulationContext.selectedSimulation
+    getSimulationFromPath(location.pathname)
   );
 
   const [isPlayerAlive, setIsPlayerAlive] = useState(
@@ -98,6 +109,20 @@ export const SimulationProvider = ({
   const [resetAndStartGame, setResetAndStartGame] = useState<() => void>(
     () => initialSimulationContext.resetAndStartGame
   );
+
+  useEffect(() => {
+    const simulationFromPath = getSimulationFromPath(location.pathname);
+    if (simulationFromPath !== selectedSimulation) {
+      setSelectedSimulation(simulationFromPath);
+    }
+  }, [location.pathname]);
+
+  const handleSetSelectedSimulation = (simulation: Simulations) => {
+    setSelectedSimulation(simulation);
+    const path =
+      simulation === Simulations.FlappyBird ? '/flappybird' : '/snake';
+    navigate(path);
+  };
 
   return (
     <SimulationContext.Provider
@@ -125,7 +150,7 @@ export const SimulationProvider = ({
         networkPlayer,
         setNetworkPlayer,
         selectedSimulation,
-        setSelectedSimulation,
+        setSelectedSimulation: handleSetSelectedSimulation,
         isPlayerAlive,
         setIsPlayerAlive,
         resetAndStartGame,
