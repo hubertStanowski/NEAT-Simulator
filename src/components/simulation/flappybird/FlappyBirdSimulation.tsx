@@ -380,37 +380,7 @@ const FlappyBirdSimulation = () => {
     ground.updateCanvasSize(canvasDimensions.width, canvasDimensions.height);
   };
 
-  const drawBird = (ctx: CanvasRenderingContext2D, player: Player) => {
-    ctx.save();
-    ctx.translate(player.x, player.y);
-
-    if (player.isFlying || !player.isAlive) {
-      let angle;
-      if (player.velocity <= 0) {
-        angle = -30;
-      } else {
-        angle = Math.min(player.velocity * 3, 45);
-      }
-      ctx.rotate((angle * Math.PI) / 180);
-    }
-
-    ctx.drawImage(birdImg.current, -38, -27, 77, 54);
-    ctx.restore();
-  };
-
-  const draw = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.fillStyle = '#010103';
-    ctx.fillRect(0, 0, canvasDimensions.width, canvasDimensions.height);
-
-    if (!imagesLoaded) return;
-
-    // Draw background
+  const drawBackground = (ctx: CanvasRenderingContext2D) => {
     const backgroundYOffset =
       canvasDimensions.height * BACKGROUND_Y_OFFSET_RATIO;
     const scaledWidth = canvasDimensions.width;
@@ -426,8 +396,9 @@ const FlappyBirdSimulation = () => {
       scaledWidth,
       scaledHeight
     );
+  };
 
-    // Draw pipes
+  const drawPipes = (ctx: CanvasRenderingContext2D) => {
     for (const pipeSet of pipes.pipeSets) {
       const topPipe = pipeSet.topPipe.getBoundingBox();
       ctx.save();
@@ -458,8 +429,9 @@ const FlappyBirdSimulation = () => {
         bottomPipe.height
       );
     }
+  };
 
-    // Draw ground
+  const drawGround = (ctx: CanvasRenderingContext2D) => {
     const groundBox = ground.getBoundingBox();
     const groundOverlap = 2;
     const numSegments = Math.ceil(canvasDimensions.width / groundBox.width) + 2;
@@ -472,13 +444,49 @@ const FlappyBirdSimulation = () => {
         groundBox.height
       );
     }
+  };
 
-    // Draw birds
+  const drawBird = (ctx: CanvasRenderingContext2D, player: Player) => {
+    ctx.save();
+    ctx.translate(player.x, player.y);
+
+    if (player.isFlying || !player.isAlive) {
+      let angle;
+      if (player.velocity <= 0) {
+        angle = -30;
+      } else {
+        angle = Math.min(player.velocity * 3, 45);
+      }
+      ctx.rotate((angle * Math.PI) / 180);
+    }
+
+    ctx.drawImage(birdImg.current, -38, -27, 77, 54);
+    ctx.restore();
+  };
+
+  const draw = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.fillStyle = '#010103';
+    ctx.fillRect(0, 0, canvasDimensions.width, canvasDimensions.height);
+
+    if (!imagesLoaded) return;
+
+    drawBackground(ctx);
+
+    drawPipes(ctx);
+
+    drawGround(ctx);
+
+    // Draw the human Player or the all alive birds during AI training
     if (humanPlaying && humanPlayer) {
       drawBird(ctx, humanPlayer);
     } else if (population) {
-      // Draw all alive birds during AI training
-      const drawLimit = 50; // Limit drawn birds for performance
+      const drawLimit = 100; // Limit drawn birds for performance
       let drawnCount = 0;
 
       for (const player of population.players) {
