@@ -2,50 +2,48 @@ import React, { createContext, useContext, useState } from 'react';
 import { GameStatus, SimulationContextType, Simulations } from '@/types';
 import { INeatPlayer } from '@/neat';
 
-const noop = () => {};
-
 const initialSimulationContext: SimulationContextType = {
   humanPlaying: false,
-  setHumanPlaying: noop,
+  setHumanPlaying: () => {},
 
-  populationSize: 300,
-  setPopulationSize: noop,
+  populationSize: 100,
+  setPopulationSize: () => {},
 
-  speed: 50,
-  setSpeed: noop,
+  speed: 80,
+  setSpeed: () => {},
 
   gameStatus: GameStatus.Idle,
-  setGameStatus: noop,
+  setGameStatus: () => {},
 
-  targetGeneration: 10,
-  setTargetGeneration: noop,
+  targetGeneration: 20,
+  setTargetGeneration: () => {},
 
   currentGeneration: 0,
-  setCurrentGeneration: noop,
+  setCurrentGeneration: () => {},
 
   trainedGenerations: 0,
-  setTrainedGenerations: noop,
+  setTrainedGenerations: () => {},
 
   aliveCount: 0,
-  setAliveCount: noop,
+  setAliveCount: () => {},
 
   score: 0,
-  setScore: noop,
+  setScore: () => {},
 
   bestScore: 0,
-  setBestScore: noop,
+  setBestScore: () => {},
 
   networkPlayer: null,
-  setNetworkPlayer: noop,
+  setNetworkPlayer: () => {},
 
   selectedSimulation: Simulations.Snake,
-  setSelectedSimulation: noop,
+  setSelectedSimulation: () => {},
 
   isPlayerAlive: true,
-  setIsPlayerAlive: noop,
+  setIsPlayerAlive: () => {},
 
-  resetAndStartGame: noop,
-  setResetAndStartGame: noop,
+  resetAndStartGame: () => {},
+  setResetAndStartGame: () => {},
 };
 
 const SimulationContext = createContext<SimulationContextType>(
