@@ -88,6 +88,8 @@ const FlappyBirdSimulation = () => {
     if (population.genBestPlayers[targetGeneration - 1]) {
       const targetPlayer =
         population.genBestPlayers[targetGeneration - 1].clone();
+      targetPlayer.isFlying = true;
+      targetPlayer.reset();
       setHumanPlayer(targetPlayer);
       pipes.reset();
       setGameStatus(GameStatus.Running);
@@ -161,7 +163,6 @@ const FlappyBirdSimulation = () => {
     if (gameStatus === GameStatus.Running) {
       humanPlayer.update();
 
-      // Check collisions
       if (pipes.collidesWithPlayer(humanPlayer)) {
         humanPlayer.kill();
       }
@@ -181,6 +182,42 @@ const FlappyBirdSimulation = () => {
     draw();
   };
 
+  const handleAIGameStep = () => {
+    if (!humanPlayer) return;
+
+    pipes.update(humanPlayer.x);
+    ground.update();
+
+    if (gameStatus === GameStatus.Running) {
+      humanPlayer.update();
+      humanPlayer.look(ground, pipes);
+      humanPlayer.decide();
+
+      if (pipes.collidesWithPlayer(humanPlayer)) {
+        humanPlayer.kill();
+      }
+      if (ground.collidesWithPlayer(humanPlayer)) {
+        humanPlayer.kill();
+      }
+
+      humanPlayer.score = pipes.score;
+      setScore(humanPlayer.score);
+      setNetworkPlayer(humanPlayer.clone());
+      setCurrentGeneration(humanPlayer.generation);
+
+      if (!humanPlayer.isAlive) {
+        setGameStatus(
+          targetGeneration >= (population?.generation ?? 0)
+            ? GameStatus.Training
+            : GameStatus.Idle
+        );
+        setIsPlayerAlive(false);
+      }
+    }
+
+    draw();
+  };
+
   const setupHumanGameLoop = () => {
     const interval = setInterval(
       handleHumanGameStep,
@@ -190,6 +227,11 @@ const FlappyBirdSimulation = () => {
   };
 
   const setupAIGameLoop = () => {
+    const interval = setInterval(handleAIGameStep, Math.max(10, 1000 / speed));
+    return () => clearInterval(interval);
+  };
+
+  const setupTrainingVisualLoop = () => {
     if (!population) return;
 
     pipes.update(population.players[0]?.x || 0);
@@ -303,6 +345,8 @@ const FlappyBirdSimulation = () => {
       if (population.genBestPlayers[targetGeneration - 1]) {
         const targetPlayer =
           population.genBestPlayers[targetGeneration - 1].clone();
+        targetPlayer.isFlying = true;
+        targetPlayer.reset();
         setHumanPlayer(targetPlayer);
         pipes.reset();
       }
@@ -482,10 +526,10 @@ const FlappyBirdSimulation = () => {
 
     drawGround(ctx);
 
-    // Draw the human Player or the all alive birds during AI training
-    if (humanPlaying && humanPlayer) {
+    // Draw single player (human or AI viewing past generation) or all alive birds during training
+    if (humanPlayer && gameStatus === GameStatus.Running) {
       drawBird(ctx, humanPlayer);
-    } else if (population) {
+    } else if (population && gameStatus === GameStatus.Training) {
       const drawLimit = 100; // Limit drawn birds for performance
       let drawnCount = 0;
 
@@ -528,15 +572,19 @@ const FlappyBirdSimulation = () => {
 
   // Main game loop - handles bird movement for both human and AI players
   useEffect(() => {
-    if (gameStatus !== GameStatus.Running || !imagesLoaded) return;
-    return humanPlaying ? setupHumanGameLoop() : setupHumanGameLoop();
+    if (gameStatus !== GameStatus.Running || !imagesLoaded || !humanPlayer)
+      return;
+    return humanPlaying ? setupHumanGameLoop() : setupAIGameLoop();
   }, [gameStatus, imagesLoaded, speed, humanPlayer]);
 
   // AI training visual update loop
   useEffect(() => {
     if (gameStatus !== GameStatus.Training || !imagesLoaded || !population)
       return;
-    const interval = setInterval(setupAIGameLoop, Math.max(5, 600 / speed));
+    const interval = setInterval(
+      setupTrainingVisualLoop,
+      Math.max(5, 600 / speed)
+    );
     return () => clearInterval(interval);
   }, [gameStatus, imagesLoaded, speed, population]);
 
