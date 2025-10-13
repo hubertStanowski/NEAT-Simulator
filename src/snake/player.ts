@@ -7,9 +7,9 @@ import {
   trainingPlayerSize,
 } from '@/constants';
 import { Genome, NeatConfig } from '@/neat';
-import { IPlayer, Direction, Grid } from './types';
+import { ISnakePlayer, Direction, Grid } from './types';
 
-export class Player implements IPlayer {
+export class Player implements ISnakePlayer {
   snake: { row: number; col: number }[];
   grid: Grid;
   food: { row: number; col: number };

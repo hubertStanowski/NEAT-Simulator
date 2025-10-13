@@ -1,4 +1,23 @@
-import { IPlayer } from '@/snake';
+import { Genome } from './genome';
+
+// Base interface for all NEAT-enabled players
+export interface INeatPlayer {
+  isAlive: boolean;
+  fitness: number;
+  lifespan: number;
+  genome_inputs: number;
+  genome_outputs: number;
+  genome: Genome;
+  vision: number[];
+  generation: number;
+
+  // Common methods
+  clone(): INeatPlayer;
+  updateFitness(): void;
+  look(...args: any[]): void;
+  decide(...args: any[]): void;
+  getScore(): number;
+}
 
 export interface INeatConfig {
   nextInnovationNumber: number;
@@ -49,24 +68,24 @@ export interface IInnovationHistory {
   connectedInnovationNumbers: number[];
 }
 
-export interface ISpecies {
-  players: IPlayer[];
-  representative: IPlayer;
+export interface ISpecies<T extends INeatPlayer> {
+  players: T[];
+  representative: T;
   bestFitness: number;
   averageFitness: number;
   staleness: number;
 }
 
-export interface IPopulation {
+export interface IPopulation<T extends INeatPlayer> {
   config: INeatConfig;
   size: number;
   innovationHistory: IInnovationHistory[];
-  players: IPlayer[];
-  species: ISpecies[];
-  currBestPlayer: IPlayer | null;
-  prevBestPlayer: IPlayer | null;
-  bestEverPlayer: IPlayer | null;
+  players: T[];
+  species: ISpecies<T>[];
+  currBestPlayer: T | null;
+  prevBestPlayer: T | null;
+  bestEverPlayer: T | null;
   generation: number;
   staleness: number;
-  genBestPlayers: IPlayer[];
+  genBestPlayers: T[];
 }

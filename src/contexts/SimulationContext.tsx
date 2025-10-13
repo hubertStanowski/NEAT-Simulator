@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { GameStatus, SimulationContextType, Simulations } from '@/types';
-import { Player } from '@/snake';
+import { INeatPlayer } from '@/neat';
 
 const noop = () => {};
 
@@ -35,7 +35,7 @@ const initialSimulationContext: SimulationContextType = {
   bestScore: 0,
   setBestScore: noop,
 
-  networkPlayer: new Player(false),
+  networkPlayer: null,
   setNetworkPlayer: noop,
 
   selectedSimulation: Simulations.Snake,
@@ -87,7 +87,7 @@ export const SimulationProvider = ({
   const [bestScore, setBestScore] = useState(
     initialSimulationContext.bestScore
   );
-  const [networkPlayer, setNetworkPlayer] = useState<Player>(
+  const [networkPlayer, setNetworkPlayer] = useState<INeatPlayer | null>(
     initialSimulationContext.networkPlayer
   );
   const [selectedSimulation, setSelectedSimulation] = useState(

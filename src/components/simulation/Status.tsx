@@ -21,7 +21,7 @@ const Status = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas && networkPlayer.genome.network) {
+    if (canvas && networkPlayer?.genome.network) {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
       const ctx = canvas.getContext('2d');
@@ -117,7 +117,7 @@ const Status = () => {
       {humanPlaying ? (
         <>
           <div className="flex-1"></div>
-          <div className="flex flex-2 flex-col justify-start space-y-[clamp(0.25rem,1vh,0.75rem)]">
+          <div className="flex-2 flex flex-col justify-start space-y-[clamp(0.25rem,1vh,0.75rem)]">
             <div className="text-3xl">Score: {score}</div>
             <div className="text-3xl text-purple-700">
               AI Generations: {currentGeneration}

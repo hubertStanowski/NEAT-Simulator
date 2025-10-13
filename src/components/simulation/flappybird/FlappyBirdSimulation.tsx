@@ -65,7 +65,7 @@ const FlappyBirdSimulation = () => {
       );
       setPopulation(newPopulation);
       if (newPopulation.currBestPlayer) {
-        setNetworkPlayer(newPopulation.currBestPlayer as any);
+        setNetworkPlayer(newPopulation.currBestPlayer);
       }
       setAliveCount(populationSize);
     }
@@ -126,7 +126,7 @@ const FlappyBirdSimulation = () => {
     if (!population) return;
 
     if (population.currBestPlayer) {
-      setNetworkPlayer(population.currBestPlayer as any);
+      setNetworkPlayer(population.currBestPlayer);
     }
     setCurrentGeneration(population.generation);
     setAliveCount(population.getAliveCount());
@@ -206,7 +206,7 @@ const FlappyBirdSimulation = () => {
       false
     );
     setHumanPlayer(fresh);
-    setNetworkPlayer(fresh as any);
+    setNetworkPlayer(fresh);
     pipes.reset();
     setScore(0);
   };
@@ -225,7 +225,7 @@ const FlappyBirdSimulation = () => {
 
     // Reset all simulation state values
     if (newPopulation.currBestPlayer) {
-      setNetworkPlayer(newPopulation.currBestPlayer as any);
+      setNetworkPlayer(newPopulation.currBestPlayer);
     }
     setCurrentGeneration(0);
     setAliveCount(populationSize);

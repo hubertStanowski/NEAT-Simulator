@@ -1,4 +1,4 @@
-import { Player } from '@/snake';
+import { INeatPlayer } from '@/neat';
 
 export enum GameStatus {
   Running = 'running',
@@ -45,8 +45,8 @@ export type SimulationContextType = {
   bestScore: number;
   setBestScore: (value: number) => void;
 
-  networkPlayer: Player;
-  setNetworkPlayer: (player: Player) => void;
+  networkPlayer: INeatPlayer | null;
+  setNetworkPlayer: (player: INeatPlayer | null) => void;
 
   selectedSimulation: Simulations;
   setSelectedSimulation: (simulation: Simulations) => void;

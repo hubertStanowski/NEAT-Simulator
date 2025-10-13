@@ -1,4 +1,4 @@
-import { IGenome } from '@/neat';
+import { INeatPlayer } from '@/neat';
 
 export type GridCell = [number, number, number];
 export type Grid = GridCell[][];
@@ -10,19 +10,14 @@ export enum Direction {
   RIGHT = 'RIGHT',
 }
 
-export interface IPlayer {
+export interface ISnakePlayer extends INeatPlayer {
   snake: { row: number; col: number }[];
   grid: Grid;
   food: { row: number; col: number };
-  lifespan: number;
   direction: Direction;
-  isAlive: boolean;
-  fitness: number;
-  genome_inputs: number;
-  genome_outputs: number;
-  genome: IGenome;
-  vision: number[];
   sensor_view_data: number[];
   steps: number;
-  generation: number;
+  inTraining: boolean;
+  gridSize: number;
+  stepLimit: number;
 }

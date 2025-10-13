@@ -1,4 +1,4 @@
-import { IPlayer } from './types';
+import { IFlappyBirdPlayer } from './types';
 import {
   PLAYER_X_RATIO,
   PLAYER_Y_RATIO,
@@ -11,7 +11,7 @@ import { Genome, NeatConfig } from '@/neat';
 import { DoublePipeSet } from './pipes';
 import { Ground } from './ground';
 
-export class Player implements IPlayer {
+export class Player implements IFlappyBirdPlayer {
   x: number;
   y: number;
   velocity: number;

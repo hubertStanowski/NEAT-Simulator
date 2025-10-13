@@ -1,11 +1,13 @@
-export interface IPlayer {
+import { INeatPlayer } from '@/neat';
+
+export interface IFlappyBirdPlayer extends INeatPlayer {
   x: number;
   y: number;
   velocity: number;
-  isAlive: boolean;
   isFlying: boolean;
   score: number;
-  lifespan: number;
+  canvasWidth: number;
+  canvasHeight: number;
 }
 
 export interface IPipe {
