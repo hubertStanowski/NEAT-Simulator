@@ -54,9 +54,18 @@ const FlappyBirdSimulation = () => {
   const groundImg = useRef<HTMLImageElement>(new Image());
   const pipeImg = useRef<HTMLImageElement>(new Image());
 
-  // Initialize population once canvas dimensions are known
+  // Initialize population and human player once canvas dimensions are known
   useEffect(() => {
     if (canvasDimensions.width > 0 && canvasDimensions.height > 0) {
+      if (!humanPlayer) {
+        const fresh = new Player(
+          canvasDimensions.width,
+          canvasDimensions.height,
+          false
+        );
+        setHumanPlayer(fresh);
+      }
+
       const newPopulation = new FlappyBirdPopulation(
         config,
         populationSize,
@@ -324,7 +333,12 @@ const FlappyBirdSimulation = () => {
   };
 
   const switchToAIMode = () => {
-    setHumanPlayer(null);
+    const fresh = new Player(
+      canvasDimensions.width,
+      canvasDimensions.height,
+      false
+    );
+    setHumanPlayer(fresh);
     resetPopulation();
     setGameStatus(GameStatus.Idle);
   };
@@ -527,7 +541,7 @@ const FlappyBirdSimulation = () => {
     drawGround(ctx);
 
     // Draw single player (human or AI viewing past generation) or all alive birds during training
-    if (humanPlayer && gameStatus === GameStatus.Running) {
+    if (humanPlayer && (humanPlaying || gameStatus !== GameStatus.Training)) {
       drawBird(ctx, humanPlayer);
     } else if (population && gameStatus === GameStatus.Training) {
       const drawLimit = 100; // Limit drawn birds for performance
