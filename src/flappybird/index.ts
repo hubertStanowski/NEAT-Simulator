@@ -1,5 +1,7 @@
 export * from './types';
 export * from './constants';
-export * from './player';
-export * from './pipes';
-export * from './ground';
+export { Player } from './player';
+export { DoublePipeSet } from './pipes';
+export { Ground } from './ground';
+export { FlappyBirdPopulation } from './population';
+export { FlappyBirdSpecies } from './species';

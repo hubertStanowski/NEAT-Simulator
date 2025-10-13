@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Parameters from './Parameters';
 import Snake from './snake/SnakeSimulation';
-import FlappyBird from './flappybird/FlappyBird';
+import FlappyBirdSimulation from './flappybird/FlappyBirdSimulation';
 import Status from './Status';
 import { useSimulation } from '@/contexts';
 import { Simulations } from '@/types';
@@ -30,7 +30,9 @@ const Playground = () => {
           <div className="grid-container flex items-center justify-center">
             <div className="relative w-full py-2">
               {selectedSimulation === Simulations.Snake && <Snake />}
-              {selectedSimulation === Simulations.FlappyBird && <FlappyBird />}
+              {selectedSimulation === Simulations.FlappyBird && (
+                <FlappyBirdSimulation />
+              )}
             </div>
           </div>
         </div>
