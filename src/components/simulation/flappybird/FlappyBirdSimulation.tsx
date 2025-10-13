@@ -511,9 +511,12 @@ const FlappyBirdSimulation = () => {
   // Main training loop - evolve population and switch to best player when target reached
   useEffect(() => {
     if (gameStatus !== GameStatus.Training || !population) return;
-    const interval = setInterval(handleTrainingStep, 0);
+    const interval = setInterval(
+      handleTrainingStep,
+      Math.max(10, 1000 / speed)
+    );
     return () => clearInterval(interval);
-  }, [population, gameStatus, targetGeneration]);
+  }, [population, gameStatus, targetGeneration, speed]);
 
   // Main game loop - handles bird movement for both human and AI players
   useEffect(() => {
@@ -525,7 +528,7 @@ const FlappyBirdSimulation = () => {
   useEffect(() => {
     if (gameStatus !== GameStatus.Training || !imagesLoaded || !population)
       return;
-    const interval = setInterval(setupAIGameLoop, Math.max(10, 1000 / speed));
+    const interval = setInterval(setupAIGameLoop, Math.max(5, 600 / speed));
     return () => clearInterval(interval);
   }, [gameStatus, imagesLoaded, speed, population]);
 
