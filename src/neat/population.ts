@@ -1,39 +1,44 @@
 import { NeatConfig } from './neatConfig';
 import { InnovationHistory } from './innovationHistory';
-import { Player } from '@/snake';
 import { Species } from './species';
-import { IPopulation } from './types';
+import { IPopulation, INeatPlayer } from './types';
 
-export class Population implements IPopulation {
+export abstract class Population<T extends INeatPlayer>
+  implements IPopulation<T>
+{
   config: NeatConfig;
   size: number;
   innovationHistory: InnovationHistory[] = [];
-  players: Player[] = [];
-  species: Species[] = [];
-  currBestPlayer: Player | null = null;
-  prevBestPlayer: Player | null = null;
-  bestEverPlayer: Player | null = null;
+  players: T[] = [];
+  species: Species<T>[] = [];
+  currBestPlayer: T | null = null;
+  prevBestPlayer: T | null = null;
+  bestEverPlayer: T | null = null;
   generation: number = 1;
   staleness: number = 0;
-  genBestPlayers: Player[] = [];
+  genBestPlayers: T[] = [];
 
-  constructor(config: NeatConfig, size: number) {
+  constructor(config: NeatConfig, size: number, skipInit: boolean = false) {
     this.config = config;
     this.size = size;
+    if (!skipInit) {
+      this.initializePopulation();
+    }
+  }
 
-    for (let i = 0; i < size; i++) {
-      const player = new Player();
+  protected initializePopulation(): void {
+    for (let i = 0; i < this.size; i++) {
+      const player = this.createPlayer();
 
       // Start with partially connected networks instead of fully connected
-      // This gives evolution more room to explore different topologies
-      if (i < size * 0.15) {
+      if (i < this.size * 0.15) {
         // 15% start fully connected for diversity
-        player.genome.fullyConnect(config, this.innovationHistory);
+        player.genome.fullyConnect(this.config, this.innovationHistory);
       } else {
         // 85% start with just a few random connections
         const numInitialConnections = Math.floor(Math.random() * 6) + 1; // 1-6 connections
         for (let j = 0; j < numInitialConnections; j++) {
-          player.genome.addConnection(config, this.innovationHistory);
+          player.genome.addConnection(this.config, this.innovationHistory);
         }
       }
 
@@ -54,22 +59,29 @@ export class Population implements IPopulation {
     this.prevBestPlayer = this.currBestPlayer;
   }
 
+  protected abstract createPlayer(): T;
+
+  // Abstract method to create species - needs to be overridden because Population constructor needs specific player type
+  protected abstract createSpecies(representative: T): Species<T>;
+
+  // Helper method to create a new random player with fully connected genome
+  protected createNewRandomPlayer(): T {
+    const newPlayer = this.createPlayer();
+    newPlayer.genome.fullyConnect(this.config, this.innovationHistory);
+    newPlayer.genome.mutate(this.config, this.innovationHistory);
+    newPlayer.genome.generateNetwork();
+    return newPlayer;
+  }
+
   getAliveCount(): number {
     return this.players.filter((player) => player.isAlive).length;
   }
 
-  updateSurvivors(): void {
+  abstract updateSurvivors(...args: any[]): void;
+
+  protected updateBestPlayers(): void {
     for (const player of this.players) {
       if (player) {
-        player.generation = this.generation;
-        if (player.isAlive) {
-          player.look();
-          player.decide();
-          player.moveSnake();
-          player.updateGrid();
-          // console.log(player.snake[0]);
-        }
-
         if (player.getScore() > (this.currBestPlayer?.getScore() || 0)) {
           this.currBestPlayer = player;
         }
@@ -93,7 +105,7 @@ export class Population implements IPopulation {
     } else {
       this.staleness = 0;
     }
-    this.genBestPlayers.push(this.currBestPlayer!.clone());
+    this.genBestPlayers.push(this.currBestPlayer!.clone() as T);
 
     this.prevBestPlayer = this.currBestPlayer;
 
@@ -107,19 +119,18 @@ export class Population implements IPopulation {
     const averageFitnessSum = this.getAvgFitnessSum();
     this.players = [];
 
-    // Elitism: Always keep the best player from current generation
+    // Always keep the best player from current generation
     if (this.currBestPlayer) {
-      this.players.push(this.currBestPlayer.clone());
+      this.players.push(this.currBestPlayer.clone() as T);
     }
 
     // Keep best player ever if different from current best
     if (this.bestEverPlayer && this.bestEverPlayer !== this.currBestPlayer) {
-      this.players.push(this.bestEverPlayer.clone());
+      this.players.push(this.bestEverPlayer.clone() as T);
     }
 
     for (const s of this.species) {
-      // Representative is already the best of the species
-      this.players.push(s.representative.clone());
+      this.players.push(s.representative.clone() as T);
       const childrenCount = Math.floor(
         (s.averageFitness / averageFitnessSum) * this.size - 1
       );
@@ -135,16 +146,17 @@ export class Population implements IPopulation {
     // Fill remaining slots
     while (this.players.length < this.size) {
       if (this.species.length > 0) {
-        this.players.push(
-          this.species[0].reproduce(this.config, this.innovationHistory) ||
-            new Player()
+        const reproduced = this.species[0].reproduce(
+          this.config,
+          this.innovationHistory
         );
+        if (reproduced) {
+          this.players.push(reproduced);
+        } else {
+          this.players.push(this.createNewRandomPlayer());
+        }
       } else {
-        // If no species exist, create new random player
-        const newPlayer = new Player();
-        newPlayer.genome.fullyConnect(this.config, this.innovationHistory);
-        newPlayer.genome.mutate(this.config, this.innovationHistory);
-        this.players.push(newPlayer);
+        this.players.push(this.createNewRandomPlayer());
       }
     }
 
@@ -182,7 +194,7 @@ export class Population implements IPopulation {
         }
       }
       if (!assigned) {
-        this.species.push(new Species(player));
+        this.species.push(this.createSpecies(player));
       }
     }
   }

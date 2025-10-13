@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSimulation } from '@/contexts';
-import { Player, Direction, Grid } from '@/snake';
+import { Player, Direction, Grid, SnakePopulation } from '@/snake';
 import SnakeGrid from './SnakeGrid';
 import { GameStatus } from '@/types';
-import { NeatConfig, Population } from '@/neat';
+import { NeatConfig } from '@/neat';
 
 const Snake = () => {
   const {
@@ -27,7 +27,7 @@ const Snake = () => {
   const [grid, setGrid] = useState<Grid>(player.getGrid());
   const config = new NeatConfig();
   const [population, setPopulation] = useState(
-    new Population(config, populationSize)
+    new SnakePopulation(config, populationSize)
   );
 
   // Training Loop Handlers
@@ -168,7 +168,7 @@ const Snake = () => {
   };
 
   const resetPopulation = () => {
-    const newPopulation = new Population(config, populationSize);
+    const newPopulation = new SnakePopulation(config, populationSize);
     setPopulation(newPopulation);
 
     // Reset all simulation state values

@@ -1,8 +1,8 @@
-import { Player } from './player';
 import { Species } from '@/neat/species';
 import { NeatConfig } from '@/neat/neatConfig';
+import { Player } from './player';
 
-export class FlappyBirdSpecies extends Species<Player> {
+export class SnakeSpecies extends Species<Player> {
   constructor(representative: Player) {
     super(representative);
   }

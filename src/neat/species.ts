@@ -1,17 +1,16 @@
-import { Player } from '@/snake';
 import { Genome } from './genome';
 import { InnovationHistory } from './innovationHistory';
 import { NeatConfig } from './neatConfig';
-import { ISpecies } from './types';
+import { ISpecies, INeatPlayer } from './types';
 
-export class Species implements ISpecies {
-  players: Player[];
-  representative: Player;
+export class Species<T extends INeatPlayer> implements ISpecies<T> {
+  players: T[];
+  representative: T;
   bestFitness: number;
   averageFitness: number;
   staleness: number;
 
-  constructor(representative: Player) {
+  constructor(representative: T) {
     this.players = [representative];
     this.representative = representative;
     this.bestFitness = 0;
@@ -22,14 +21,14 @@ export class Species implements ISpecies {
   reproduce(
     config: NeatConfig,
     innovationHistory: InnovationHistory[]
-  ): Player | undefined {
+  ): T | undefined {
     if (this.players.length < 1) {
       return;
     }
 
-    let child: Player;
+    let child: T;
     if (Math.random() < config.getNoCrossoverProbability()) {
-      child = this.selectPlayer().clone();
+      child = this.selectPlayer().clone() as T;
     } else {
       if (this.players.length < 2) {
         return;
@@ -38,18 +37,20 @@ export class Species implements ISpecies {
       const parent2 = this.selectPlayer();
 
       if (parent1.fitness > parent2.fitness) {
-        child = parent1.crossover(config, parent2);
+        child = this.crossover(parent1, parent2, config);
       } else {
-        child = parent2.crossover(config, parent1);
+        child = this.crossover(parent2, parent1, config);
       }
     }
 
     child.genome.mutate(config, innovationHistory);
 
-    if (!child) {
-      return new Player();
-    }
+    return child;
+  }
 
+  protected crossover(parent1: T, parent2: T, config: NeatConfig): T {
+    const child = parent1.clone() as T;
+    child.genome = parent1.genome.crossover(config, parent2.genome);
     return child;
   }
 
@@ -143,7 +144,7 @@ export class Species implements ISpecies {
     );
   }
 
-  selectPlayer(): Player {
+  selectPlayer(): T {
     const fitnessSum = this.players.reduce(
       (sum, player) => sum + player.fitness,
       0
@@ -177,7 +178,7 @@ export class Species implements ISpecies {
     }
   }
 
-  add(newPlayer: Player): void {
+  add(newPlayer: T): void {
     this.players.push(newPlayer);
   }
 }
