@@ -77,7 +77,7 @@ export abstract class Population<T extends INeatPlayer>
     return this.players.filter((player) => player.isAlive).length;
   }
 
-  abstract updateSurvivors(...args: any[]): void;
+  abstract updateSurvivors(...args: unknown[]): void;
 
   protected updateBestPlayers(): void {
     for (const player of this.players) {

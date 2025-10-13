@@ -14,8 +14,8 @@ export interface INeatPlayer {
   // Common methods
   clone(): INeatPlayer;
   updateFitness(): void;
-  look(...args: any[]): void;
-  decide(...args: any[]): void;
+  look(...args: unknown[]): void;
+  decide(...args: unknown[]): void;
   getScore(): number;
 }
 
