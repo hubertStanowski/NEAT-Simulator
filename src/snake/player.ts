@@ -496,4 +496,12 @@ export class Player implements ISnakePlayer {
       this.turnRight();
     }
   }
+
+  exportGenome(): string {
+    return this.genome.toJSON();
+  }
+
+  loadGenome(jsonString: string): void {
+    this.genome = Genome.fromJSON(jsonString);
+  }
 }

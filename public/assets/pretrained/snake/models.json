@@ -1,0 +1,9 @@
+{
+  "models": [
+    {
+      "name": "test",
+      "description": "Test pretrained model for Snake",
+      "generation": 1
+    }
+  ]
+}

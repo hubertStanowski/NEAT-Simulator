@@ -17,6 +17,8 @@ export interface INeatPlayer {
   look(...args: unknown[]): void;
   decide(...args: unknown[]): void;
   getScore(): number;
+  exportGenome(): string;
+  loadGenome(jsonString: string): void;
 }
 
 export interface INeatConfig {

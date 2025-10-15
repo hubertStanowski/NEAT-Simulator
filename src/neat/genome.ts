@@ -442,4 +442,65 @@ export class Genome implements IGenome {
 
     return clone;
   }
+
+  toJSON(): string {
+    const genomeData = {
+      inputs: this.inputs,
+      outputs: this.outputs,
+      biasNode: this.biasNode,
+      layerCount: this.layerCount,
+      nextNodeId: this.nextNodeId,
+      nodes: this.nodes.map((node) => ({
+        id: node.id,
+        layer: node.layer,
+      })),
+      connections: this.connections.map((conn) => ({
+        inputId: conn.input.id,
+        outputId: conn.output.id,
+        weight: conn.weight,
+        innovationNumber: conn.innovationNumber,
+        enabled: conn.enabled,
+      })),
+    };
+
+    return JSON.stringify(genomeData, null, 2);
+  }
+
+  static fromJSON(jsonString: string): Genome {
+    const data = JSON.parse(jsonString);
+
+    // Create genome with crossover flag to skip normal initialization
+    const genome = new Genome(data.inputs, data.outputs, true);
+
+    // Restore basic properties
+    genome.biasNode = data.biasNode;
+    genome.layerCount = data.layerCount;
+    genome.nextNodeId = data.nextNodeId;
+
+    // Recreate nodes
+    for (const nodeData of data.nodes) {
+      genome.nodes.push(new NodeGene(nodeData.id, nodeData.layer));
+    }
+
+    // Recreate connections
+    for (const connData of data.connections) {
+      const inputNode = genome.getNode(connData.inputId);
+      const outputNode = genome.getNode(connData.outputId);
+      genome.connections.push(
+        new ConnectionGene(
+          inputNode,
+          outputNode,
+          connData.weight,
+          connData.innovationNumber,
+          connData.enabled
+        )
+      );
+    }
+
+    // Regenerate network structure
+    genome.connectNodes();
+    genome.generateNetwork();
+
+    return genome;
+  }
 }

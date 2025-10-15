@@ -180,4 +180,12 @@ export class Player implements IFlappyBirdPlayer {
   getScore(): number {
     return this.score;
   }
+
+  exportGenome(): string {
+    return this.genome.toJSON();
+  }
+
+  loadGenome(jsonString: string): void {
+    this.genome = Genome.fromJSON(jsonString);
+  }
 }

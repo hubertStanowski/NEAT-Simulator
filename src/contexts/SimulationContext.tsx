@@ -45,6 +45,9 @@ const initialSimulationContext: SimulationContextType = {
 
   resetAndStartGame: () => {},
   setResetAndStartGame: () => {},
+
+  selectedPretrainedModel: null,
+  setSelectedPretrainedModel: () => {},
 };
 
 const SimulationContext = createContext<SimulationContextType>(
@@ -109,6 +112,9 @@ export const SimulationProvider = ({
   const [resetAndStartGame, setResetAndStartGame] = useState<() => void>(
     () => initialSimulationContext.resetAndStartGame
   );
+  const [selectedPretrainedModel, setSelectedPretrainedModel] = useState<
+    string | null
+  >(initialSimulationContext.selectedPretrainedModel);
 
   useEffect(() => {
     const simulationFromPath = getSimulationFromPath(location.pathname);
@@ -155,6 +161,8 @@ export const SimulationProvider = ({
         setIsPlayerAlive,
         resetAndStartGame,
         setResetAndStartGame,
+        selectedPretrainedModel,
+        setSelectedPretrainedModel,
       }}
     >
       {children}

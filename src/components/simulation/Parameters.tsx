@@ -1,6 +1,6 @@
-import { GameStatus } from '@/types';
+import { GameStatus, Simulations } from '@/types';
 import { useSimulation } from '@/contexts';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 
 const Parameters = () => {
   const {
@@ -17,7 +17,44 @@ const Parameters = () => {
     trainedGenerations,
     isPlayerAlive,
     resetAndStartGame,
+    networkPlayer,
+    selectedSimulation,
+    selectedPretrainedModel,
+    setSelectedPretrainedModel,
   } = useSimulation();
+
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+  // Load available pretrained models for Snake
+  useEffect(() => {
+    if (selectedSimulation === Simulations.Snake) {
+      const loadModels = async () => {
+        try {
+          const response = await fetch('/assets/pretrained/snake/models.json');
+          if (response.ok) {
+            const data = await response.json();
+            const modelNames = data.models.map(
+              (model: { name: string }) => model.name
+            );
+            setAvailableModels(modelNames);
+          }
+        } catch (error) {
+          console.error('Failed to load pretrained models:', error);
+        }
+      };
+      loadModels();
+    } else {
+      setAvailableModels([]);
+      setSelectedPretrainedModel(null);
+    }
+  }, [selectedSimulation]);
+
+  useEffect(() => {
+    if (targetGeneration > 0 && selectedPretrainedModel) {
+      setSelectedPretrainedModel(null);
+      setGameStatus(GameStatus.Training);
+    }
+  }, [targetGeneration]);
 
   // Helper function to map slider values to valid generation values
   const mapToValidGeneration = (value: number): number => {
@@ -51,6 +88,22 @@ const Parameters = () => {
       showPauseButton: effectiveGameStatus === GameStatus.Running,
     };
   }, [humanPlaying, gameStatus]);
+
+  // TODO remove this when finished gathering interesting models
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && networkPlayer && targetGeneration > 0) {
+        console.log(`=== Genome for Generation ${targetGeneration} ===`);
+        console.log(networkPlayer.exportGenome());
+        console.log('===================================');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [targetGeneration, networkPlayer]);
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-[clamp(0.5rem,2vh,1.5rem)] px-2 py-[clamp(1rem,3vh,2rem)] text-center text-white sm:px-3 md:px-4">
@@ -120,6 +173,36 @@ const Parameters = () => {
           className="mb-[clamp(0.5rem,1.5vh,1rem)] h-[clamp(1rem,2vh,1.5rem)] w-full accent-purple-700"
         />
       </div>
+
+      {selectedSimulation === Simulations.Snake &&
+        availableModels.length > 0 && (
+          <div className="w-full items-center px-1 sm:px-2">
+            <p className="mb-[clamp(0.25rem,1vh,0.75rem)] text-[clamp(0.875rem,2vh,1.25rem)]">
+              Pretrained Model
+            </p>
+            <select
+              value={selectedPretrainedModel || ''}
+              onChange={(e) => {
+                const value = e.target.value || null;
+                setSelectedPretrainedModel(value);
+                if (value) {
+                  setHumanPlaying(false);
+                } else {
+                  setGameStatus(GameStatus.Training);
+                }
+                e.currentTarget.blur();
+              }}
+              className="mb-[clamp(0.5rem,1.5vh,1rem)] h-[clamp(2rem,4vh,3rem)] w-full rounded-md bg-purple-900 px-2 text-[clamp(0.875rem,2vh,1.25rem)] text-white accent-purple-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            >
+              <option value="">Select a model...</option>
+              {availableModels.map((model) => (
+                <option key={model} value={model}>
+                  {model}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
       <div className="mt-[clamp(0.5rem,2vh,2rem)] flex flex-col gap-[clamp(0.5rem,1.5vh,1rem)] text-[clamp(1rem,2.5vh,1.5rem)]">
         {buttonStates.showStartTraining && (

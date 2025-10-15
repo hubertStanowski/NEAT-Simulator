@@ -21,6 +21,7 @@ const Snake = () => {
     setNetworkPlayer,
     setIsPlayerAlive,
     setResetAndStartGame,
+    selectedPretrainedModel,
   } = useSimulation();
 
   const [player, setPlayer] = useState(new Player(false));
@@ -32,7 +33,11 @@ const Snake = () => {
 
   // Training Loop Handlers
   const handleTrainingStep = () => {
-    if (population.generation - 1 >= targetGeneration) {
+    if (
+      !selectedPretrainedModel &&
+      targetGeneration > 0 &&
+      population.generation - 1 >= targetGeneration
+    ) {
       handleTargetGenerationReached();
     } else {
       handlePopulationEvolution();
@@ -133,11 +138,16 @@ const Snake = () => {
       setNetworkPlayer(player.clone());
       setCurrentGeneration(player.generation);
     } else {
-      setGameStatus(
-        targetGeneration >= population.generation
-          ? GameStatus.Training
-          : GameStatus.Idle
-      );
+      if (selectedPretrainedModel) {
+        setGameStatus(GameStatus.Idle);
+      } else {
+        setGameStatus(
+          targetGeneration >= population.generation && targetGeneration > 0
+            ? GameStatus.Training
+            : GameStatus.Idle
+        );
+      }
+      setIsPlayerAlive(false);
     }
   };
 
@@ -243,9 +253,11 @@ const Snake = () => {
   };
 
   const handleGenerationSwitch = () => {
-    if (population.generation - 1 >= targetGeneration) {
+    if (selectedPretrainedModel) return;
+
+    if (population.generation - 1 >= targetGeneration && targetGeneration > 0) {
       switchToTargetGeneration();
-    } else {
+    } else if (targetGeneration > 0) {
       setGameStatus(GameStatus.Training);
     }
   };
@@ -276,7 +288,12 @@ const Snake = () => {
 
   // Switch to specific generation player when target generation changes
   useEffect(() => {
-    if (humanPlaying || gameStatus === GameStatus.Idle) return;
+    if (
+      humanPlaying ||
+      gameStatus === GameStatus.Idle ||
+      selectedPretrainedModel
+    )
+      return;
     handleGenerationSwitch();
   }, [targetGeneration]);
 
@@ -296,6 +313,46 @@ const Snake = () => {
   useEffect(() => {
     setResetAndStartGame(() => handleResetAndStart);
   }, []);
+
+  // Load pretrained model when selected
+  useEffect(() => {
+    const loadPretrainedModel = async () => {
+      if (!selectedPretrainedModel) return;
+
+      try {
+        const response = await fetch(
+          `/assets/pretrained/snake/${selectedPretrainedModel}.json`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to load pretrained model');
+        }
+        const genomeJson = await response.text();
+
+        // Create a new player with the pretrained genome
+        const newPlayer = new Player(false);
+        newPlayer.loadGenome(genomeJson);
+        newPlayer.raiseFromDead();
+
+        setPlayer(newPlayer);
+        setNetworkPlayer(newPlayer);
+        setIsPlayerAlive(true);
+        setScore(0);
+
+        setGrid(newPlayer.getGrid());
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        setGameStatus(GameStatus.Running);
+
+        console.log(`Loaded pretrained model: ${selectedPretrainedModel}`);
+      } catch (error) {
+        console.error('Error loading pretrained model:', error);
+        setGameStatus(GameStatus.Idle);
+      }
+    };
+
+    loadPretrainedModel();
+  }, [selectedPretrainedModel]);
 
   return <SnakeGrid grid={grid} player={player} />;
 };

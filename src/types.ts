@@ -56,4 +56,7 @@ export type SimulationContextType = {
 
   resetAndStartGame: () => void;
   setResetAndStartGame: (fn: () => void) => void;
+
+  selectedPretrainedModel: string | null;
+  setSelectedPretrainedModel: (model: string | null) => void;
 };
