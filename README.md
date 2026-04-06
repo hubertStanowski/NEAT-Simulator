@@ -1,10 +1,10 @@
 # NEAT-Simulator
 
-### In progress - transfering my python NEAT simulations into the web interface.
-
-https://neat-simulator.netlify.app/
+https://neat-simulator.vercel.app/
 
 ## Content
 
-- SnakeAI (transfered) - https://github.com/hubertStanowski/SnakeAI
-- FlappyBirdAI (not transfered) - https://github.com/hubertStanowski/FlappyBirdAI
+Transfered below versions into the web interface:
+
+- SnakeAI (original Python version) - https://github.com/hubertStanowski/SnakeAI
+- FlappyBirdAI (original Python version) - https://github.com/hubertStanowski/FlappyBirdAI
